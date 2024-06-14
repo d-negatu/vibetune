@@ -4,8 +4,8 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-const CHATGPT_API_KEY = "sk-proj-lw24EoVgbC7oobz9mkCRT3BlbkFJLos2T0CGk9yb7uS7HuuF";
-const GOOGLE_MAPS_API_KEY = "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs"; // Replace with your Google Maps API Key
+const CHATGPT_API_KEY = "";
+const GOOGLE_MAPS_API_KEY = ""; // Replace with your Google Maps API Key
 
 const containerStyle = {
   width: '100vw',
