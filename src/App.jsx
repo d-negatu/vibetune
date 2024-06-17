@@ -4,8 +4,8 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-const CHATGPT_API_KEY = "";
-const GOOGLE_MAPS_API_KEY = ""; // Replace with your Google Maps API Key
+const CHATGPT_API_KEY = "sk-proj-xjq5peFYMc7OAGTqNgP0T3BlbkFJGeViiyOW6W2pn64vAyvd";
+const GOOGLE_MAPS_API_KEY = "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs"; // Replace with your Google Maps API Key
 
 const containerStyle = {
   width: '100vw',
@@ -57,7 +57,7 @@ function App() {
 
     const systemMessage = {
       role: "system",
-      content: "You are MapBot, a chatbot developed to help with travel. You cannot discuss any topic other than traveling, navigation, places to visit, directions, and travel recommendations. If a user asks a question outside of these topics, politely remind them that you can only assist with travel-related queries."
+      content: "You are Sync Maps, a chatbot developed to help with travel, maps and music. You cannot discuss any topic other than traveling, navigation, places to visit, directions, recommending . If a user asks a question outside of these topics, politely remind them that you can only assist with travel-related queries."
     };
     
 
