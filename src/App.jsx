@@ -3,9 +3,11 @@ import './App.css';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { createSession, endSession } from './utils/sessionManagment.mjs';
 
-const CHATGPT_API_KEY = "sk-proj-xjq5peFYMc7OAGTqNgP0T3BlbkFJGeViiyOW6W2pn64vAyvd";
-const GOOGLE_MAPS_API_KEY = "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs"; // Replace with your Google Maps API Key
+
+const CHATGPT_API_KEY = "sk-proj-5YlXLoIQLGehb6TF0i3XT3BlbkFJbMm5DqQ8fsQ8BTZexGBm";
+const GOOGLE_MAPS_API_KEY = "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs"; 
 
 const containerStyle = {
   width: '100vw',
@@ -25,7 +27,7 @@ function App() {
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([
     {
-      message: "Hello Explorer, I am MapBot!",
+      message: "Welcome to SyncMaps! 🌟 I'm your personal assistant here to make your driving experience as enjoyable and stress-free as possible. 🚗🎶",
       sender: "ChatGPT",
       direction: 'incoming'
     }

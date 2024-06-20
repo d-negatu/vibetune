@@ -1,6 +1,7 @@
 {
   "functions": [
     {
+      "runtime": "nodejs16",
       "source": "functions",
       "codebase": "default",
       "ignore": [
@@ -9,7 +10,14 @@
         "firebase-debug.log",
         "firebase-debug.*.log",
         "*.local"
+      ],
+      "predeploy": [
+        
       ]
     }
-  ]
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
 }

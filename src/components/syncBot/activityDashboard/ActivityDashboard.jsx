@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { db } from '../firebase';  // Ensure the correct path to firebase.js
 import { collection, query, onSnapshot } from "firebase/firestore";
+
 import './ActivityDashboard.css';
 
 const ActivityDashboard = () => {

@@ -1,19 +1,30 @@
-/**
- * Import function triggers from their respective submodules:
+/*
+ * index.js
  *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+ * This file serves as the entry point for defining Cloud Functions for Firebase.
+ * It imports necessary modules from Firebase Functions and the Firebase Admin SDK,
+ * initializes the Firebase Admin SDK, and sets up the HTTP endpoints for the
+ * Cloud Functions defined in the project.
  *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ * Functions:
+ * - createSession: Handles the creation of user sessions in the Firestore database.
+ *
+ * How to Use:
+ * - Deploy this file to Firebase Cloud Functions using the Firebase CLI.
+ * - The createSession function will be available as an HTTP endpoint, allowing
+ *   external clients to create user sessions by sending a POST request with
+ *   the necessary data.
  */
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+// Import necessary modules from Firebase Functions and Firebase Admin SDK
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// Initialize the Firebase Admin SDK
+admin.initializeApp();
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// Import the createSession function
+const { createSession } = require('./src/createSession.js');
+
+// Export the createSession function as an HTTP endpoint
+exports.createSession = functions.https.onRequest(createSession);
