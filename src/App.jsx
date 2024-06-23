@@ -1,129 +1,67 @@
+// App.jsx
+
+/*
+ * Entry Point for SyncMaps Application
+ * 
+ * Description:
+ * This component serves as the main entry point for the SyncMaps application,
+ * which integrates a chat interface powered by ChatGPT and a Google Maps interface.
+ * The purpose of this application is to assist users with travel-related queries,
+ * including navigation, places to visit, and directions, enhancing their
+ * driving experience with personalized assistance.
+ * 
+ * Components and Libraries:
+ * - React: Used for building the user interface.
+ * - @chatscope/chat-ui-kit-react: Provides the components for the chat interface.
+ * - GoogleMapsComponent: A custom component that renders the Google Maps interface.
+ * - sessionManagment.mjs: Utility module for managing user sessions.
+ * 
+ * State Management:
+ * - typing: Boolean state to manage the typing indicator for the chat interface.
+ * - messages: Array state to store and manage the list of messages
+ *   exchanged in the chat.
+ * 
+ * API Integration:
+ * - ChatGPT API: The application sends user messages to the ChatGPT API
+ *   (model gpt-3.5-turbo) and receives responses 
+ *   to simulate a conversational assistant. The assistant is limited 
+ *   to travel-related topics.
+ * - Google Maps API:
+ *   The GoogleMapsComponent uses the Google Maps JavaScript API to render maps.
+ * 
+ * Key Functions:
+ * - handleSend: Handles sending user messages and updates the message list state.
+ * - processMessageToChatGPT:
+ *   Processes messages by sending them to the ChatGPT API and handles the responses.
+ * 
+ * Usage:
+ * - The chat interface includes message input and display components, 
+ *   allowing users to interact with ChatGPT.
+ * - The GoogleMapsComponent is rendered as the background,
+ *   providing a seamless integration of maps and chat.
+ * - The application ensures that only travel-related queries are processed
+ *   by ChatGPT, maintaining focus and relevance.
+ * 
+ * Error Handling:
+ * - Proper error handling is implemented to manage issues with API requests,
+ *   ensuring robust and reliable operation.
+ * 
+ * This component combines the functionalities of a chat assistant 
+ * and map navigation to deliver a cohesive user 
+ * experience aimed at enhancing travel and navigation assistance.
+ */
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { createSession, endSession } from './utils/sessionManagment.mjs';
+import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
+import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
 
-
-const CHATGPT_API_KEY = "sk-proj-5YlXLoIQLGehb6TF0i3XT3BlbkFJbMm5DqQ8fsQ8BTZexGBm";
-const GOOGLE_MAPS_API_KEY = "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs"; 
-
-const containerStyle = {
-  width: '100vw',
-  height: '100vh',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  zIndex: -1
-};
-
-const center = {
-  lat: -3.745,
-  lng: -38.523
-};
 
 function App() {
-  const [typing, setTyping] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      message: "Welcome to SyncMaps! 🌟 I'm your personal assistant here to make your driving experience as enjoyable and stress-free as possible. 🚗🎶",
-      sender: "ChatGPT",
-      direction: 'incoming'
-    }
-  ]);
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY
-  });
-
-  const handleSend = async (message) => {
-    const newMessage = {
-      message: message,
-      sender: "user",
-      direction: "outgoing"
-    };
-
-    const newMessages = [...messages, newMessage];
-    setMessages(newMessages);
-    setTyping(true);
-
-    await processMessageToChatGPT(newMessages);
-  };
-
-  async function processMessageToChatGPT(chatMessages) {
-    let apiMessages = chatMessages.map((messageObject) => {
-      let role = messageObject.sender === "ChatGPT" ? "assistant" : "user";
-      return { role: role, content: messageObject.message };
-    });
-
-    const systemMessage = {
-      role: "system",
-      content: "You are Sync Maps, a chatbot developed to help with travel, maps and music. You cannot discuss any topic other than traveling, navigation, places to visit, directions, recommending . If a user asks a question outside of these topics, politely remind them that you can only assist with travel-related queries."
-    };
-    
-
-    const apiRequestBody = {
-      "model": "gpt-3.5-turbo",
-      "messages": [systemMessage, ...apiMessages]
-    };
-
-    try {
-      console.log("API Request Body:", JSON.stringify(apiRequestBody));
-
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + CHATGPT_API_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(apiRequestBody)
-      });
-
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Full response data:", data);
-      console.log("Message content:", data.choices[0].message.content);
-
-      setMessages([...chatMessages, {
-        message: data.choices[0].message.content,
-        sender: "ChatGPT",
-        direction: "incoming"
-      }]);
-    } catch (error) {
-      console.error("Error during fetch:", error);
-    } finally {
-      setTyping(false);
-    }
-  }
-
+ 
   return (
     <div className="App">
-      {isLoaded && (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={10}
-        />
-      )}
-      <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-        <MainContainer>
-          <ChatContainer>
-            <MessageList typingIndicator={typing ? <TypingIndicator content="ChatGPT is typing" /> : null}>
-              {messages.map((message, i) => (
-                <Message key={i} model={message} />
-              ))}
-            </MessageList>
-            <MessageInput placeholder="Type message here" onSend={handleSend} />
-          </ChatContainer>
-        </MainContainer>
-      </div>
+      <GoogleMapsComponent />
     </div>
   );
 }

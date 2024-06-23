@@ -26,7 +26,7 @@
  */
 
 
-import { createSession, getCurrentSession, endSession } from './sessionManagment.mjs';
+import { createSession, deleteSession, getCurrentSession} from './sessionManagment.mjs';
 
 // Example usage
 async function test() {
@@ -37,11 +37,12 @@ async function test() {
   console.log('Session created:', sessionId);
   
   // Get the current session
-  const currentSession = getCurrentSession();
+ // Retrieve the current session
+  const currentSession = await getCurrentSession(userId);
   console.log('Current session:', currentSession);
 
   // End the session
-  await endSession();
+  await deleteSession(userId);
   console.log('Session ended');
 }
 

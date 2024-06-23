@@ -18,24 +18,20 @@
  * environment for development and testing purposes.
  */
 
-
 import { db } from '../firebase.mjs';
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 
-//URL of deployed Cloud Function createSession that securely creates a session on Google Cloud
+//URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
 const createSessionUrl = 'https://us-central1-mapbot-426401.cloudfunctions.net/createSession';
-
-/**
- * Creates a new session for the specified user.
- * 
- * @param {string} userId - The ID of the user.
- * @returns {Promise<string>} - The ID of the created session.
- */
+//URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
+const currentSessionUrl = "https://us-central1-mapbot-426401.cloudfunctions.net/currentSession"
+//URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
+const deleteSessionUrl = "https://us-central1-mapbot-426401.cloudfunctions.net/deleteSession";
 
 
 
-/**
+/*
  * Creates a new session for the specified user by calling the Cloud Function.
  * 
  * @param {string} userId - The ID of the user.
@@ -68,33 +64,60 @@ export async function createSession(userId) {
  * Retrieves the current session ID from Firestore.
  * 
  * @param {string} userId - The ID of the user.
- * @returns {Promise<string|null>} - The current session ID, or null if not found.
+ * @returns {string} - The current session ID, or null if not found.
  */
 export async function getCurrentSession(userId) {
-  const q = query(collection(db, 'user_sessions'), where('userId', '==', userId));
-  const sessionSnapshot = await getDocs(q);
+  
+  try {
+    //Make a POST request to HTTP endpoint to create a user session.
+    const response = await fetch(currentSessionUrl, {
+      //POST request features such as Method of request and body.
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+  
+    //Request succesful; Error has occured sending response back from HTTP endpoint.
+    if (!response.ok) {
+      throw new Error(`Error getting current session: ${response.statusText}`);
+    }
 
-  if (!sessionSnapshot.empty) {
-    const sessionDoc = sessionSnapshot.docs[0];
-    return sessionDoc.data().sessionId;
-  } else {
-    return null;
+
+    //Retrieve data in json data format.
+    const data = await response.json();
+    const { sessionId } = data;
+    return sessionId;
+
+  //Error has occured upon POST request. 
+  } catch (error) {
+    console.error('Error calling Cloud Function:', error);
+    throw error;
   }
-}
 
-/**
- * Ends the current session by removing the session ID from Firestore.
+  }
+
+
+  /**
+ * Deletes the current session by calling the Cloud Function.
  * 
  * @param {string} userId - The ID of the user.
  * @returns {Promise<void>}
  */
-export async function endSession(userId) {
-  const sessionId = await getCurrentSession(userId);
-  if (sessionId) {
-    const q = query(collection(db, 'user_sessions'), where('sessionId', '==', sessionId));
-    const sessionSnapshot = await getDocs(q);
-    sessionSnapshot.forEach(async (sessionDoc) => {
-      await deleteDoc(doc(db, 'user_sessions', sessionDoc.id));
+export async function deleteSession(userId) {
+  try {
+    const response = await fetch(deleteSessionUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
     });
+
+    if (!response.ok) {
+      throw new Error(`Error deleting session: ${response.statusText}`);
+    }
+
+    console.log('Session successfully deleted');
+  } catch (error) {
+    console.error('Error calling Cloud Function:', error);
+    throw error;
   }
 }
