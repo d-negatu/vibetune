@@ -28,6 +28,9 @@
 
 import { createSession, deleteSession, getCurrentSession} from './sessionManagment.mjs';
 
+
+
+
 // Example usage
 async function test() {
   const userId = 'test_user';

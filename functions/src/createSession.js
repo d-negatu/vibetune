@@ -34,6 +34,7 @@
  * - Firebase Admin SDK for Firestore operations.
  */
 
+
 const { firestore } = require('firebase-admin');
 
 // Define the createSession Cloud Function

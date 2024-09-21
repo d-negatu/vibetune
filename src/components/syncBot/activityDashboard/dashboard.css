@@ -1,0 +1,64 @@
+
+
+.dashboard {
+  display: grid;
+  grid-template-areas: 
+    "header header"
+    "metrics metrics"
+    "charts charts"
+    "tables tables";
+  gap: 20px;
+  padding: 20px;
+}
+
+.dashboard-header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-metrics {
+  grid-area: metrics;
+  display: flex;
+  justify-content: space-around;
+}
+
+.metric-card {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  margin: 10px;
+}
+
+.dashboard-charts {
+  grid-area: charts;
+  display: flex;
+  justify-content: space-around;
+}
+
+.chart {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  margin: 10px;
+}
+
+.dashboard-tables {
+  grid-area: tables;
+  display: flex;
+  justify-content: space-around;
+}
+
+.table {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  margin: 10px;
+}

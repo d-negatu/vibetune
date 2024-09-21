@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "mapbot-426401"
-  }
+    "default": "mapbot-426401",
+    "prod": "mapbot-9a988"
+  },
+  "targets": {},
+  "etags": {}
 }

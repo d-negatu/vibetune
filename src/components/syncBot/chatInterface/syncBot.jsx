@@ -38,11 +38,11 @@ import React, { useState} from 'react';
 import './chatInterface.css';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
-//import { createSession } from './utils/sessionManagment.mjs';
+import { createSession } from '../../../utils/sessionManagment.mjs';
 
 
 // API key for accessing ChatGPT
-const CHATGPT_API_KEY = "";
+const CHATGPT_API_KEY = "sk-proj-9co28x1hhYB3OqZbxiXRT3BlbkFJVZ9cflBPNjxtwCb30ZeL";
 
 function syncBot(){
     // State variables for typing indicator and chat messages

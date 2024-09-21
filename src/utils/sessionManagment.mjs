@@ -19,15 +19,19 @@
  */
 
 import { db } from '../firebase.mjs';
+import fetch from 'node-fetch';
+
+
+
 import { collection, addDoc, query, where, getDocs, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
 
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
-const createSessionUrl = 'https://us-central1-mapbot-426401.cloudfunctions.net/createSession';
+const createSessionUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/createSession';
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
-const currentSessionUrl = "https://us-central1-mapbot-426401.cloudfunctions.net/currentSession"
+const currentSessionUrl = "https://us-central1-mapbot-9a988.cloudfunctions.net/currentSession"
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
-const deleteSessionUrl = "https://us-central1-mapbot-426401.cloudfunctions.net/deleteSession";
+const deleteSessionUrl = "https://us-central1-mapbot-9a988.cloudfunctions.net/deleteSession";
 
 
 

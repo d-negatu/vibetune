@@ -55,13 +55,14 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
 import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
+import Dashboard from './components/syncBot/activityDashboard/dashboard.jsx';
 
 
 function App() {
  
   return (
     <div className="App">
-      <GoogleMapsComponent />
+     <GoogleMapsComponent/>
     </div>
   );
 }
