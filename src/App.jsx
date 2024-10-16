@@ -51,18 +51,19 @@
  * experience aimed at enhancing travel and navigation assistance.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
-import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
+//import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
 import Dashboard from './components/syncBot/activityDashboard/dashboard.jsx';
-
+import BarChartComponent from './components/syncBot/barChart/barChartComponent.jsx'; // Updated import
 
 function App() {
- 
+  // Sample message data
+  const [msgData, setMsgData] = useState([15, 30]); // Example values for Bots and User messages
+
   return (
     <div className="App">
-     <GoogleMapsComponent/>
+      <BarChartComponent msgData={msgData} /> {/* Render the chart here */}
     </div>
   );
 }
