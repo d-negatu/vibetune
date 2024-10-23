@@ -38,11 +38,11 @@ import React, { useState} from 'react';
 import './chatInterface.css';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
-import { createSession } from '../../../utils/sessionManagment.mjs';
+//import { createSession } from '../../../utils/sessionManagment.mjs';
 
 
 // API key for accessing ChatGPT
-const CHATGPT_API_KEY = "sk-proj-9co28x1hhYB3OqZbxiXRT3BlbkFJVZ9cflBPNjxtwCb30ZeL";
+const CHATGPT_API_KEY = "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";
 
 function syncBot(){
     // State variables for typing indicator and chat messages
@@ -102,7 +102,7 @@ function syncBot(){
   
       // API request body
       const apiRequestBody = {
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-4o-mini",
         "messages": [systemMessage, ...apiMessages]
       };
   
@@ -112,7 +112,7 @@ function syncBot(){
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer " + CHATGPT_API_KEY,
+            "Authorization": "Bearer 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",
             "Content-Type": "application/json"
           },
           body: JSON.stringify(apiRequestBody)

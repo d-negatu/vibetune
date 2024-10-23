@@ -32,9 +32,7 @@ const { currentSession } = require('./src/currentSession.js');
 //Import the deleteSession function
 const {deleteSession} = require('./src/deleteSession.js');
 
-//Import the fetchAirQuality function
 
-const {fetchAirQuality} = require('./src/fetchAirQuality.js');
 
 // Export the createSession function as an HTTP endpoint
 //a POST request to create a new session in Sync Bot .
@@ -46,5 +44,3 @@ exports.currentSession = functions.https.onRequest(currentSession);
 // Export the deleteSession function as an HTTP endpoint
 exports.deleteSession = functions.https.onRequest(currentSession);
 
-//Export the airQualityApi function as an HTTP endpoint
-exports.fetchAirQuality = functions.https.onRequest(fetchAirQuality);

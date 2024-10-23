@@ -1,9 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import{getAirQualityData} from '../../assets/airQualityApi';
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ";
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
-const fetchAirQualityAirUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/fetchAirQuality';
+
+
+// Define an async function to call the air quality API
+const fetchAirQualityData = async () => {
+  try {
+    // Example call to the function
+    const air = await getAirQualityData({ 
+      universalAqi: true, 
+      location: { latitude: 35.3482177, longitude: -83.189674 },
+      extraComputations: [
+        "HEALTH_RECOMMENDATIONS",
+        "DOMINANT_POLLUTANT_CONCENTRATION",
+        "POLLUTANT_CONCENTRATION",
+        "LOCAL_AQI",
+        "POLLUTANT_ADDITIONAL_INFO"
+      ],
+      languageCode: "en"
+    });
+
+    // Log the air quality data
+    console.log(air.data);
+  } catch (error) {
+    console.error('Error fetching air quality data:', error);
+  }
+};
+
+// Call the async function
+fetchAirQualityData();
+
 
 
 const containerStyle = {
@@ -28,31 +57,6 @@ function GoogleMapsComponent() {
   const mapRef = useRef(null);
 
   
-  // Function to fetch air quality data
-  async function getAirQualityData() {
-
-    // Hardcoded latitude and longitude
-    const lat = 35.3482177;
-    const lng = -83.189674;
-
-    try {
-      // Make a GET request to the Cloud Function with hardcoded lat and lng
-      const response = await fetch(`${fetchAirQualityAirUrl}?lat=${lat}&lng=${lng}`);
-  
-      if (!response.ok) {
-        throw new Error(`Error fetching air quality data: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log('Air Quality Data:', data); // Log the air quality data
-      return data;
-
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-
 
 
   useEffect(() => {
@@ -65,7 +69,7 @@ function GoogleMapsComponent() {
             mapRef.current.setCenter({ lat: latitude, lng: longitude });
           }
           // Call the function to fetch air quality data
-          getAirQualityData();
+          //getAirQualityData();
         },
         () => null
       );
@@ -84,7 +88,7 @@ function GoogleMapsComponent() {
 
       const heatmap = new window.google.maps.visualization.HeatmapLayer({
         data: heatmapData,
-        radius: 20,  // Adjust radius as needed
+        radius: 15,  // Adjust radius as needed
         opacity: 0.7 // Adjust opacity as needed
       });
       heatmap.setMap(map);

@@ -26,7 +26,7 @@
  */
 
 
-import { createSession, deleteSession, getCurrentSession} from './sessionManagment.mjs';
+import { createSession, deleteSession, getAirQualityData, getCurrentSession} from './sessionManagment.mjs';
 
 
 
@@ -47,6 +47,10 @@ async function test() {
   // End the session
   await deleteSession(userId);
   console.log('Session ended');
+
+  const airQuailty = await getAirQualityData();
+  console.log("Air Quality: " , airQuailty );
+
 }
 
 test().catch(error => {

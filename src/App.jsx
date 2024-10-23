@@ -53,9 +53,10 @@
 
 import React, { useState } from 'react';
 import './App.css';
-//import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
+import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
 import Dashboard from './components/syncBot/activityDashboard/dashboard.jsx';
 import BarChartComponent from './components/syncBot/barChart/barChartComponent.jsx'; // Updated import
+import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
 
 function App() {
   // Sample message data
@@ -63,7 +64,7 @@ function App() {
 
   return (
     <div className="App">
-      <BarChartComponent msgData={msgData} /> {/* Render the chart here */}
+      <GoogleMapsComponent/> {/* Render the chart here */}
     </div>
   );
 }

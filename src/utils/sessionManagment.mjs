@@ -33,6 +33,9 @@ const currentSessionUrl = "https://us-central1-mapbot-9a988.cloudfunctions.net/c
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
 const deleteSessionUrl = "https://us-central1-mapbot-9a988.cloudfunctions.net/deleteSession";
 
+const fetchAirQualityAirUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/fetchAirQuality';
+
+
 
 
 /*
@@ -99,6 +102,37 @@ export async function getCurrentSession(userId) {
   }
 
   }
+
+
+  // Function to fetch air quality data
+  export async function getAirQualityData() {
+    // Hardcoded latitude and longitude
+    const lat = 35.3482177;
+    const lng = -83.189674;
+  
+    try {
+      // Make a POST request to the Cloud Function
+      const response = await fetch(fetchAirQualityAirUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lat, lng }), // Send lat and lng in the request body
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error fetching air quality data: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log('Air Quality Data:', data); // Log the air quality data
+      return data;
+  
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  
 
 
   /**
