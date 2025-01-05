@@ -6,33 +6,22 @@ const GOOGLE_MAPS_API_KEY = "AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ";
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
 
 
-// Define an async function to call the air quality API
-const fetchAirQualityData = async () => {
-  try {
-    // Example call to the function
-    const air = await getAirQualityData({ 
-      universalAqi: true, 
-      location: { latitude: 35.3482177, longitude: -83.189674 },
-      extraComputations: [
-        "HEALTH_RECOMMENDATIONS",
-        "DOMINANT_POLLUTANT_CONCENTRATION",
-        "POLLUTANT_CONCENTRATION",
-        "LOCAL_AQI",
-        "POLLUTANT_ADDITIONAL_INFO"
-      ],
-      languageCode: "en"
-    });
-
-    // Log the air quality data
-    console.log(air.data);
-  } catch (error) {
-    console.error('Error fetching air quality data:', error);
+const fetchHeatmapTile = async (zoom, x, y) => {
+  const response = await fetch(`https://airquality.googleapis.com/v1/mapTypes/US_AQI/heatmapTiles/2/0/1?key=AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ`);
+  if (response.ok) {
+    console.log("Response is in ok state.")
+    const blob = await response.blob();
+    const objectURL = URL.createObjectURL(blob);
+    console.log("Object URL for the heatmap tile:", objectURL); // Print the URL to the console
+    return objectURL;
+  } else {
+    console.error("Error fetching heatmap tile:", response.statusText);
+    return null;
   }
 };
 
-// Call the async function
-fetchAirQualityData();
-
+// Test the function and print the result
+fetchHeatmapTile(2, 0, 1);
 
 
 const containerStyle = {
@@ -44,6 +33,23 @@ const center = {
   lat: 38.89511,  // Default center (Washington DC)
   lng: -77.03637
 };
+
+
+
+//async function addHeatmapTileOverlay(map, zoom, tileX, tileY) {
+  //const tileUrl = await fetchHeatmapTile(zoom, tileX, tileY);
+  //if (tileUrl) {
+    //const heatmapTile = new window.google.maps.ImageMapType({
+    // getTileUrl: () => tileUrl,
+     // tileSize: new window.google.maps.Size(256, 256), // Standard tile size
+    //  opacity: 0.7, // Adjust opacity as needed
+    //});
+
+   // map.mapTypes.set('heatmap', heatmapTile);
+    //map.setMapTypeId('heatmap'); // Switch to the heatmap type
+ // }
+//}
+
 
 function GoogleMapsComponent() {
   const { isLoaded } = useJsApiLoader({
@@ -78,6 +84,19 @@ function GoogleMapsComponent() {
 
   useEffect(() => {
     if (map) {
+
+
+
+      const zoom = 2; // Set your desired zoom level
+      const tileX = 0; // Set the desired tile X coordinate
+      const tileY = 1; // Set the desired tile Y coordinate
+      
+      // Call the addHeatmapTileOverlay function to add the heatmap overlay
+      //addHeatmapTileOverlay(map, zoom, tileX, tileY);
+
+
+
+
       // Sample data for heatmap
       const heatmapData = [
         new window.google.maps.LatLng(37.782, -122.447),

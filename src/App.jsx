@@ -51,20 +51,43 @@
  * experience aimed at enhancing travel and navigation assistance.
  */
 
+
+// App.jsx
+
 import React, { useState } from 'react';
 import './App.css';
-import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx'; 
-import Dashboard from './components/syncBot/activityDashboard/dashboard.jsx';
+import GoogleMapsComponent from './components/syncMaps/googleMaps.jsx';
+//import Dashboard from './components/syncBot/activityDashboard/dashboard.jsx';
 import BarChartComponent from './components/syncBot/barChart/barChartComponent.jsx'; // Updated import
 import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
+import SyncMusic from './components/syncMusic/artistProfile.jsx';
+import LoginPage from './components/syncMusic/loginPage.jsx';
+import CallbackPage from './components/syncMusic/callback.jsx';
+import { Routes, Route } from 'react-router-dom';  // Importing Routes and Route for routing
+import Dashboard from './components/syncMusic/dashboard.jsx';
+import VibePage from './components/syncMusic/vibePage.jsx';
+import TimeLine from './components/syncMusic/vibeTimeline.jsx';
+import SpotifyTrack from './components/syncMusic/spotifyTrack.jsx';
+import SpotifyPlaylists from './components/syncMusic/usersPlaylist.jsx';
+import MusicPlayer from './components/syncMusic/musicPlayer.jsx';
+import ParentComponent from './components/syncMusic/playbackParent.jsx';
+import WebPlayback from './components/syncMusic/webPlayback.jsx';
+
 
 function App() {
-  // Sample message data
   const [msgData, setMsgData] = useState([15, 30]); // Example values for Bots and User messages
+
+  const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const token = "BQAXh34xP4U7ZmKP6HcGqG6YDkxN76Sfk59nsFlOgrwFTIul7DTjnCg0AoCu4yHsuH1htRoQsuZBT71pAqQxFL96dtIyXQjsH18JUJb2_YkOgAV4AUSsyXXGk9xNMWy6ov1zANIrljOKQxzUKbwzvUtC8QwAszy253r4HMsu4pY3qPSrALY5wd93qCHdyDbbVwk9R2GNhvR8QlQkVf8cxxL_C-jhl-WatlqCQoJ0"
+  
 
   return (
     <div className="App">
-      <GoogleMapsComponent/> {/* Render the chart here */}
+      <Routes>
+        {/* Define routes for login and callback pages */}
+        <Route path="/" element={<WebPlayback token={token}/>} />  {/* Renders LoginPage */}
+        <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
+      </Routes>
     </div>
   );
 }

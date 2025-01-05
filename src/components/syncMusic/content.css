@@ -1,0 +1,26 @@
+.content {
+    padding: 20px;
+    background-color: #121212;
+    color: white;
+    overflow-y: auto;
+  }
+  
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+  }
+  
+  .playlist-card {
+    background-color: #282828;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .playlist-card:hover {
+    background-color: #1db954;
+    color: white;
+  }
+  

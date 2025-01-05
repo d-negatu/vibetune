@@ -1,0 +1,105 @@
+.vibe-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #1B1A1A;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.frame-1 {
+  position: absolute;
+  width: 100%;
+  height: 10vh; /* Height scales with viewport height */
+  left: 0;
+  top: 0;
+}
+
+
+
+.ellipse-46 {
+  position: absolute;
+  width: 3vw; /* Scales with viewport width */
+  height: 3vw; /* Keep proportions with width */
+  left: 2vw; /* Adjust position based on viewport */
+  top: 14vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #716f6f2f;
+  border-radius: 50%; /* Make it a circle */
+}
+
+
+.ellipse-45 {
+  position: absolute;
+  width: 2vw; /* Scales with viewport width */
+  height: 2vw; /* Keep proportions with width */
+  right: 2vw; /* Adjust position based on viewport */
+  top: 2vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #D9D9D9;
+  border-radius: 50%; /* Make it a circle */
+}
+
+.text-m {
+  position: relative;
+  font-family: 'Inter';
+  font-weight: 300;
+  font-size: 1.2rem; /* Scales relative to root font size */
+  line-height: 1.5rem;
+  color: #000000;
+}
+
+.ibetune {
+  position: absolute;
+  width: 3vw; /* Let width adjust based on content */
+  left: 3vw; /* Adjust placement dynamically */
+  top: 2vh;
+  font-family: 'Poppins';
+  font-size: 1.4vw; /* Responsive font size */
+  line-height: 2.5vw; /* Ensure line height matches font size */
+  color: #FFFFFF;
+}
+
+.vibedrops {
+  position: absolute;
+  width: 3vw; /* Let width adjust based on content */
+  left: 3vw; /* Adjust placement dynamically */
+  top: 9vh;
+  font-family: 'Poppins';
+  font-size: 1.4vw; /* Responsive font size */
+  line-height: 2.5vw; /* Ensure line height matches font size */
+  color: #FFFFFF;
+}
+
+
+.vibe {
+  position: absolute;
+  width: 3vw; /* Let width adjust based on content */
+  left: 3vw; /* Adjust placement dynamically */
+  top: 2vh;
+  font-family: 'Poppins';
+  font-size: 1.4vw; /* Responsive font size */
+  line-height: 2.5vw; /* Ensure line height matches font size */
+  color: #FFFFFF;
+}
+
+
+.line1 {
+  position: absolute;
+  width: 100%; /* Length of the line */
+  height: 1px;  /* Thin height to resemble a line */
+  left: 1px;    /* Adjust the horizontal position */
+  bottom: 50px;    /* Adjust the vertical position */
+  background-color: #ABA9A9; /* Line color */
+  /* Uncomment the following if you want a slight rotation */
+  /* transform: rotate(-0.14deg); */
+}
+

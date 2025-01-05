@@ -32,6 +32,10 @@ const { currentSession } = require('./src/currentSession.js');
 //Import the deleteSession function
 const {deleteSession} = require('./src/deleteSession.js');
 
+// Import the storeAccessToken function
+const { storeAccessToken } = require('./src/accessToken.js');
+
+
 
 
 // Export the createSession function as an HTTP endpoint
@@ -43,4 +47,7 @@ exports.currentSession = functions.https.onRequest(currentSession);
 
 // Export the deleteSession function as an HTTP endpoint
 exports.deleteSession = functions.https.onRequest(currentSession);
+
+// Export the storeAccessToken function as an HTTP endpoint
+exports.storeAccessToken = functions.https.onRequest(storeAccessToken);
 
