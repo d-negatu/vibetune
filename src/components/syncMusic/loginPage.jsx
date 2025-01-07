@@ -19,6 +19,7 @@ const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
 // Redirect URI to your application (must match what is configured in Spotify Dashboard)
 const redirectUri = "http://localhost:5173/callback"; 
+
 const scopes = [
     "user-read-private",//permission to access user's private data (e.g., username)
     "user-read-email", // permission to access user's email address
@@ -42,7 +43,7 @@ const scopes = [
  */
 
 const handleLogin = () => {
-    const authUrl = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&show_dialog=true`;
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&show_dialog=true`;
     console.log("Redirecting to:", authUrl);
     window.location.href = authUrl; // Redirect user to Spotify login page
 };

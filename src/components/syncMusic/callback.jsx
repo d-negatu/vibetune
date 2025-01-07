@@ -42,18 +42,22 @@ const CallbackPage = () => {
         const extractAccessToken = (() => {
             const extractTokenFromUrl = () => {
                 // grabs the URL fragment after the # (e.g., #access_token=XYZ&token_type=bearer).
-                //new URLSearchParams() converts the fragment into a key-value pair object for easy extraction
-                const hashParams = new URLSearchParams(window.location.hash.substring(1)); 
-
-                //Get the access token
-                const accessToken = hashParams.get('access_token');
                 
-                // Extract refresh token
-                const refreshToken = hashParams.get('refresh_token'); 
+                // Extract the authorization code from the URL
+                const code = new URLSearchParams(window.location.search).get('code');
 
-                //Get the token type of the access token
-                const tokenType = hashParams.get('token_type');
+                if (code) {
+                    console.log('Authorization Code:', code);
 
+                    //Get the access token
+                    const accessToken = hashParams.get('access_token');
+                    
+                    // Extract refresh token
+                    const refreshToken = hashParams.get('refresh_token'); 
+
+                    //Get the token type of the access token
+                    const tokenType = hashParams.get('token_type');
+                }
                 //If both access_token, token_type. refresh token are present, return them as an object
                 if (accessToken && tokenType) {
                     return { accessToken, refreshToken, tokenType };
