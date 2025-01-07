@@ -25,7 +25,7 @@ const corsHandler = cors({ origin: true });  // Allow requests from any origin, 
 const { firestore } = require('firebase-admin');
 
 // Define the storeAccessToken Cloud Function
-const storeAccessToken = async (req, res) => {
+const storeToken = async (req, res) => {
     // Use CORS to handle the request
     corsHandler(req, res, async () => {
         if (req.method === 'POST') {
@@ -66,4 +66,4 @@ const storeAccessToken = async (req, res) => {
 };
 
 // Export the storeAccessToken Cloud Function
-module.exports = { storeAccessToken };
+module.exports = { storeToken };

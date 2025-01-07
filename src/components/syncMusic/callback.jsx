@@ -13,7 +13,7 @@
 
 import React, { useEffect } from "react";
 
-const tokenUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/storeAccessToken';
+const tokenUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/storeToken';
 
 
 /**
@@ -30,42 +30,81 @@ const tokenUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/storeAcces
 
 const CallbackPage = () => {
     useEffect(() => {
+
+        /**
+         * This is an IIFE (Immediately Invoked Function Expression)
+         * It encapsulates the logic for extracting the access token to prevent external
+         *  access to sensitive data and llows you to create a local scope for variables and 
+         *  functions within that function, preventing them from polluting the global namespace
+         *  and creating a more organized code structure; It is often used to encapsulate code
+         *  and maintain data privacy within a specific section of the program
+        */
         const extractAccessToken = (() => {
             const extractTokenFromUrl = () => {
+                // grabs the URL fragment after the # (e.g., #access_token=XYZ&token_type=bearer).
+                //new URLSearchParams() converts the fragment into a key-value pair object for easy extraction
                 const hashParams = new URLSearchParams(window.location.hash.substring(1)); 
+
+                //Get the access token
                 const accessToken = hashParams.get('access_token');
+                
+                // Extract refresh token
+                const refreshToken = hashParams.get('refresh_token'); 
+
+                //Get the token type of the access token
                 const tokenType = hashParams.get('token_type');
 
+                //If both access_token, token_type. refresh token are present, return them as an object
                 if (accessToken && tokenType) {
-                    return { accessToken, tokenType };
-                } else {
+                    return { accessToken, refreshToken, tokenType };
+                }
+                // If either is missing, throw an error to indicate the data isn’t valid.
+                else {
                     throw new Error("Access token or token type not found in URL");
                 }
             };
 
+            //Expose the helper function so it can be called later
             return extractTokenFromUrl;
         })();
 
+        
+        /**
+         * This is an async function that will:
+         * call extractAccessToken() to get the token.
+         * Log the token data.
+         * Send the token to the backend for storage or processing.
+         */
         const getAccessToken = async () => {
             try {
-                const { accessToken, tokenType } = extractAccessToken();
+                
+                // Calls extractAccessToken() to get the token data.
+                // Uses object destructuring to pull accessToken, refreshToken, tokenType
+                // from the returned object.
+                const { accessToken, refreshToken, tokenType } = extractAccessToken();
+                
                 
                 if (accessToken && tokenType) {
                     console.log("Access Token extracted:", accessToken);
+                    console.log("Refresh Token extracted:", refreshToken); // Log refresh token
                     console.log("Token Type:", tokenType);
 
                     // Send the token to Firebase via Cloud Function
                     const userId = "exampleUserId";  // You can get this from the user or session data
 
+                    // Sends a POST request to a tokenUrl (a backend endpoint like a Firebase Cloud Function).
                     const response = await fetch(tokenUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ accessToken, tokenType, userId })
+                        body: JSON.stringify({ accessToken, refreshToken, tokenType, userId }) // Include refresh token
                     });
 
+                    
+                    // Waits for the server response and converts it to JSON
                     const result = await response.json();
+
                     console.log("Token storage response:", result);
 
                 } else {
@@ -76,9 +115,12 @@ const CallbackPage = () => {
             }
         };
 
+
+        // Executes the getAccessToken function after defining it.
         getAccessToken();
     }, []);
 
+    //  Render the Component
     return (
         <div>
             <h1>Extracting Spotify Access Token...</h1>
@@ -87,4 +129,5 @@ const CallbackPage = () => {
     );
 };
 
+//Makes this component available for use in other parts of the app.
 export default CallbackPage;

@@ -80,12 +80,13 @@ function App() {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const token = "BQAXh34xP4U7ZmKP6HcGqG6YDkxN76Sfk59nsFlOgrwFTIul7DTjnCg0AoCu4yHsuH1htRoQsuZBT71pAqQxFL96dtIyXQjsH18JUJb2_YkOgAV4AUSsyXXGk9xNMWy6ov1zANIrljOKQxzUKbwzvUtC8QwAszy253r4HMsu4pY3qPSrALY5wd93qCHdyDbbVwk9R2GNhvR8QlQkVf8cxxL_C-jhl-WatlqCQoJ0"
   
-
+  /**WebPlayback token={token} */
   return (
     <div className="App">
       <Routes>
         {/* Define routes for login and callback pages */}
-        <Route path="/" element={<WebPlayback token={token}/>} />  {/* Renders LoginPage */}
+      
+        <Route path="/" element={<LoginPage/>} />  {/* Renders LoginPage */}
         <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
       </Routes>
     </div>

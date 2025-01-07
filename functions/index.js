@@ -33,7 +33,10 @@ const { currentSession } = require('./src/currentSession.js');
 const {deleteSession} = require('./src/deleteSession.js');
 
 // Import the storeAccessToken function
-const { storeAccessToken } = require('./src/accessToken.js');
+const { storeToken } = require('./src/storeToken.js');
+
+//Import the refereshAccessToken function
+const {refreshToken} = require('./src/refreshToken.js');
 
 
 
@@ -49,5 +52,8 @@ exports.currentSession = functions.https.onRequest(currentSession);
 exports.deleteSession = functions.https.onRequest(currentSession);
 
 // Export the storeAccessToken function as an HTTP endpoint
-exports.storeAccessToken = functions.https.onRequest(storeAccessToken);
+exports.storeToken = functions.https.onRequest(storeToken);
+
+//Export the referesh token function as an HTTP endpoint
+exports.refreshToken = functions.https.onRequest(refreshToken);
 

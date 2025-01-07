@@ -11,17 +11,19 @@ const track = {
 };
 
 function WebPlayback(props) {
+
     const [player, setPlayer] = useState(undefined);
     const [is_paused, setPaused] = useState(false);
     const [is_active, setActive] = useState(false);
     const [current_track, setTrack] = useState(track);
+    const userId = "exampleUserId";  // Replace with actual user ID logic
 
     useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
+        const script = document.createElement("script"); //The script tag is used to embed a clinet-side script
+        script.src = "https://sdk.scdn.co/spotify-player.js"; // The .src atriubute of the script is a pointer to another exteernal script
+        script.async = true; // This allows the scrippt to run in the background
 
-        document.body.appendChild(script);
+        document.body.appendChild(script); // Adds the script to the page so that it loads
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new window.Spotify.Player({
@@ -40,18 +42,33 @@ function WebPlayback(props) {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            player.addListener('player_state_changed', (state => {
+            // Add listener to handle token expiration, activity of device, and current track
+            player.addListener('player_state_changed', async (state) => {
                 if (!state) {
-                    return;
+                return;
                 }
 
+                try {
+                    // Check if the token has expired and refresh it
+                    console.log('Token expired, refreshing...');
+                    const newTokenData = await refreshToken(userId);
+                    if (newTokenData) {
+                        setToken(newTokenData.accessToken);
+                        player._options.getOAuthToken = cb => { cb(newTokenData.accessToken); };
+                    }
+                } catch (error) {
+                    console.error('Error refreshing token:', error);
+                }
+
+                // Update the current track and paused state
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused);
 
+                // Update the active state of the player
                 player.getCurrentState().then(state => {
-                    (!state) ? setActive(false) : setActive(true);
+                    setActive(state ? true : false);
                 });
-            }));
+            });
 
             player.connect();
         };
