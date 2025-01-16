@@ -1,5 +1,5 @@
 import { getUserId } from "./getUserId";
-import { getSpotifyToken } from "./spotfiyToken";
+import { getSpotifyToken} from "./spotfiyToken";
 
 export async function getPlaylists(accessToken) {
     
@@ -8,9 +8,9 @@ export async function getPlaylists(accessToken) {
 
     // Step 1: Get Spotify Access Token
     const token = await getSpotifyToken(clientId, clientSecret);
-    
+
     //Step 2: Get Spotify User Id
-    const userId = await getUserId(clientId, clientSecret );
+    const userId = await getUserId(token);
 
     const response = await fetch('https://api.spotify.com/v1/me/playlists', {
         method: 'GET',
@@ -20,5 +20,5 @@ export async function getPlaylists(accessToken) {
     });
 
     const data = await response.json();
-    console.log(data); // This will contain the user's playlists
+    //console.log(data); // This will contain the user's playlists
 }

@@ -105,33 +105,51 @@ export async function getCurrentSession(userId) {
 
 
   // Function to fetch air quality data
-  export async function getAirQualityData() {
-    // Hardcoded latitude and longitude
-    const lat = 35.3482177;
-    const lng = -83.189674;
-  
-    try {
-      // Make a POST request to the Cloud Function
-      const response = await fetch(fetchAirQualityAirUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+export async function getAirQualityData() {
+  // Hardcoded latitude and longitude
+  const lat = 35.3482177;
+  const lng = -83.189674;
+
+  // Define the API endpoint for your Cloud Function
+  const fetchAirQualityAirUrl = 'https://<your-project-id>.cloudfunctions.net/airQualityApi'; // Replace with your actual function URL
+
+  try {
+    // Make a POST request to the Cloud Function
+    const response = await fetch(fetchAirQualityAirUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        universalAqi: true, // Include the universalAqi flag
+        location: {
+          latitude: lat, // Use 'latitude' and 'longitude' as expected
+          longitude: lng,
         },
-        body: JSON.stringify({ lat, lng }), // Send lat and lng in the request body
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error fetching air quality data: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log('Air Quality Data:', data); // Log the air quality data
-      return data;
-  
-    } catch (error) {
-      console.error('Error:', error);
+        extraComputations: [
+          "HEALTH_RECOMMENDATIONS",
+          "DOMINANT_POLLUTANT_CONCENTRATION",
+          "POLLUTANT_CONCENTRATION",
+          "LOCAL_AQI",
+          "POLLUTANT_ADDITIONAL_INFO"
+        ],
+        languageCode: "en"
+      }), // Send the structured body as expected by the Cloud Function
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching air quality data: ${response.statusText}`);
     }
+
+    const data = await response.json();
+    console.log('Air Quality Data:', data); // Log the air quality data
+    return data;
+
+  } catch (error) {
+    console.error('Error:', error);
   }
+}
+
   
 
 

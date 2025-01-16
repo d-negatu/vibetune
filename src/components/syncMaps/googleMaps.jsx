@@ -6,6 +6,7 @@ const GOOGLE_MAPS_API_KEY = "AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ";
 //URL of deployed Cloud Function createSession that securely creates a session on Firebase firestore database
 
 
+
 const fetchHeatmapTile = async (zoom, x, y) => {
   const response = await fetch(`https://airquality.googleapis.com/v1/mapTypes/US_AQI/heatmapTiles/2/0/1?key=AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ`);
   if (response.ok) {

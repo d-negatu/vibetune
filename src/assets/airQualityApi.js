@@ -35,7 +35,7 @@ export const getAirQualityData = async ({ universalAqi, location, extraComputati
     return;
   }
 
-  const airQualityApiUrl = 'https://airquality.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAg9aDrjkiASr6DZrQVb7ll2HQ9lfRslXQ';
+  const airQualityApiUrl = 'https://airquality.googleapis.com/v1/currentConditions:lookup?key=AIzaSyDJ9Ebi0MRs7fhqCLAAI6wMUdJEnPcvVyk';
 
   // Create the request payload
   const payload = {

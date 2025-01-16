@@ -18,8 +18,6 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const { firestore } = require('firebase-admin');
 
-// Initialize Firebase Admin SDK
-admin.initializeApp();
 
 // Initialize the CORS middleware
 const corsHandler = cors({ origin: true });  // Allow requests from any origin, or specify the origin
@@ -28,18 +26,18 @@ const corsHandler = cors({ origin: true });  // Allow requests from any origin, 
 const retrieveTokens = async (req, res) => {
     // Use CORS to handle the request
     corsHandler(req, res, async () => {
-        if (req.method === 'POST') {
+     
             try {
                 // Extract the authorization code and userId from the request body
                 const { code, userId } = req.body;
 
                 // Ensure that the necessary data is present
                 if (!code || !userId) {
-                    return res.status(400).json({ message: 'Missing required parameters' });
+                    return res.status(400).json({ message: 'Missing query parameters' });
                 }
 
-                const clientId = 'YOUR_SPOTIFY_CLIENT_ID';  // Replace with your Spotify client ID
-                const clientSecret = 'YOUR_SPOTIFY_CLIENT_SECRET';  // Replace with your Spotify client secret
+                const clientId = '0f1ee9de998e44a992767466ac7619db';  // Replace with your Spotify client ID
+                const clientSecret = '6cea239f00a244d9ab2160cc61bf5557';  // Replace with your Spotify client secret
                 const redirectUri = 'http://localhost:5173/callback';  // Must match the redirect URI you specified in Spotify Developer Dashboard
 
                 // Exchange the authorization code for access and refresh tokens
@@ -82,10 +80,7 @@ const retrieveTokens = async (req, res) => {
                 console.error('Error retrieving tokens:', error);
                 res.status(500).json({ message: 'Internal Server Error' });
             }
-        } else {
-            // If method is not POST, return Method Not Allowed
-            res.status(405).json({ message: 'Method Not Allowed' });
-        }
+        
     });
 };
 

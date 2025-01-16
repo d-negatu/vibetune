@@ -38,6 +38,9 @@ const { storeToken } = require('./src/storeToken.js');
 //Import the refereshAccessToken function
 const {refreshToken} = require('./src/refreshToken.js');
 
+//Import the retrievetoken function
+const{retrieveTokens} = require('./src/retrieveTokens.js');
+
 
 
 
@@ -56,4 +59,9 @@ exports.storeToken = functions.https.onRequest(storeToken);
 
 //Export the referesh token function as an HTTP endpoint
 exports.refreshToken = functions.https.onRequest(refreshToken);
+
+
+//Export the retrieve token function as an HTTP endpoint
+exports.retrieveTokens = functions.https.onRequest(retrieveTokens);
+
 
