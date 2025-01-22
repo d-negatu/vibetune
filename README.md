@@ -129,6 +129,6 @@ Open a Pull Request for review.
 Licensed under the MIT License.
 
 📧 Contact
-Author: Your Name
-Email: your.email@example.com
+Author: Dagmawi Negatu
+Email: dagmawi.negatu@gmail.com
 
