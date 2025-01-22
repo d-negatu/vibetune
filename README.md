@@ -1,7 +1,7 @@
 🎵 VibeTune: Your Personalized Music and Map Companion 🎶
 Welcome to VibeTune! This project is a revolutionary blend of AI-powered music recommendations and map-based navigation. From dynamic environmental heatmaps to personalized Spotify playlists, VibeTune ensures your travels are as vibrant as your vibes.
 
-🌟 Project Banner
+![Project Banner](https://firebasestorage.googleapis.com/v0/b/radicalx-development.appspot.com/o/Quests%2FIntroToGenAI%2FVolume.png?alt=media&token=8562b237-27c3-4c1f-88c6-f4ccaff6cbc0)
 
 Explore music like never before, synced to your surroundings.
 
