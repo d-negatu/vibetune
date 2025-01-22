@@ -12,7 +12,7 @@
 
 import React, { useEffect } from "react";
 
-const retrieveUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/refreshToken';
+const retrieveUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/retrieveTokens';
 
 const CallbackPage = () => {
     useEffect(() => {
@@ -40,13 +40,7 @@ const CallbackPage = () => {
                     });
 
                     const data = await response.json();
-
-                    if (response.ok) {
-                        console.log('Access Token:', data.accessToken);
-                        console.log('Refresh Token:', data.refreshToken);
-                    } else {
-                        console.error('Error retrieving tokens:', data);
-                    }
+                    
                 } else {
                     console.error('Authorization code not found in URL');
                 }

@@ -64,6 +64,7 @@ import SyncMusic from './components/syncMusic/artistProfile.jsx';
 import LoginPage from './components/syncMusic/loginPage.jsx';
 import CallbackPage from './components/syncMusic/callback.jsx';
 import { Routes, Route } from 'react-router-dom';  // Importing Routes and Route for routing
+import SpotifyTokenTester from './components/syncMusic/artistProfile.jsx';
 import Dashboard from './components/syncMusic/dashboard.jsx';
 import VibePage from './components/syncMusic/vibePage.jsx';
 import TimeLine from './components/syncMusic/vibeTimeline.jsx';
@@ -72,6 +73,7 @@ import SpotifyPlaylists from './components/syncMusic/usersPlaylist.jsx';
 import MusicPlayer from './components/syncMusic/musicPlayer.jsx';
 import ParentComponent from './components/syncMusic/playbackParent.jsx';
 import WebPlayback from './components/syncMusic/webPlayback.jsx';
+import Vibe from './components/syncMusic/vibe.jsx';
 
 
 function App() {
@@ -86,7 +88,7 @@ function App() {
       <Routes>
         {/* Define routes for login and callback pages */}
       
-        <Route path="/" element={<LoginPage/>} />  {/* Renders LoginPage */}
+        <Route path="/" element={<Vibe/>} />  {/* Renders LoginPage */}
         <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
       </Routes>
     </div>

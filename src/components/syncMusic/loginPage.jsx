@@ -14,6 +14,7 @@
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
 import React from "react";
+import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
@@ -63,9 +64,25 @@ const handleLogin = () => {
 
 const LoginPage = () => {
     return (
-        <div>
-            <h1>Login to Spotify</h1>
-            <button onClick={handleLogin}>Login with Spotify</button>
+        <div className="login-page">
+            <div className="login-container">
+                <div className="header">
+                    <img src="/logo.png" alt="Music App Logo" className="logo" />
+                    <h1>Sign in</h1>
+                </div>
+                <div className="form-group">
+                    <input type="text" placeholder="Email, phone, or Skype" className="input-field" />
+                </div>
+                <div className="form-group">
+                    <input type="password" placeholder="Password" className="input-field" />
+                </div>
+                <div className="form-group">
+                    <button className="login-button" onClick={handleLogin}>Sign in with Spotify</button>
+                </div>
+                <div className="footer">
+                    <a href="#">Can't access your account?</a>
+                </div>
+            </div>
         </div>
     );
 };

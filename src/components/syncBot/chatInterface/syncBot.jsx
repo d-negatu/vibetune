@@ -112,7 +112,7 @@ function syncBot(){
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer " + CHATGPT_API_KEY,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(apiRequestBody)

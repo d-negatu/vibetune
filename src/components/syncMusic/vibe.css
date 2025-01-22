@@ -1,0 +1,71 @@
+/* src/components/Vibe.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f3f2f1;
+}
+
+.vibe-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.vibe-post {
+    width: 300px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.vibe-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.vibe-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.time-posted {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.music-cover {
+    width: 100%;
+    height: auto;
+}
+
+.vibe-footer {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.music-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.artist {
+    color: gray;
+}
