@@ -16,17 +16,11 @@ VibeTune is a dynamic web application that combines the power of music and envir
 ### Interactive Dashboard
 *All your vibes, in one place.*
 
-![Interactive Dashboard](https://firebasestorage.googleapis.com/v0/b/radicalx-development.appspot.com/o/Quests%2FIntroToGenAI%2FVolume.png?alt=media&token=8562b237-27c3-4c1f-88c6-f4ccaff6cbc0)
-
 ### Real-Time Heatmaps
 *Explore air quality and environmental data seamlessly.*
 
-![Real-Time Heatmaps](https://firebasestorage.googleapis.com/v0/b/radicalx-development.appspot.com/o/Quests%2FIntroToGenAI%2FVolume.png?alt=media&token=8562b237-27c3-4c1f-88c6-f4ccaff6cbc0)
-
 ### Spotify Integration
 *Sync your favorite tunes and discover playlists.*
-
-![Spotify Integration](https://firebasestorage.googleapis.com/v0/b/radicalx-development.appspot.com/o/Quests%2FIntroToGenAI%2FVolume.png?alt=media&token=8562b237-27c3-4c1f-88c6-f4ccaff6cbc0)
 
 ## 🔧 Technologies Used
 
