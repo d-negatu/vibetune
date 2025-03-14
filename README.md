@@ -1,7 +1,5 @@
 # VibeTune
 
-![VibeTune Banner](https://firebasestorage.googleapis.com/v0/b/radicalx-development.appspot.com/o/Quests%2FIntroToGenAI%2FVolume.png?alt=media&token=8562b237-27c3-4c1f-88c6-f4ccaff6cbc0)
-
 ## 🚀 Overview
 
 VibeTune is a dynamic web application that combines the power of music and environmental data to enhance your experiences. With interactive maps, tailored playlists, and real-time heatmaps, VibeTune ensures you always have the perfect vibe.
