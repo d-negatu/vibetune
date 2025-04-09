@@ -88,7 +88,7 @@ function App() {
       <Routes>
         {/* Define routes for login and callback pages */}
       
-        <Route path="/" element={<Vibe/>} />  {/* Renders LoginPage */}
+        <Route path="/" element={<VibePage/>} />  {/* Renders LoginPage */}
         <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
       </Routes>
     </div>

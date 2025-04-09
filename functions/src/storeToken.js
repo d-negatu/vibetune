@@ -66,4 +66,4 @@ const storeToken = async (req, res) => {
 };
 
 // Export the storeAccessToken Cloud Function
-module.exports = { storeToken };
+module.exports = {storeToken};
