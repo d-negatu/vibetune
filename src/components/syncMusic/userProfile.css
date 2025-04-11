@@ -1,0 +1,17 @@
+.user-profile {
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-header {
+    padding: 20px;
+    background-color: #1db954;
+    color: white;
+    border-radius: 10
+  }

@@ -25,7 +25,7 @@ const CallbackPage = () => {
             try {
                 // Extract the authorization code from the URL
                 const code = new URLSearchParams(window.location.search).get('code');
-                const userId = "exampleUserId";  // Replace with actual user ID logic
+                const userId = "secondUserId";  // Replace with actual user ID logic
 
                 if (code) {
                     console.log('Authorization Code:', code);

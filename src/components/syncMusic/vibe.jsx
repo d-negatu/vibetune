@@ -1,51 +1,53 @@
-// src/components/Vibe.jsx
+import React from "react";
+import "./VibePage.css";
 
-import React from 'react';
-import './vibe.css'; // Import the CSS file for styling
-
-// Mock data for posts
-const mockPosts = [
-    {
-        id: 1,
-        username: 'user1',
-        profilePic: 'https://via.placeholder.com/50',
-        musicCover: 'https://via.placeholder.com/300',
-        musicTitle: 'Song Title 1',
-        artist: 'Artist 1',
-        timePosted: '2 hours ago'
-    },
-    {
-        id: 2,
-        username: 'user2',
-        profilePic: 'https://via.placeholder.com/50',
-        musicCover: 'https://via.placeholder.com/300',
-        musicTitle: 'Song Title 2',
-        artist: 'Artist 2',
-        timePosted: '3 hours ago'
-    }
+const mockUsers = [
+  {
+    id: 1,
+    name: "Alice",
+    profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
+    vibe: "Chill Vibes",
+    sharedTracks: ["Lo-fi Beats", "Relaxing Piano", "Acoustic Chill"],
+  },
+  {
+    id: 2,
+    name: "Bob",
+    profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
+    vibe: "Party Mode",
+    sharedTracks: ["Dance Hits", "EDM Essentials", "Club Bangers"],
+  },
+  {
+    id: 3,
+    name: "Charlie",
+    profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
+    vibe: "Indie Discoveries",
+    sharedTracks: ["Indie Pop", "Hidden Gems", "Bedroom Pop"],
+  },
 ];
 
 const Vibe = () => {
-    return (
-        <div className="vibe-page">
-            {mockPosts.map(post => (
-                <div key={post.id} className="vibe-post">
-                    <div className="vibe-header">
-                        <img src={post.profilePic} alt="Profile" className="profile-pic" />
-                        <div className="vibe-user-info">
-                            <span className="username">{post.username}</span>
-                            <span className="time-posted">{post.timePosted}</span>
-                        </div>
-                    </div>
-                    <img src={post.musicCover} alt="Music Cover" className="music-cover" />
-                    <div className="vibe-footer">
-                        <span className="music-title">{post.musicTitle}</span>
-                        <span className="artist">{post.artist}</span>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
+  return (
+    <div className="vibe-match-container">
+      <h1>VibeMatch</h1>
+      <p>Find people who share your musical vibe!</p>
+      <div className="vibe-card-list">
+        {mockUsers.map((user) => (
+          <div className="vibe-card" key={user.id}>
+            <img src={user.profileImage} alt={`${user.name}'s profile`} />
+            <h2>{user.name}</h2>
+            <p><strong>Vibe:</strong> {user.vibe}</p>
+            <p><strong>Shared Tracks:</strong></p>
+            <ul>
+              {user.sharedTracks.map((track, index) => (
+                <li key={index}>{track}</li>
+              ))}
+            </ul>
+            <button>Send Vibe Request</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Vibe;
