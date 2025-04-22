@@ -26,6 +26,7 @@ const scopes = [
     "user-read-email", // permission to access user's email address
     "user-read-playback-state", // permission to read the current playback state
     "user-modify-playback-state", // Grants permission to control playback
+    "user-top-read",       
     "streaming",// Grants permission to stream music
 ].join("%20"); // Encode spaces as %20
 
