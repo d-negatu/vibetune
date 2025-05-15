@@ -2,9 +2,9 @@
 
 ----
 
-VibeTune is a cross platform that connects people through music.
+Vibetune is a prototype for a cross platform that lets users connect through music tastes. It supports basic track search, playlist playback, user sessions, chats, vibe matching, and user heatmaps. 
 
-VibeTune extends and builds upon the Spotify API to not only stream your favorite tracks, but to also connect with millions of listenrs. Whether you're navigating a bustling city, exploring nature, or winding down at home, find your vibe.
+VibeTune builds upon the Spotify API to not only stream your favorite tracks, but to also connect with millions of listenrs. Whether you're navigating a bustling city, exploring nature, or winding down at home, find a way to connect.
 
 VibeTune is maintained locally as an open project. If you're interested in shaping where vibetune is going, contact the developers.
 
