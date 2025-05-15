@@ -2,7 +2,7 @@
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/569/badge)](https://bestpractices.coreinfrastructure.org/projects/569) [![Go Report Card](https://goreportcard.com/badge/github.com/kubernetes/kubernetes)](https://goreportcard.com/report/github.com/kubernetes/kubernetes) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/kubernetes/kubernetes?sort=semver)
 
-<img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/files/product-images/connected.jpg" width="100">
+<img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/files/product-images/connected.jpg" width="1000">
 
 ----
 VibeTune is a locally hosted desktop application that builds upon the Spotify API to help you discover music, share your music tastes and connect with other listeners. This prototype supports basic track search, music playback, user sessions, chats, and vibe matching. 
