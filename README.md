@@ -2,11 +2,11 @@
 
 ----
 
-Vibetune is a prototype for a cross platform that lets you manage your playlists and connect through shared music tastes. This prototype supports basic track search, music playback playback, user sessions, chats, vibe matching, and user heatmaps. 
+Vibetune is desktop application that lets you manage your playlists and connect through shared music tastes. This prototype supports basic track search, music playback playback, user sessions, chats, vibe matching, and user heatmaps. 
 
-VibeTune builds upon the Spotify = API to not only stream your favorite tracks, but to also connect you with millions of listeners. Whether you're navigating a bustling city, exploring nature, or winding down at home, find a way to connect. 
+Vibetune builds upon the Spotify API to not only stream your favorite tracks, but to also connect you with millions of listeners. Whether you're ;ooking exploring nature, or winding down at home, find a way to connect. 
 
-VibeTune is maintained locally as an open source project. If you're interested in shaping where vibetune is going, contact the developers.
+VibeTune is maintained and hosted locally as an open source project. If you're interested in shaping where vibetune is going, contact the developers.
 
 
 ## 🌟 Features
