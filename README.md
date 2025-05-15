@@ -1,7 +1,7 @@
 # Vibetune
 
 ----
-VibeTune is a locally hosted desktop application that builds upon the Spotify API to help you discover music, share your music tastes and connect with other listeners. This prototype supports basic track search, music playback playback, user sessions, chats, vibe matching, and user heatmaps. 
+VibeTune is a locally hosted desktop application that builds upon the Spotify API to help you discover music, share your music tastes and connect with other listeners. This prototype supports basic track search, music playback playback, user sessions, chats, and vibe matching. 
  
 
 VibeTune is maintained as an open source passionate project. If you're interested in shaping where vibetune is going, contact the developers.
