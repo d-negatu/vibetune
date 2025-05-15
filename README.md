@@ -2,7 +2,12 @@
 
 ----
 
-VibeTune is a dynamic web application that combines the power of music and environmental data to enhance your experiences. With interactive maps, tailored playlists, and real-time heatmaps, VibeTune ensures you always have the perfect vibe.
+VibeTune is a cross platform that connects people through music.
+
+VibeTune extends and builds upon the Spotify API to not only stream your favorite tracks, but to also connect with millions of listenrs. Whether you're navigating a bustling city, exploring nature, or winding down at home, find your vibe.
+
+VibeTune is maintained locally as an open project. If you're interested in shaping where vibetune is going, contact the developers.
+
 
 ## 🌟 Features
 
