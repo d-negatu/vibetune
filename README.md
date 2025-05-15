@@ -1,4 +1,4 @@
-# VibeTune
+# Vibetune
 
 ![Demo](./src/assets/hello.gif)
 
