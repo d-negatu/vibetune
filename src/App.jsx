@@ -76,6 +76,8 @@ import WebPlayback from './components/syncMusic/webPlayback.jsx';
 import Vibe from './components/syncMusic/vibe.jsx';
 import UserProfile from './components/syncMusic/userProfile.jsx';
 import FetchSpotifyDataComponent from './components/syncMusic/fetchSpotifyDataComponent.jsx';
+import MusicPostForm from './components/syncMusic/musicPostForm.jsx';
+import MusicPostFeed from './components/syncMusic/musicPostFeed.jsx';
 
 
 function App() {
@@ -90,7 +92,7 @@ function App() {
       <Routes>
         {/* Define routes for login and callback pages */}
       
-        <Route path="/" element={<FetchSpotifyDataComponent/>} />  {/* Renders LoginPage */}
+        <Route path="/" element={<VibePage/>} />  {/* Renders LoginPage */}
         <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
       </Routes>
     </div>

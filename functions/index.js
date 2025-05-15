@@ -42,6 +42,15 @@ const{retrieveTokens} = require('./src/retrieveTokens.js');
 const{fetchSpotifyData} = require("./src/fetchSpotifyData.js")
 
 
+//Import the musicPostHanlder function
+const{musicPostHandler} = require("./src/musicPostHandler.js");
+
+
+//Import getMusicFeed 
+const{getMusicFeed} = require("./src/getMusicFeed.js");
+
+//Import updateLikes
+const{updateLikes} = require("./src/updateLikes.js");
 
 
 // Export the createSession function as an HTTP endpoint
@@ -66,3 +75,13 @@ exports.retrieveTokens = functions.https.onRequest(retrieveTokens);
 
 //Export the fetchSpotifyData function as an HTTP endpoint
 exports.fetchSpotifyData = functions.https.onRequest(fetchSpotifyData);
+
+
+//Export the musicHandler function as an HTTP endpoint
+exports.musicPostHandler = functions.https.onRequest(musicPostHandler);
+
+//Export getMusicFeed fucniton as an HTTP endpoint
+exports.getMusicFeed = functions.https.onRequest(getMusicFeed);
+
+//Export updateLikes function as an HTTP endpoint
+exports.updateLikes = functions.https.onRequest(updateLikes);
