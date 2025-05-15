@@ -1,5 +1,8 @@
 # VibeTune
 
+![Demo](./src/assets/hello.gif)
+
+
 ## 🚀 Overview
 
 VibeTune is a dynamic web application that combines the power of music and environmental data to enhance your experiences. With interactive maps, tailored playlists, and real-time heatmaps, VibeTune ensures you always have the perfect vibe.
