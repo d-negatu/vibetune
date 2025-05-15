@@ -2,11 +2,6 @@
 
 ----
 
-![Demo](./src/assets/hello.gif)
-
-
-## 🚀 Overview
-
 VibeTune is a dynamic web application that combines the power of music and environmental data to enhance your experiences. With interactive maps, tailored playlists, and real-time heatmaps, VibeTune ensures you always have the perfect vibe.
 
 ## 🌟 Features
@@ -16,7 +11,6 @@ VibeTune is a dynamic web application that combines the power of music and envir
 - **Real-Time Heatmaps**: Visualize environmental conditions like air quality and crowd density.
 - **Secure Data**: User data and Spotify tokens are stored securely using Firebase Firestore.
 
-## 📸 Screenshots
 
 ### Interactive Dashboard
 *All your vibes, in one place.*
@@ -67,9 +61,9 @@ VibeTune is a dynamic web application that combines the power of music and envir
 
 4. **Start the Development Server**:
     ```bash
-    npm start
+    npm run dev
     ```
-    Visit `http://localhost:3000` to explore VibeTune locally.
+    ![Demo](./src/assets/hello.gif)
 
 ## 📂 Project Structure
 
