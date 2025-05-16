@@ -52,6 +52,19 @@ Vibetune is a locally hosted, cross-platform application that builds on the Spot
     ```
     ![Demo](./src/assets/hello.gif)
 
+
+
+## 🙌 Contributing
+
+We love community contributions! Follow these steps to get started:
+
+1. 🍴 **Fork** the repository  
+2. 🛠️ **Create** a new branch  
+3. 🧪 **Make** your changes  
+4. 📦 **Commit** and push your changes  
+5. 🔁 **Open** a Pull Request
+
+
 ## 📂 Project Structure
 
 ```bash
@@ -65,22 +78,4 @@ Vibetune is a locally hosted, cross-platform application that builds on the Spot
 └── README.md
 
 
-
-## 🙌 Contributing
-
-We love community contributions! Follow these steps to get started:
-
-1. 🍴 **Fork** the repository  
-2. 🛠️ **Create** a new branch  
-3. 🧪 **Make** your changes  
-4. 📦 **Commit** and push your changes  
-5. 🔁 **Open** a Pull Request
-
-### Example
-
-```bash
-git checkout -b feature/your-feature-name
-git add .
-git commit -m "Add your feature"
-git push origin feature/your-feature-name
 
