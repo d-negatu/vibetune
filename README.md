@@ -12,31 +12,6 @@ VibeTune is a locally hosted desktop application that builds on the Spotify API 
 VibeTune is maintained as an open source project. If you're interested in shaping where vibetune is going, contact the developers.
 
 
-## 🌟 Features
-
-- **Interactive Maps**: Discover places and plan routes with real-time data using Google Maps API.
-- **Tailored Playlists**: Spotify-powered playlists matched to your mood and location.
-- **Real-Time Heatmaps**: Visualize environmental conditions like air quality and crowd density.
-- **Secure Data**: User data and Spotify tokens are stored securely using Firebase Firestore.
-
-
-### Interactive Dashboard
-*All your vibes, in one place.*
-
-### Real-Time Heatmaps
-*Explore air quality and environmental data seamlessly.*
-
-### Spotify Integration
-*Sync your favorite tunes and discover playlists.*
-
-## 🔧 Technologies Used
-
-- **Frontend**: React for a dynamic user interface.
-- **APIs**: Google Maps API for interactive maps, Spotify Web API for music integration.
-- **Backend**: Node.js for handling API requests.
-- **Database**: Firebase Firestore for secure storage.
-- **AI**: OpenAI API for AI-driven insights and recommendations.
-
 ## 📜 Installation Guide
 
 ### Prerequisites
