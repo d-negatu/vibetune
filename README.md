@@ -9,9 +9,9 @@
 
 
 ----
-Vibetune is a locally hosted, cross-platform application that builds on the Spotify API and turns music into a more social experience. This prototype supports droping vibe posts, managing playlists and matchmaking based on shared music tastes. 
+Vibetune is a locally hosted, cross-platform application that builds on the Spotify API to make music a social experience. This prototype supports track search, music playback, vibe-based matching, real-time chats, playlist managment and Spotify OAuth authentication.
 
-Whether you're building the perfect playlist, exploring new genres, or just sharing your vibe with friends, Vibetune makes music more engaging and fun.
+
 
 ---
 
@@ -63,3 +63,24 @@ Whether you're building the perfect playlist, exploring new genres, or just shar
 ├── .env
 ├── package.json
 └── README.md
+
+
+
+## 🙌 Contributing
+
+We love community contributions! Follow these steps to get started:
+
+1. 🍴 **Fork** the repository  
+2. 🛠️ **Create** a new branch  
+3. 🧪 **Make** your changes  
+4. 📦 **Commit** and push your changes  
+5. 🔁 **Open** a Pull Request
+
+### Example
+
+```bash
+git checkout -b feature/your-feature-name
+git add .
+git commit -m "Add your feature"
+git push origin feature/your-feature-name
+
