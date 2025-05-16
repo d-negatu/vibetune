@@ -11,7 +11,7 @@
 ----
 VibeTune is a locally hosted, cross-platform application that provices users a wrapper to share their current playback and discover what other Spotify listeners are listening to.
 
-This desktop prototype builds on the Spotify API and extends i with features like Google Map heatmaps, vibe-based matching, real-time chats, playlist managment, OAuth authentication and vibe posts.
+This desktop prototype builds on the Spotify API and extends it with features like Google Maps heatmaps, vibe-based matchmaking, real-time chat, playlist management, OAuth authentication, and interactive vibe posts.
 
 This open-source project explores how music can be a social experience. If you're interested in shaping the future of social music tech, we welcome open contributions. 
 
