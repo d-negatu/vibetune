@@ -1,18 +1,16 @@
 # 🎧 Vibetune
 
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/569/badge)](https://bestpractices.coreinfrastructure.org/projects/569) [![Go Report Card](https://goreportcard.com/badge/github.com/kubernetes/kubernetes)](https://goreportcard.com/report/github.com/kubernetes/kubernetes) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/kubernetes/kubernetes?sort=semver)
+![License](https://img.shields.io/github/license/d-negatu/vibetune)  
+![Node.js](https://img.shields.io/badge/Node.js-v16+-green)  
+![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
 <img src="https://hdcdnsun2.r.worldssl.net/sites/www.hypnosisdownloads.com/files/product-images/connected.jpg" width="250">
 
 
 ----
-VibeTune is a locally hosted desktop application that builds on the Spotify API to enable music discovery, playlist management, and social connection through shared listening experiences. This prototype supports basic track search, music playback, user authentication, real-time chat, and vibe-based listener matching.
+VibeTune is a locally hosted, cross-platform application that turns music sharing into a social experience. This prototype supports droping vibe posts, managing playlists and matchmaking based on shared music tastes. 
 
-
-![License](https://img.shields.io/github/license/d-negatu/vibetune)  
-![Node.js](https://img.shields.io/badge/Node.js-v16+-green)  
-![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
 
 
