@@ -9,16 +9,6 @@ Vibetune is a locally hosted, cross-platform application that turns music into a
 
 Whether you're building a playlist, exploring new genres, or sharing your vibe with others, Vibetune makes it easier.
 
-
-
----
-
-
-## 🚀 Demo
-
-Coming soon!  
-In the meantime, clone and run locally — VibeTune is built to be lightweight and easy to spin up.
-
 ---
 
 ## 📜 Installation Guide
@@ -28,7 +18,7 @@ In the meantime, clone and run locally — VibeTune is built to be lightweight a
 - Node.js (v16+)
 - Firebase CLI
 - Spotify Developer Account
-- Build Environment
+- Working Build Environment
 
 ### Steps
 
