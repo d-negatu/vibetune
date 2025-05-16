@@ -56,9 +56,9 @@ Vibetune is a locally hosted open-source project to explore how music can be a s
 
 
 
-## 🙌 Contributing
+## 🙌 Contributions
 
-We love community contributions! Follow these steps to get started:
+Follow these steps to get started:
 
 1. 🍴 **Fork** the repository  
 2. 🛠️ **Create** a new branch  
