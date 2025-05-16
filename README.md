@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/d-negatu/vibetune) ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
-<div style="width: 200px; height: auto;">
+<div style="width: 50px; height: auto;">
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 100%; height: auto;" alt="VibeTune Logo" />
 </div>
 
