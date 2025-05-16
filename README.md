@@ -1,4 +1,4 @@
-# 🎧 Vibetune
+# Vibetune
 
 ![License](https://img.shields.io/github/license/d-negatu/vibetune)  
 ![Node.js](https://img.shields.io/badge/Node.js-v16+-green)  
