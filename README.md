@@ -9,7 +9,7 @@
 
 
 ----
-VibeTune is a locally hosted, cross-platform application that turns music sharing into a social experience. This prototype supports droping vibe posts, managing playlists and matchmaking based on shared music tastes. 
+Vibetune is a locally hosted, cross-platform application that turns music sharing into a social experience. This prototype supports droping vibe posts, managing playlists and matchmaking based on shared music tastes. 
 
 
 
