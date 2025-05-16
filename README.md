@@ -53,15 +53,11 @@ VibeTune is maintained as an open source project. If you're interested in shapin
 ```bash
 ├── src/
 │   ├── components/
-│   │   ├── GoogleMapsComponent.js
-│   │   ├── SpotifyPlayer.js
 │   ├── services/
 │   │   ├── spotifyService.js
 │   │   ├── mapService.js
 │   ├── App.js
 ├── functions/
-│   ├── index.js
-│   ├── retrieveTokens.js
 ├── .env
 ├── package.json
 └── README.md
