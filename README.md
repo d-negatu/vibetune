@@ -11,9 +11,9 @@
 ----
 VibeTune is a locally hosted end to end application that provices users features to share their music and discover what other Spotify listeners are listening.
 
-This prototype builds on the Spotify API and extends it with features like Google Maps heatmaps, vibe-based matchmaking, real-time chat, playlist management, OAuth authentication, vibe drops and reactions.
+This MVP builds on the Spotify API and prototypes features like Google Maps heatmaps, vibe-based matchmaking, real-time chat, playlist management, OAuth authentication, vibe drops and reactions.
 
-Vibetune is an open-source project to explore how music can be a social experience. If you're interested in shaping the future of social music tech, we welcome open contributions. 
+Vibetune is an open-source project to explore how music can be a social experience. If you're interested in shaping the future of social music tech or where vibetune might be going, we welcome open contributions. 
 
 ---
 
