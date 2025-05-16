@@ -3,12 +3,11 @@
 ---
 ![License](https://img.shields.io/github/license/d-negatu/vibetune) ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
----
 <div style="width: 50px; height: auto;">
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 8%; height: auto;" alt="VibeTune Logo" />
 </div>
 
-----
+
 VibeTune is an end to end application that provices users tools to share their listening activity and discover what other listeners are vibing to. Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening.
 
 ---
