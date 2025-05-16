@@ -19,6 +19,7 @@ VibeTune is maintained as an open source project. If you're interested in shapin
 - Node.js (v16+)
 - Firebase CLI
 - Spotify Developer Account
+- Build Environment
 
 ### Steps
 
