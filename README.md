@@ -5,9 +5,8 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
-<p align="center" style="background-color:#1e1e1e; padding: 30px; border-radius: 12px; display: inline-block;">
-  <img src="https://github.com/user-attachments/assets/36a23867-ca6a-401f-824d-f2bbf3e38875" alt="VibeTune Logo" width="180"/>
-</p>
+![image](https://github.com/user-attachments/assets/e20ec569-0dff-459d-8544-4a490f07f43f)
+
 
 
 
