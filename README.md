@@ -7,7 +7,7 @@
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 8%; height: auto;" alt="VibeTune Logo" />
 </div>
 
-
+---
 VibeTune is an end to end application that provices users tools to share their listening activity and discover what other listeners are vibing to. Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening.
 
 ---
