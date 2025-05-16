@@ -9,9 +9,7 @@
 </div>
 
 ----
-VibeTune is an end to end application that provices users tools to share their listening activity and discover what other listeners are vibing to. 
-
-Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening.
+VibeTune is an end to end application that provices users tools to share their listening activity and discover what other listeners are vibing to. Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening.
 
 ---
 
