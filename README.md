@@ -9,11 +9,11 @@
 
 
 ----
-VibeTune is a locally hosted end to end application that provices users tools to share their current listening activity and discover what others are vibing to. 
+VibeTune is an end to end application that provices users tools to share their listening activity and discover what others are vibing to. 
 
 This MVP is built on the Spotify Web API and prototypes features like Google Maps heatmaps, vibe-based matchmaking, real-time chat, playlist management, OAuth authentication, vibe drops and reactions.
 
-Vibetune is an open-source project to explore how music can be a social experience. If you're interested in shaping the future of social music tech or where vibetune might be going, we welcome open contributions. 
+Vibetune is a locally hosted open-source project to explore how music can be a social experience. If you're interested in shaping the future of social music tech or where vibetune might be going, we welcome open contributions. 
 
 ---
 
