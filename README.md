@@ -5,7 +5,7 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
-<img src="https://github.com/user-attachments/assets/e20ec569-0dff-459d-8544-4a490f07f43f" width="80" />
+<img src="https://github.com/user-attachments/assets/e20ec569-0dff-459d-8544-4a490f07f43f" width="60" />
 
 
 
