@@ -1,7 +1,6 @@
 # Vibetune
 
-![License](https://img.shields.io/github/license/d-negatu/vibetune)  
-![Node.js](https://img.shields.io/badge/Node.js-v16+-green)  
+![License](https://img.shields.io/github/license/d-negatu/vibetune)  ![Node.js](https://img.shields.io/badge/Node.js-v16+-green)  
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
