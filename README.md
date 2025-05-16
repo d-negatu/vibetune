@@ -5,8 +5,10 @@
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)  
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)
 
+<p align="center" style="background-color:#121212; padding: 20px; border-radius: 12px; display: inline-block;">
+  <img src="https://github.com/user-attachments/assets/36a23867-ca6a-401f-824d-f2bbf3e38875" alt="VibeTune Logo" width="200"/>
+</p>
 
-![image](https://github.com/user-attachments/assets/36a23867-ca6a-401f-824d-f2bbf3e38875)
 
 ----
 Vibetune is a locally hosted, cross-platform application that turns music into a social experience. This prototype supports droping vibe posts, managing playlists and matchmaking based on shared music tastes. 
