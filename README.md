@@ -51,7 +51,7 @@ In the meantime, clone and run locally — VibeTune is built to be lightweight a
     ```
 
 3. **Configure Environment Variables**:
-    Create a `.env` file in the root directory with the following details:
+    Create a `.env` file in the root directory with the following:
     ```env
     SPOTIFY_CLIENT_ID=your_spotify_client_id
     SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
@@ -71,8 +71,6 @@ In the meantime, clone and run locally — VibeTune is built to be lightweight a
 ├── src/
 │   ├── components/
 │   ├── services/
-│   │   ├── spotifyService.js
-│   │   ├── mapService.js
 │   ├── App.js
 ├── functions/
 ├── .env
