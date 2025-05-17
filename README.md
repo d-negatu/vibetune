@@ -8,9 +8,9 @@
 </div>
 
 ---
-VibeTune is an end to end application that provices users tools to share their listening activity and discover what other listeners are vibing to. 
+Vibetune builds on the Spotify Web API and provides users end to end features to share their tracks and vibe with other Spotify listeners.
 
-Vibetune is built on the Spotify Web API with heatmaps of user activity, vibe-based matchmaking, real-time chat, playlist management, OAuth authentication, and vibe drops with reactions.
+From token lifecycle management to vibe based matching and real-time track sharing, Vibetune is implemented with complex systems including user-generated content pipelines, pub/sub systems for live updates, OAuth authentication flows, Firestore  for session management, and Google Cloud Functions for scalable designs. 
 
 Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening. As an open source project, we invite anyone passionate about software for open contirubtions. 
 
