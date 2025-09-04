@@ -65,26 +65,18 @@ Vibetune builds on third-party APIs and provides users end to end features to sh
     ```
 
 
-## 🏗️ **Architecture Overview**
+### **Tools, APIs and services**
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Frontend│    │ Firebase Cloud  │    │  Spotify Web API│
-│                 │◄──►│   Functions      │◄──►│                 │
-│ • Social Feed   │    │ • Auth Handler  │    │ • Track Data    │
-│ • Music Player  │    │ • Post Handler  │    │ • User Profile  │
-│ • Real-time UI  │    │ • Feed Service  │    │ • Playlists     │
+│     React       │    │ Firebase Cloud  │    │  Spotify Web API│
+│                 │◄──►│   Functions      │◄──►│                |
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │              ┌─────────────────┐              │
-         └──────────────►│  Firestore DB  │◄─────────────┘
-                        │ • User Sessions│
-                        │ • Music Posts  │
-                        │ • Social Data  │
+         └──────────────►│  Firestore DB  │◄─────────────|
                         └─────────────────┘
 ```
-
-### **Tools, APIs and services**
 - ![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react) - Modern UI framework
 - ![Vite](https://img.shields.io/badge/Vite-4.0-646CFF?logo=vite) - Fast build tool
 - ![CSS3](https://img.shields.io/badge/CSS3-Glassmorphism-1572B6?logo=css3) - Modern styling
