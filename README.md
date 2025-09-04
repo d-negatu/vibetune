@@ -1,7 +1,7 @@
 # Vibetune
 
 ---
-[![License](https://img.shields.io/github/license/d-negatu/vibetune)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/d-negatu/vibetune/blob/main/CONTRIBUTING.md)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)](https://github.com/d-negatu/vibetune/releases)
 [![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://reactjs.org/)
