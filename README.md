@@ -118,6 +118,6 @@ Follow these steps to get started:
   
   [![Get Started](https://img.shields.io/badge/Get_Started-Now-1DB954?style=for-the-badge&logo=spotify)](https://github.com/d-negatu/vibetune#quick-start)
   
-  *Join the future of social music sharing* ✨
+  *Join the future of music sharing* ✨
   
 </div>
