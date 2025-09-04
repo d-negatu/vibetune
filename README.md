@@ -41,18 +41,6 @@ Vibetune builds on third-party APIs and provides users end to end features to sh
 
 
 
-
-## 📜 Installation Guide
-
-### Prerequisites
-
-- Node.js (v16+)
-- Firebase CLI
-- Spotify Developer Account
-- Working Build Environment
-
-### Steps
-
 1. **Clone the Repository**:
     ```bash
     git clone https://github.com/d-negatu/vibetune.git
@@ -114,14 +102,4 @@ Follow these steps to get started:
 5. 🔁 **Open** a Pull Request
 
 
-## 📂 Project Structure
 
-```bash
-├── src/
-│   ├── components/
-│   ├── services/
-│   ├── App.js
-├── functions/
-├── .env
-├── package.json
-└── README.md
