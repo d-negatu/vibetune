@@ -93,7 +93,19 @@ Vibetune builds on third-party APIs and provides users end to end features to sh
                         └─────────────────┘
 ```
 
+### **Frontend**
+- ![React](https://img.shields.io/badge/React-18.0-61DAFB?logo=react) - Modern UI framework
+- ![Vite](https://img.shields.io/badge/Vite-4.0-646CFF?logo=vite) - Fast build tool
+- ![CSS3](https://img.shields.io/badge/CSS3-Glassmorphism-1572B6?logo=css3) - Modern styling
 
+### **Backend**
+- ![Firebase](https://img.shields.io/badge/Firebase-Cloud-FFCA28?logo=firebase) - Serverless backend
+- ![Firestore](https://img.shields.io/badge/Firestore-Database-FFCA28?logo=firebase) - Real-time database
+- ![Cloud Functions](https://img.shields.io/badge/Cloud_Functions-Serverless-4285F4?logo=google-cloud) - Scalable APIs
+
+### **APIs & Services**
+- ![Spotify API](https://img.shields.io/badge/Spotify-Web_API-1DB954?logo=spotify) - Music data & playback
+- ![OAuth 2.0](https://img.shields.io/badge/OAuth-2.0-000000) - Secure authentication
 
 ## 🙌 Contributions
 
