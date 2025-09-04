@@ -8,11 +8,7 @@
 </div>
 
 ---
-Vibetune builds on the Spotify Web API and provides users end to end features to share their tracks and vibe with other Spotify listeners.
-
-From token lifecycle management to vibe based matching and real-time track sharing, Vibetune is implemented with complex systems including user-generated content pipelines, pub/sub systems for live updates, OAuth authentication flows, Firestore  for session management, and Google Cloud Functions for scalable designs. 
-
-Music streaming is solitary. Playlists are private. Discovery is algorithmic, not social. We aim to make music sharing as effortless as listening. As an open source project, we invite anyone passionate about software for open contirubtions. 
+Vibetune builds on third-party APIs and provides users end to end features to share their tracks and vibe with other music listeners.
 
 ---
 
@@ -76,12 +72,6 @@ Music streaming is solitary. Playlists are private. Discovery is algorithmic, no
     REDIRECT_URI=http://localhost:3000/callback
     FIREBASE_PROJECT_ID=your_firebase_project_id
     ```
-
-4. **Start the Development Server**:
-    ```bash
-    npm run dev
-    ```
-    ![Demo](./src/assets/hello.gif)
 
 
 ## 🏗️ **Architecture Overview**
