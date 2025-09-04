@@ -20,7 +20,7 @@ const { firestore } = require('firebase-admin');
 
 
 // Initialize the CORS middleware
-const corsHandler = cors({ origin: 'http://localhost:5173' });  // Allow requests from any origin, or specify the origin
+const corsHandler = cors({ origin: 'http://localhost:5173' });  // Allow requests from  this origin
 
 // Define the retrieveTokens Cloud Function
 const retrieveTokens = async (req, res) => {

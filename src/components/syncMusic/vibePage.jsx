@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./vibePage.css";
 import { Icon } from '@iconify/react';
 import SpotifyTrack from '../syncMusic/spotifyTrack';
@@ -8,106 +8,193 @@ import { getUserId } from "./getUserId";
 import MusicPlayer from "./musicPlayer";
 import SpotifyPlaylists from "./usersPlaylist";
 import ParentComponent from "./playbackParent";
-
+import MusicPostForm from "./musicPostForm";
 
 const VibePage = () => {
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [refreshFeed, setRefreshFeed] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch posts directly in this component
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://us-central1-mapbot-9a988.cloudfunctions.net/getMusicFeed');
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts');
+        }
+        const data = await response.json();
+        setPosts(data);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setError('Failed to load music feed');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [refreshFeed]);
+
+  const handlePostSubmit = () => {
+    setShowPostForm(false);
+    setRefreshFeed(prev => !prev); // Trigger feed refresh
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'track':
+        return 'material-symbols:music-note';
+      case 'artist':
+        return 'material-symbols:person';
+      case 'playlist':
+        return 'material-symbols:queue-music';
+      default:
+        return 'material-symbols:music-note';
+    }
+  };
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return 'Just now';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  };
 
   return (
     <div className="vibe-page">
-      {/* Frame 1 */}
-      <div className="frame-1">
-    
-        {/* Ellipse 45 */}
-        <div className="ellipse-45">
-          < span className="text-m"> M </span>  
+      {/* Header */}
+      <div className="vibe-header">
+        <div className="header-left">
+          <Icon
+            icon="mdi:cosine-wave"
+            className="header-icon"
+          />
+          <span className="brand-name">ibetune</span>
+        </div>
+        
+        <div className="header-right">
+          <div className="profile-circle">
+            <span className="profile-text">M</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Bar */}
+      <div className="nav-bar">
+        <Icon icon="material-symbols:home-rounded" className="nav-icon active" />
+        <Icon icon="material-symbols:search-rounded" className="nav-icon" />
+        <Icon icon="foundation:social-treehouse" className="nav-icon" />
+        <Icon icon="fluent:library-20-filled" className="nav-icon" />
+      </div>
+
+      {/* Main Feed Content */}
+      <div className="feed-container">
+        {/* Music Player Card - Fixed at top */}
+        <div className="music-player-card">
+          <ParentComponent/>
         </div>
 
-        <Icon
-          icon="mdi:cosine-wave"
-          style = {{
-            position: 'absolute',
-            top: '21px',      // Use pixel value for vertical position
-            left: '25px',     // Use pixel value for horizontal position
-            fontSize: '40px',
-            color: 'F7F1F1', // Set the desired color
-            transform: 'translate(-50%, -50%)',  // Adjusts for centering
-          }}
-        />
-
-
-
-        {/* ibetune */}
-      <span className="ibetune">ibetune</span>
-
+        {/* Posts Feed */}
+        <div className="posts-feed">
+          {loading ? (
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Loading vibes...</p>
+            </div>
+          ) : error ? (
+            <div className="error-state">
+              <Icon icon="material-symbols:error-outline" className="error-icon" />
+              <p>{error}</p>
+              <button onClick={() => setRefreshFeed(prev => !prev)} className="retry-btn">
+                Try Again
+              </button>
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="empty-state">
+              <Icon icon="material-symbols:music-note" className="empty-icon" />
+              <h3>No vibes yet</h3>
+              <p>Be the first to share your music!</p>
+            </div>
+          ) : (
+            posts.map((post) => (
+              <div key={post.id} className="post-card">
+                <div className="post-header">
+                  <div className="post-user">
+                    <div className="user-avatar">
+                      <Icon icon="material-symbols:account-circle" />
+                    </div>
+                    <div className="user-info">
+                      <span className="username">{post.userId}</span>
+                      <span className="post-time">{formatTimestamp(post.timestamp)}</span>
+                    </div>
+                  </div>
+                  <div className="post-type-badge">
+                    <Icon icon={getTypeIcon(post.type)} />
+                    <span>{post.type}</span>
+                  </div>
+                </div>
+                
+                <div className="post-content">
+                  <div className="spotify-item">
+                    <Icon icon="simple-icons:spotify" className="spotify-icon" />
+                    <span className="spotify-id">{post.id}</span>
+                  </div>
+                  <p className="post-note">{post.note}</p>
+                </div>
+                
+                <div className="post-actions">
+                  <button className="action-btn">
+                    <Icon icon="material-symbols:favorite-outline" />
+                    <span>Like</span>
+                  </button>
+                  <button className="action-btn">
+                    <Icon icon="material-symbols:chat-bubble-outline" />
+                    <span>Comment</span>
+                  </button>
+                  <button className="action-btn">
+                    <Icon icon="material-symbols:share" />
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
-      {/* Ellipse 46 */}
-      <div className="ellipse-46">  
+      {/* Subtle Post Button - Instagram Style */}
+      <div className="post-button" onClick={() => setShowPostForm(true)}>
+        <Icon icon="material-symbols:add" />
       </div>
 
-      <span className="vibedrops">vibes</span>
-
-      {/* Ellipse 45 */}
-      <div className="line1">
-
-      <Icon
-          icon="fluent:library-20-filled"
-          style={{
-            position: 'absolute',
-            top: '21px',      // Use pixel value for vertical position
-            right: '25px',     // Use pixel value for horizontal position
-            fontSize: '30px',
-            color: 'F7F1F1', // Set the desired color
-            transform: 'translate(-50%, -50%)',  // Adjusts for centering
-          }}
-        />
-
-
-        <Icon
-          icon="material-symbols:home-rounded"
-          style={{
-            position: 'absolute',
-            top: '21px',      // Use pixel value for vertical position
-            left: '25px',     // Use pixel value for horizontal position
-            fontSize: '30px',
-            color: 'F7F1F1', // Set the desired color
-            transform: 'translate(-50%, -50%)',  // Adjusts for centering
-          }}
-        />
-
-
-        <Icon
-          icon="foundation:social-treehouse"
-          style={{
-            position: 'absolute',
-            top: '21px',      // Use pixel value for vertical position
-            left: '800px',     // Use pixel value for horizontal position
-            fontSize: '30px',
-            color: 'F7F1F1', // Set the desired color
-            transform: 'translate(-50%, -50%)',  // Adjusts for centering
-          }}
-        />
-
-        <Icon
-          icon="material-symbols:search-rounded"
-          style={{
-            position: 'absolute',
-            top: '21px',      // Use pixel value for vertical position
-            left: '400px',     // Use pixel value for horizontal position
-            fontSize: '30px',
-            color: 'F7F1F1', // Set the desired color
-            transform: 'translate(-50%, -50%)',  // Adjusts for centering
-          }}
-        />
-        
-      </div>
-
-
-      <div className="VibePage">
-        <ParentComponent/>
-      </div>
-
-      
+      {/* Post Form Modal */}
+      {showPostForm && (
+        <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Share Your Vibe</h3>
+              <button 
+                className="modal-close" 
+                onClick={() => setShowPostForm(false)}
+              >
+                <Icon icon="material-symbols:close" />
+              </button>
+            </div>
+            <MusicPostForm onPostSubmit={handlePostSubmit} />
+          </div>
+        </div>
+      )}
 
     </div>
   );
