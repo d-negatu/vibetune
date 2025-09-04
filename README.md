@@ -102,4 +102,25 @@ Follow these steps to get started:
 5. 🔁 **Open** a Pull Request
 
 
+## 👥 **Team**
 
+<div align="center">
+  
+  **Built with ❤️ by the Vibetune Team**
+  
+  [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/d-negatu)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/your-profile)
+  [![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/vibetune)
+  
+</div>
+
+
+<div align="center">
+  
+  **Ready to revolutionize music discovery?** 🎵
+  
+  [![Get Started](https://img.shields.io/badge/Get_Started-Now-1DB954?style=for-the-badge&logo=spotify)](https://github.com/d-negatu/vibetune#quick-start)
+  
+  *Join the future of social music sharing* ✨
+  
+</div>
