@@ -14,7 +14,7 @@ const mockUsers = [
     name: "Bob",
     profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
     vibe: "Party Mode",
-    sharedTracks: ["Dance Hits", "EDM Essentials", "Club Bangers"],
+    sharedTracks: ["Dance Hit", "EDM Essentials", "Club Bangers"],
   },
   {
     id: 3,
@@ -49,5 +49,6 @@ const Vibe = () => {
     </div>
   );
 };
+
 
 export default Vibe;
