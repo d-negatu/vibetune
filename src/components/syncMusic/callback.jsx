@@ -56,8 +56,10 @@ const CallbackPage = () => {
                         
                         login(userData);
                         
-                        // Redirect to the main app
-                        navigate('/');
+                        // Check if user needs profile setup
+                        // For now, redirect to profile setup for all new users
+                        // In production, you'd check if profile exists and is completed
+                        navigate('/profile-setup');
                     } else {
                         console.error('Failed to retrieve tokens:', data);
                         // Redirect to login page on error

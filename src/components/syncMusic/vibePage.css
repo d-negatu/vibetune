@@ -28,7 +28,7 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 0.px;
+  gap: 0.1px;
 }
 
 .header-icon {
@@ -314,6 +314,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.post-user:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .user-avatar {

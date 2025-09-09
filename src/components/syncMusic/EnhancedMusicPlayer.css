@@ -1,0 +1,470 @@
+/* Enhanced Music Player - Full Viewport Design */
+.enhanced-music-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background: rgba(27, 26, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.enhanced-music-player.loading {
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enhanced-music-player:not(.loading) {
+  height: 12vh;
+  min-height: 80px;
+}
+
+.enhanced-music-player.expanded {
+  height: 25vh;
+  min-height: 200px;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0.5vh;
+  min-height: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  transition: width 0.1s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progress-bar:hover .progress-fill::after {
+  opacity: 1;
+}
+
+/* Player Content */
+.player-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5vh 3vw;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Track Info */
+.track-info {
+  display: flex;
+  align-items: center;
+  gap: 2vw;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.track-info:hover {
+  opacity: 0.8;
+}
+
+.album-art {
+  width: 8vh;
+  height: 8vh;
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-art {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 2rem;
+}
+
+.track-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+  min-width: 0;
+  flex: 1;
+}
+
+.track-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-name {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Player Controls */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5vw;
+  margin: 0 2vw;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 1vh;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+}
+
+.control-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.control-btn.active {
+  color: #8B5CF6;
+}
+
+.control-btn.play-pause {
+  background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  color: #FFFFFF;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  padding: 1.5vh;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.control-btn.play-pause:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Player Info */
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1vh;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.time-display {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  gap: 0.5vw;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  width: 15vw;
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.volume-control svg {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.volume-slider {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #A78BFA;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: #A78BFA;
+}
+
+/* Expanded View */
+.expanded-view {
+  padding: 2vh 3vw;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+}
+
+.expanded-album-art {
+  width: 12vh;
+  height: 12vh;
+  min-width: 80px;
+  min-height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.expanded-album-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-art-large {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 3rem;
+}
+
+.expanded-track-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.expanded-track-info h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 0.5vh 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expanded-track-info p {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.3vh 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-name {
+  font-size: clamp(0.8rem, 2vw, 0.9rem) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Loading State */
+.loading-spinner {
+  width: 3vh;
+  height: 3vh;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-top: 2px solid #8B5CF6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 2vw;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .enhanced-music-player:not(.loading) {
+    height: 10vh;
+    min-height: 70px;
+  }
+  
+  .enhanced-music-player.expanded {
+    height: 20vh;
+    min-height: 150px;
+  }
+  
+  .player-content {
+    padding: 1vh 2vw;
+    gap: 1vw;
+  }
+  
+  .track-info {
+    gap: 1.5vw;
+  }
+  
+  .player-controls {
+    gap: 1vw;
+    margin: 0 1vw;
+  }
+  
+  .control-btn {
+    padding: 0.8vh;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+  }
+  
+  .control-btn.play-pause {
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    padding: 1.2vh;
+  }
+  
+  .player-info {
+    gap: 0.5vh;
+  }
+  
+  .volume-control {
+    width: 12vw;
+    min-width: 100px;
+  }
+  
+  .expanded-view {
+    padding: 1.5vh 2vw;
+    gap: 2vw;
+  }
+  
+  .expanded-album-art {
+    width: 10vh;
+    height: 10vh;
+    min-width: 60px;
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-content {
+    flex-direction: column;
+    gap: 1vh;
+    padding: 1vh 2vw;
+  }
+  
+  .track-info {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .player-controls {
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  .player-info {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .volume-control {
+    width: 20vw;
+    min-width: 80px;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .enhanced-music-player:not(.loading) {
+    height: 8vh;
+    min-height: 60px;
+  }
+  
+  .enhanced-music-player.expanded {
+    height: 15vh;
+    min-height: 120px;
+  }
+  
+  .player-content {
+    padding: 0.8vh 2vw;
+  }
+  
+  .track-info {
+    gap: 1vw;
+  }
+  
+  .player-controls {
+    gap: 0.8vw;
+  }
+  
+  .control-btn {
+    padding: 0.6vh;
+  }
+}

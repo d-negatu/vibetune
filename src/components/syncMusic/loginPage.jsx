@@ -13,7 +13,7 @@
 
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
-import React from "react";
+import React, { useEffect } from "react";
 import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -64,8 +64,34 @@ const handleLogin = () => {
 
 
 const LoginPage = () => {
+    // Initialize particles when component mounts
+    useEffect(() => {
+        // Wait for particles.js to be available
+        const initParticles = () => {
+            if (window.particlesJS) {
+                window.particlesJS.load('particles-js', '/particles.json', function() {
+                    console.log('Particles.js loaded successfully');
+                });
+            } else {
+                // Retry after a short delay if particles.js isn't loaded yet
+                setTimeout(initParticles, 100);
+            }
+        };
+
+        initParticles();
+
+        // Cleanup function to destroy particles when component unmounts
+        return () => {
+            if (window.pJSDom && window.pJSDom[0]) {
+                window.pJSDom[0].pJS.fn.vendors.densityAutoParticles();
+                window.pJSDom[0].pJS.fn.vendors.densityAutoParticles();
+            }
+        };
+    }, []);
+
     return (
         <div className="login-page">
+            <div id="particles-js"></div>
             <div className="login-container">
                 <div className="header">
                     <div className="logo">

@@ -5,14 +5,15 @@ import SpotifyTrack from '../syncMusic/spotifyTrack';
 import { getSpotifyToken } from "./spotfiyToken";
 import { getPlaylists } from "./getUsersPlaylist";
 import { getUserId } from "./getUserId";
-import MusicPlayer from "./musicPlayer";
-import SpotifyPlaylists from "./usersPlaylist";
 import ParentComponent from "./playbackParent";
+import SpotifyPlaylists from "./usersPlaylist";
 import MusicPostForm from "./musicPostForm";
 import Dashboard from "./dashboard";
 import Content from "./content";
 import Sidebar from "./sideBar";
 import { useAuth } from "../../contexts/AuthContext";
+import { useUserProfile } from "../../contexts/UserProfileContext";
+import UserProfile from "./UserProfile";
 
 const VibePage = () => {
   const [showPostForm, setShowPostForm] = useState(false);
@@ -21,12 +22,15 @@ const VibePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   
   // Navigation state
   const [currentPage, setCurrentPage] = useState('home');
   
   // Authentication
   const { user, logout } = useAuth();
+  const { userProfile } = useUserProfile();
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -81,6 +85,23 @@ const VibePage = () => {
     setShowProfileMenu(false);
   };
 
+  // Profile handlers
+  const handleProfileClick = () => {
+    setSelectedUserId(user?.userId);
+    setShowUserProfile(true);
+    setShowProfileMenu(false);
+  };
+
+  const handleUserClick = (userId) => {
+    setSelectedUserId(userId);
+    setShowUserProfile(true);
+  };
+
+  const handleCloseProfile = () => {
+    setShowUserProfile(false);
+    setSelectedUserId(null);
+  };
+
   // Render different components based on current page
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -111,7 +132,7 @@ const VibePage = () => {
                 posts.map((post) => (
                   <div key={post.id} className="post-card">
                     <div className="post-header">
-                      <div className="post-user">
+                      <div className="post-user" onClick={() => handleUserClick(post.userId)}>
                         <div className="user-avatar">
                           <Icon icon="material-symbols:account-circle" />
                         </div>
@@ -216,9 +237,9 @@ const VibePage = () => {
           
           {showProfileMenu && (
             <div className="profile-menu">
-              <div className="profile-menu-item">
+              <div className="profile-menu-item" onClick={handleProfileClick}>
                 <Icon icon="material-symbols:person" />
-                <span>{user?.userId || 'User'}</span>
+                <span>Profile</span>
               </div>
               <div className="profile-menu-item" onClick={handleLogout}>
                 <Icon icon="material-symbols:logout" />
@@ -234,7 +255,7 @@ const VibePage = () => {
 
       {/* Music Player Card - Fixed at bottom */}
       <div className="music-player-card-bottom">
-        <ParentComponent/>
+        <ParentComponent />
       </div>
 
       {/* Navigation Bar - Fixed at bottom */}
@@ -282,6 +303,15 @@ const VibePage = () => {
             <MusicPostForm onPostSubmit={handlePostSubmit} />
           </div>
         </div>
+      )}
+
+      {/* User Profile Modal */}
+      {showUserProfile && selectedUserId && (
+        <UserProfile 
+          userId={selectedUserId}
+          onClose={handleCloseProfile}
+          isOwnProfile={selectedUserId === user?.userId}
+        />
       )}
 
     </div>

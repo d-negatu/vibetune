@@ -79,13 +79,16 @@ import FetchSpotifyDataComponent from './components/syncMusic/fetchSpotifyDataCo
 import MusicPostForm from './components/syncMusic/musicPostForm.jsx';
 import MusicPostFeed from './components/syncMusic/musicPostFeed.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserProfileProvider, useUserProfile } from './contexts/UserProfileContext';
+import ProfileSetup from './components/syncMusic/ProfileSetup';
 
 
 // Component to handle authentication routing
 const AppRoutes = () => {
   const { isAuthenticated, loading } = useAuth();
+  const { userProfile, loading: profileLoading } = useUserProfile();
 
-  if (loading) {
+  if (loading || profileLoading) {
     return (
       <div style={{ 
         display: 'flex', 
@@ -117,11 +120,15 @@ const AppRoutes = () => {
     );
   }
 
+  // Check if user needs profile setup
+  const needsProfileSetup = isAuthenticated && userProfile && !userProfile.profileCompleted;
+
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/callback" element={<CallbackPage />} />
-      <Route path="/" element={isAuthenticated ? <VibePage /> : <LoginPage />} />
+      <Route path="/profile-setup" element={isAuthenticated ? <ProfileSetup onComplete={() => window.location.href = '/'} /> : <LoginPage />} />
+      <Route path="/" element={isAuthenticated ? (needsProfileSetup ? <ProfileSetup onComplete={() => window.location.href = '/'} /> : <VibePage />) : <LoginPage />} />
     </Routes>
   );
 };
@@ -134,9 +141,11 @@ function App() {
   
   return (
     <AuthProvider>
-      <div className="App">
-        <AppRoutes />
-      </div>
+      <UserProfileProvider>
+        <div className="App">
+          <AppRoutes />
+        </div>
+      </UserProfileProvider>
     </AuthProvider>
   );
 }

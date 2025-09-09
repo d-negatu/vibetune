@@ -52,6 +52,16 @@ const{getMusicFeed} = require("./src/getMusicFeed.js");
 //Import updateLikes
 const{updateLikes} = require("./src/updateLikes.js");
 
+// Import user profile functions
+const {
+  getUserProfile,
+  createUserProfile,
+  updateUserProfile,
+  getUserById,
+  toggleFollow,
+  getUserFollowers,
+  getUserFollowing
+} = require('./src/userProfile.js');
 
 // Export the createSession function as an HTTP endpoint
 //a POST request to create a new session in Sync Bot .
@@ -85,3 +95,12 @@ exports.getMusicFeed = functions.https.onRequest(getMusicFeed);
 
 //Export updateLikes function as an HTTP endpoint
 exports.updateLikes = functions.https.onRequest(updateLikes);
+
+// Export user profile functions as HTTP endpoints
+exports.getUserProfile = functions.https.onRequest(getUserProfile);
+exports.createUserProfile = functions.https.onRequest(createUserProfile);
+exports.updateUserProfile = functions.https.onRequest(updateUserProfile);
+exports.getUserById = functions.https.onRequest(getUserById);
+exports.toggleFollow = functions.https.onRequest(toggleFollow);
+exports.getUserFollowers = functions.https.onRequest(getUserFollowers);
+exports.getUserFollowing = functions.https.onRequest(getUserFollowing);
