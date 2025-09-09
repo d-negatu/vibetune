@@ -12,6 +12,7 @@ import MusicPostForm from "./musicPostForm";
 import Dashboard from "./dashboard";
 import Content from "./content";
 import Sidebar from "./sideBar";
+import { useAuth } from "../../contexts/AuthContext";
 
 const VibePage = () => {
   const [showPostForm, setShowPostForm] = useState(false);
@@ -19,9 +20,27 @@ const VibePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   
   // Navigation state
   const [currentPage, setCurrentPage] = useState('home');
+  
+  // Authentication
+  const { user, logout } = useAuth();
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showProfileMenu && !event.target.closest('.profile-circle') && !event.target.closest('.profile-menu')) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfileMenu]);
 
   // Fetch posts directly in this component
   useEffect(() => {
@@ -54,6 +73,12 @@ const VibePage = () => {
   // Navigation click handlers
   const handleNavigationClick = (page) => {
     setCurrentPage(page);
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    logout();
+    setShowProfileMenu(false);
   };
 
   // Render different components based on current page
@@ -185,9 +210,22 @@ const VibePage = () => {
         </div>
         
         <div className="header-right">
-          <div className="profile-circle">
-            <span className="profile-text">M</span>
+          <div className="profile-circle" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+            <span className="profile-text">{user?.userId?.charAt(0)?.toUpperCase() || 'U'}</span>
           </div>
+          
+          {showProfileMenu && (
+            <div className="profile-menu">
+              <div className="profile-menu-item">
+                <Icon icon="material-symbols:person" />
+                <span>{user?.userId || 'User'}</span>
+              </div>
+              <div className="profile-menu-item" onClick={handleLogout}>
+                <Icon icon="material-symbols:logout" />
+                <span>Logout</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

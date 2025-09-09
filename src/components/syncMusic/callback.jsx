@@ -11,17 +11,21 @@
  */
 
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const retrieveUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/retrieveTokens';
 
 const CallbackPage = () => {
-    useEffect(() => {
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
+    useEffect(() => {
         /**
          * This function extracts the authorization code from the URL and makes a POST request
          * to the retrieveTokens cloud function to get the access and refresh tokens.
          */
-        const testRetrieveToken = async () => {
+        const handleCallback = async () => {
             try {
                 // Extract the authorization code from the URL
                 const code = new URLSearchParams(window.location.search).get('code');
@@ -41,23 +45,67 @@ const CallbackPage = () => {
 
                     const data = await response.json();
                     
+                    if (response.ok) {
+                        // Store user data and mark as authenticated
+                        const userData = {
+                            userId: userId,
+                            accessToken: data.access_token,
+                            refreshToken: data.refresh_token,
+                            expiresAt: Date.now() + (data.expires_in * 1000)
+                        };
+                        
+                        login(userData);
+                        
+                        // Redirect to the main app
+                        navigate('/');
+                    } else {
+                        console.error('Failed to retrieve tokens:', data);
+                        // Redirect to login page on error
+                        navigate('/login');
+                    }
                 } else {
                     console.error('Authorization code not found in URL');
+                    navigate('/login');
                 }
             } catch (error) {
                 console.error('Error retrieving tokens:', error);
+                navigate('/login');
             }
         };
 
-        // Execute the testRetrieveToken function after defining it
-        testRetrieveToken();
-    }, []);
+        // Execute the callback handling function
+        handleCallback();
+    }, [navigate, login]);
 
-    // Render the Component
+    // Render loading state while processing
     return (
-        <div>
-            <h1>Testing Retrieve Token Endpoint...</h1>
-            <p>Please wait while we test the retrieve token endpoint.</p>
+        <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            height: '100vh',
+            background: '#1B1A1A',
+            color: '#FFFFFF',
+            fontFamily: 'Poppins, sans-serif'
+        }}>
+            <div style={{ 
+                width: '40px', 
+                height: '40px', 
+                border: '3px solid rgba(139, 92, 246, 0.3)', 
+                borderTop: '3px solid #8B5CF6', 
+                borderRadius: '50%', 
+                animation: 'spin 1s linear infinite',
+                marginBottom: '20px'
+            }}></div>
+            <h2>Connecting to Spotify...</h2>
+            <p>Please wait while we authenticate your account.</p>
+            <style>{`
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `}</style>
         </div>
     );
 };

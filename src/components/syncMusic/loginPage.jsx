@@ -68,20 +68,21 @@ const LoginPage = () => {
         <div className="login-page">
             <div className="login-container">
                 <div className="header">
-                    <img src="/logo.png" alt="Music App Logo" className="logo" />
-                    <h1>Sign in</h1>
+                    <div className="logo">
+                        <span>V</span>
+                    </div>
+                    <h1 className="brand-title">ibetune</h1>
+                    <p className="brand-subtitle">Connect with music lovers worldwide</p>
                 </div>
+                
                 <div className="form-group">
-                    <input type="text" placeholder="Email, phone, or Skype" className="input-field" />
+                    <button className="login-button" onClick={handleLogin}>
+                        <span>Continue with Spotify</span>
+                    </button>
                 </div>
-                <div className="form-group">
-                    <input type="password" placeholder="Password" className="input-field" />
-                </div>
-                <div className="form-group">
-                    <button className="login-button" onClick={handleLogin}>Sign in with Spotify</button>
-                </div>
+                
                 <div className="footer">
-                    <a href="#">Can't access your account?</a>
+                    <a href="#">Having trouble signing in?</a>
                 </div>
             </div>
         </div>

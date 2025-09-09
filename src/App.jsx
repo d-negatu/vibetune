@@ -78,7 +78,53 @@ import UserProfile from './components/syncMusic/userProfile.jsx';
 import FetchSpotifyDataComponent from './components/syncMusic/fetchSpotifyDataComponent.jsx';
 import MusicPostForm from './components/syncMusic/musicPostForm.jsx';
 import MusicPostFeed from './components/syncMusic/musicPostFeed.jsx';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
+
+// Component to handle authentication routing
+const AppRoutes = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        height: '100vh',
+        background: '#1B1A1A',
+        color: '#FFFFFF',
+        fontFamily: 'Poppins, sans-serif'
+      }}>
+        <div style={{ 
+          width: '40px', 
+          height: '40px', 
+          border: '3px solid rgba(139, 92, 246, 0.3)', 
+          borderTop: '3px solid #8B5CF6', 
+          borderRadius: '50%', 
+          animation: 'spin 1s linear infinite',
+          marginBottom: '20px'
+        }}></div>
+        <h2>Loading...</h2>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/callback" element={<CallbackPage />} />
+      <Route path="/" element={isAuthenticated ? <VibePage /> : <LoginPage />} />
+    </Routes>
+  );
+};
 
 function App() {
   const [msgData, setMsgData] = useState([15, 30]); // Example values for Bots and User messages
@@ -86,16 +132,12 @@ function App() {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const token = "BQAXh34xP4U7ZmKP6HcGqG6YDkxN76Sfk59nsFlOgrwFTIul7DTjnCg0AoCu4yHsuH1htRoQsuZBT71pAqQxFL96dtIyXQjsH18JUJb2_YkOgAV4AUSsyXXGk9xNMWy6ov1zANIrljOKQxzUKbwzvUtC8QwAszy253r4HMsu4pY3qPSrALY5wd93qCHdyDbbVwk9R2GNhvR8QlQkVf8cxxL_C-jhl-WatlqCQoJ0"
   
-  /**WebPlayback token={token} */
   return (
-    <div className="App">
-      <Routes>
-        {/* Define routes for login and callback pages */}
-      
-        <Route path="/" element={<VibePage/>} />  {/* Renders LoginPage */}
-        <Route path="/callback" element={<CallbackPage />} />  {/* Renders CallbackPage after successful login */}
-      </Routes>
-    </div>
+    <AuthProvider>
+      <div className="App">
+        <AppRoutes />
+      </div>
+    </AuthProvider>
   );
 }
 
