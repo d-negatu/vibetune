@@ -9,12 +9,6 @@
 <div style="width: 50px; height: auto;">
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 8%; height: auto;" alt="VibeTune Logo" />
 > 
-  
-  ### **Revolutionizing Music Discovery Through Social Connection**
-  
-  *The first social platform that makes sharing music as effortless as listening to it*
-</div>
-
 ---
 Vibetune builds on third-party APIs and provides users end to end features to share their tracks and vibe with other music listeners.
 
