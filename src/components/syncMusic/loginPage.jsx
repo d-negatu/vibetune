@@ -14,6 +14,7 @@
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
 import React, { useEffect } from "react";
+import { Icon } from '@iconify/react';
 import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -92,23 +93,122 @@ const LoginPage = () => {
     return (
         <div className="login-page">
             <div id="particles-js"></div>
-            <div className="login-container">
+            <div className="login-section">
+                <div className="login-container">
                 <div className="header">
                     <div className="logo">
-                        <span>V</span>
+                        <Icon
+                            icon="mdi:cosine-wave"
+                            className="logo-icon"
+                        />
                     </div>
-                    <h1 className="brand-title">ibetune</h1>
-                    <p className="brand-subtitle">Connect with music lovers worldwide</p>
+                    <h1 className="brand-title">Sign in to Vibetune</h1>
                 </div>
                 
-                <div className="form-group">
-                    <button className="login-button" onClick={handleLogin}>
+                <div className="auth-options">
+                    <button className="auth-button spotify" onClick={handleLogin}>
+                        <Icon icon="mdi:spotify" className="auth-icon" />
                         <span>Continue with Spotify</span>
+                    </button>
+                    
+                    <button className="auth-button google">
+                        <Icon icon="mdi:google" className="auth-icon" />
+                        <span>Continue with Google</span>
+                    </button>
+                    
+                    <button className="auth-button apple">
+                        <Icon icon="mdi:apple" className="auth-icon" />
+                        <span>Continue with Apple</span>
+                    </button>
+                </div>
+                
+                <div className="divider">
+                    <span>or</span>
+                </div>
+                
+                <div className="manual-login">
+                    <div className="form-group">
+                        <input type="email" className="input-field" placeholder="Email address" />
+                    </div>
+                    <div className="form-group">
+                        <input type="password" className="input-field" placeholder="Password" />
+                    </div>
+                    <button className="login-button">
+                        <span>Log In</span>
                     </button>
                 </div>
                 
                 <div className="footer">
-                    <a href="#">Having trouble signing in?</a>
+                    <a href="#" className="forgot-password">Forgot your password?</a>
+                    <div className="signup-link">
+                        <span>Don't have an account? </span>
+                        <a href="#" className="signup-text">Sign up for Vibetune</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+            {/* Scrollable Content Sections */}
+            <div className="content-section">
+                <div className="content-container">
+                    <h2 className="section-title">Why Choose Vibetune?</h2>
+                    <div className="features-grid">
+                        <div className="feature-card">
+                            <Icon icon="mdi:music-note" className="feature-icon" />
+                            <h3>Discover Music</h3>
+                            <p>Find new tracks and artists through social connections</p>
+                        </div>
+                        <div className="feature-card">
+                            <Icon icon="mdi:account-group" className="feature-icon" />
+                            <h3>Connect with Friends</h3>
+                            <p>Share your favorite music with like-minded people</p>
+                        </div>
+                        <div className="feature-card">
+                            <Icon icon="mdi:heart" className="feature-icon" />
+                            <h3>Personalized Feed</h3>
+                            <p>Get recommendations based on your music taste</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="content-section">
+                <div className="content-container">
+                    <h2 className="section-title">Join the Music Revolution</h2>
+                    <p className="section-description">
+                        Vibetune is more than just a music app - it's a community where music lovers 
+                        discover, share, and connect through the power of sound.
+                    </p>
+                    <div className="stats-grid">
+                        <div className="stat-item">
+                            <div className="stat-number">10K+</div>
+                            <div className="stat-label">Active Users</div>
+                        </div>
+                        <div className="stat-item">
+                            <div className="stat-number">1M+</div>
+                            <div className="stat-label">Songs Shared</div>
+                        </div>
+                        <div className="stat-item">
+                            <div className="stat-number">50K+</div>
+                            <div className="stat-label">Playlists Created</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="footer-section">
+                <div className="content-container">
+                    <div className="footer-content">
+                        <div className="footer-links">
+                            <a href="#" className="footer-link">Privacy Policy</a>
+                            <a href="#" className="footer-link">Terms of Service</a>
+                            <a href="#" className="footer-link">Support</a>
+                            <a href="#" className="footer-link">About</a>
+                        </div>
+                        <div className="footer-copyright">
+                            <p>&copy; 2024 Vibetune. All rights reserved.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
