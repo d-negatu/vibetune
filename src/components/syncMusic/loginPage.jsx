@@ -93,8 +93,7 @@ const LoginPage = () => {
     return (
         <div className="login-page">
             <div id="particles-js"></div>
-            <div className="login-section">
-                <div className="login-container">
+            <div className="login-container">
                 <div className="header">
                     <div className="logo">
                         <Icon
@@ -146,39 +145,9 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
-            </div>
-            
-            {/* Scrollable Content Sections */}
-            <div className="content-section">
-                <div className="content-container">
-                    <h2 className="section-title">Why Choose Vibetune?</h2>
-                    <div className="features-grid">
-                        <div className="feature-card">
-                            <Icon icon="mdi:music-note" className="feature-icon" />
-                            <h3>Discover Music</h3>
-                            <p>Find new tracks and artists through social connections</p>
-                        </div>
-                        <div className="feature-card">
-                            <Icon icon="mdi:account-group" className="feature-icon" />
-                            <h3>Connect with Friends</h3>
-                            <p>Share your favorite music with like-minded people</p>
-                        </div>
-                        <div className="feature-card">
-                            <Icon icon="mdi:heart" className="feature-icon" />
-                            <h3>Personalized Feed</h3>
-                            <p>Get recommendations based on your music taste</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <div className="content-section">
                 <div className="content-container">
-                    <h2 className="section-title">Join the Music Revolution</h2>
-                    <p className="section-description">
-                        Vibetune is more than just a music app - it's a community where music lovers 
-                        discover, share, and connect through the power of sound.
-                    </p>
                     <div className="stats-grid">
                         <div className="stat-item">
                             <div className="stat-number">10K+</div>
