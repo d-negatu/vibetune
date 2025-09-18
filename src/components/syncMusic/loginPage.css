@@ -6,7 +6,7 @@
 }
 
 html, body {
-  background: #1B1A1A;
+  background: #1B1A1A !important;
   margin: 0;
   padding: 0;
   height: 100vh; /* Sets height to 100% of the viewport height */
@@ -19,10 +19,20 @@ html, body {
   min-height: 100vh;
   background: #1B1A1A;
   margin: 0;
-  padding: 0;
+  padding: 20px 0 0 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 /* Particles Background */
@@ -38,49 +48,31 @@ html, body {
 
 /* Login Container */
 .login-container {
-  min-height: 100vh;
+  height: auto;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: relative;
   z-index: 10;
-  padding: 40px 20px;
+  padding: 5px 15px;
   background:  rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
-  width: 90%;
-  max-width: 450px;
+    width: 50%;
   position: relative;
   z-index: 10;
-}
-
-.header {
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.logo {
-  width: 80px;
-  height: 80px;
-  background: transparent;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10rem;
-  color: #FFFFFF;
-  font-weight: bold;
 }
 
 .logo-icon {
   font-size: 4rem;
   color: #FFFFFF;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 20;
 }
 
 .brand-title {
@@ -88,7 +80,7 @@ html, body {
   font-size: 2rem;
   font-weight: 700;
   color: #FFFFFF;
-  margin: 0 0 8px 0;
+  margin: 10px 0 8px 0;
   letter-spacing: -0.02em;
 }
 
@@ -101,7 +93,7 @@ html, body {
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
@@ -156,7 +148,7 @@ html, body {
 }
 
 .footer {
-  margin-top: 32px;
+  margin-top: 16px;
   text-align: center;
 }
 
@@ -175,7 +167,7 @@ html, body {
 
 /* Auth Options Section */
 .auth-options {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -228,7 +220,7 @@ html, body {
 .divider {
   position: relative;
   text-align: center;
-  margin: 24px 0;
+  margin: 12px 0;
 }
 
 .divider::before {
@@ -252,7 +244,7 @@ html, body {
 
 /* Manual Login Section */
 .manual-login {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 /* Updated Footer Styles */

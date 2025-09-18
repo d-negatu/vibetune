@@ -62,6 +62,7 @@ import BarChartComponent from './components/syncBot/barChart/barChartComponent.j
 import SyncBot from './components/syncBot/chatInterface/syncBot.jsx';
 import SyncMusic from './components/syncMusic/artistProfile.jsx';
 import LoginPage from './components/syncMusic/loginPage.jsx';
+import SignupPage from './components/syncMusic/signupPage.jsx';
 import CallbackPage from './components/syncMusic/callback.jsx';
 import { Routes, Route } from 'react-router-dom';  // Importing Routes and Route for routing
 import SpotifyTokenTester from './components/syncMusic/artistProfile.jsx';
@@ -126,6 +127,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/callback" element={<CallbackPage />} />
       <Route path="/profile-setup" element={isAuthenticated ? <ProfileSetup onComplete={() => window.location.href = '/'} /> : <LoginPage />} />
       <Route path="/" element={isAuthenticated ? (needsProfileSetup ? <ProfileSetup onComplete={() => window.location.href = '/'} /> : <VibePage />) : <LoginPage />} />

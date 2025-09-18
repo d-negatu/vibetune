@@ -94,15 +94,11 @@ const LoginPage = () => {
         <div className="login-page">
             <div id="particles-js"></div>
             <div className="login-container">
-                <div className="header">
-                    <div className="logo">
-                        <Icon
-                            icon="mdi:cosine-wave"
-                            className="logo-icon"
-                        />
-                    </div>
-                    <h1 className="brand-title">Sign in to Vibetune</h1>
-                </div>
+                <Icon
+                    icon="mdi:cosine-wave"
+                    className="logo-icon"
+                />
+                <h1 className="brand-title">Sign in to Vibetune</h1>
                 
                 <div className="auth-options">
                     <button className="auth-button spotify" onClick={handleLogin}>
@@ -141,7 +137,7 @@ const LoginPage = () => {
                     <a href="#" className="forgot-password">Forgot your password?</a>
                     <div className="signup-link">
                         <span>Don't have an account? </span>
-                        <a href="#" className="signup-text">Sign up for Vibetune</a>
+                        <a href="/signup" className="signup-text">Sign up for Vibetune</a>
                     </div>
                 </div>
             </div>

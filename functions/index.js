@@ -63,6 +63,9 @@ const {
   getUserFollowing
 } = require('./src/userProfile.js');
 
+// Import createUser function
+const { createUser } = require('./src/createUser.js');
+
 // Export the createSession function as an HTTP endpoint
 //a POST request to create a new session in Sync Bot .
 exports.createSession = functions.https.onRequest(createSession);
@@ -104,3 +107,6 @@ exports.getUserById = functions.https.onRequest(getUserById);
 exports.toggleFollow = functions.https.onRequest(toggleFollow);
 exports.getUserFollowers = functions.https.onRequest(getUserFollowers);
 exports.getUserFollowing = functions.https.onRequest(getUserFollowing);
+
+// Export createUser function as HTTP endpoint
+exports.createUser = functions.https.onRequest(createUser);
