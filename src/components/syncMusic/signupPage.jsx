@@ -8,7 +8,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Icon } from '@iconify/react';
+// import { Icon } from '@iconify/react';
 import { useAuth } from '../../contexts/AuthContext';
 import './signupPage.css';
 
@@ -109,31 +109,27 @@ const SignupPage = () => {
     setLoading(true);
     
     try {
-      // Call Firebase function to create user
-      const response = await fetch('/api/createUser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          username: formData.username
-        })
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        login(userData);
-        // Redirect to profile setup or dashboard
-        window.location.href = '/profile-setup';
-      } else {
-        const errorData = await response.json();
-        setErrors({ general: errorData.message || 'Signup failed' });
-      }
+      // Mock user creation for now (replace with actual Firebase function later)
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      
+      // Create mock user data
+      const userData = {
+        uid: `user_${Date.now()}`,
+        email: formData.email,
+        username: formData.username,
+        displayName: formData.username,
+        profileCompleted: false
+      };
+      
+      // Simulate successful signup
+      login(userData);
+      
+      // Redirect to profile setup
+      window.location.href = '/profile-setup';
+      
     } catch (error) {
       console.error('Signup error:', error);
-      setErrors({ general: 'Network error. Please try again.' });
+      setErrors({ general: 'Signup failed. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -160,10 +156,7 @@ const SignupPage = () => {
     <div className="signup-page">
       <div id="particles-js-signup"></div>
       <div className="signup-container">
-        <Icon
-          icon="mdi:cosine-wave"
-          className="logo-icon"
-        />
+        <div className="logo-icon">🎵</div>
         <h1 className="brand-title">Join Vibetune</h1>
         <p className="subtitle">Create your account to start sharing music with friends</p>
         
@@ -245,7 +238,7 @@ const SignupPage = () => {
           >
             {loading ? (
               <>
-                <Icon icon="mdi:loading" className="loading-icon" />
+                <span className="loading-icon">⏳</span>
                 Creating Account...
               </>
             ) : (
@@ -260,7 +253,7 @@ const SignupPage = () => {
 
         <div className="social-signup">
           <button className="auth-button spotify" onClick={handleSpotifySignup}>
-            <Icon icon="mdi:spotify" className="auth-icon" />
+            <span className="auth-icon">🎵</span>
             <span>Sign up with Spotify</span>
           </button>
         </div>

@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
-import { Icon } from '@iconify/react';
+import React, { useState, useEffect } from 'react';
 import { useUserProfile } from '../../contexts/UserProfileContext';
 import './ProfileSetup.css';
 
 const ProfileSetup = ({ onComplete }) => {
   const { updateUserProfile, userProfile } = useUserProfile();
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     displayName: userProfile?.displayName || '',
     bio: '',
-    profilePicture: ''
+    profilePicture: '',
+    musicGenres: [],
+    favoriteArtists: [],
+    musicMood: '',
+    privacySettings: {
+      showListeningActivity: true,
+      allowFriendRequests: true,
+      showTopTracks: true
+    }
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [step, setStep] = useState(1);
+
+  const musicGenres = [
+    'Pop', 'Rock', 'Hip-Hop', 'R&B', 'Electronic', 'Jazz', 'Classical', 
+    'Country', 'Indie', 'Alternative', 'Folk', 'Blues', 'Reggae', 'Punk'
+  ];
+
+  const musicMoods = [
+    { value: 'energetic', label: 'Energetic', emoji: '⚡' },
+    { value: 'chill', label: 'Chill', emoji: '😌' },
+    { value: 'party', label: 'Party', emoji: '🎉' },
+    { value: 'romantic', label: 'Romantic', emoji: '💕' },
+    { value: 'melancholic', label: 'Melancholic', emoji: '😔' },
+    { value: 'motivational', label: 'Motivational', emoji: '💪' }
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,24 +43,51 @@ const ProfileSetup = ({ onComplete }) => {
     }));
   };
 
+  const handleGenreToggle = (genre) => {
+    setFormData(prev => ({
+      ...prev,
+      musicGenres: prev.musicGenres.includes(genre)
+        ? prev.musicGenres.filter(g => g !== genre)
+        : [...prev.musicGenres, genre]
+    }));
+  };
+
+  const handlePrivacyChange = (setting) => {
+    setFormData(prev => ({
+      ...prev,
+      privacySettings: {
+        ...prev.privacySettings,
+        [setting]: !prev.privacySettings[setting]
+      }
+    }));
+  };
+
+  const handleNext = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      // Validate required fields
       if (!formData.displayName.trim()) {
         setError('Display name is required');
         setLoading(false);
         return;
       }
 
-      // Update user profile
       const success = await updateUserProfile({
-        displayName: formData.displayName.trim(),
-        bio: formData.bio.trim(),
-        profilePicture: formData.profilePicture.trim(),
+        ...formData,
         profileCompleted: true,
         setupCompletedAt: new Date()
       });
@@ -49,185 +97,194 @@ const ProfileSetup = ({ onComplete }) => {
       } else {
         setError('Failed to save profile. Please try again.');
       }
-    } catch (error) {
-      console.error('Error saving profile:', error);
+    } catch (err) {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSkip = () => {
-    // Create minimal profile and continue
-    updateUserProfile({
-      displayName: userProfile?.userId || 'User',
-      bio: '',
-      profilePicture: '',
-      profileCompleted: true,
-      setupCompletedAt: new Date()
-    }).then(() => {
-      onComplete();
-    });
-  };
+  const renderStep1 = () => (
+    <div className="step-content">
+      <h2>Welcome to Vibetune! 🎵</h2>
+      <p>Let's set up your profile to get started</p>
+      
+      <div className="form-group">
+        <label htmlFor="displayName">Display Name *</label>
+        <input
+          type="text"
+          id="displayName"
+          name="displayName"
+          value={formData.displayName}
+          onChange={handleInputChange}
+          placeholder="How should friends see you?"
+          required
+        />
+      </div>
 
-  const nextStep = () => {
-    if (step < 3) {
-      setStep(step + 1);
-    }
-  };
+      <div className="form-group">
+        <label htmlFor="bio">Bio (Optional)</label>
+        <textarea
+          id="bio"
+          name="bio"
+          value={formData.bio}
+          onChange={handleInputChange}
+          placeholder="Tell us about your music taste..."
+          rows="3"
+        />
+      </div>
 
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
-  };
+      <div className="form-group">
+        <label htmlFor="profilePicture">Profile Picture URL (Optional)</label>
+        <input
+          type="url"
+          id="profilePicture"
+          name="profilePicture"
+          value={formData.profilePicture}
+          onChange={handleInputChange}
+          placeholder="https://example.com/your-photo.jpg"
+        />
+      </div>
+    </div>
+  );
+
+  const renderStep2 = () => (
+    <div className="step-content">
+      <h2>What genres do you love? 🎶</h2>
+      <p>Select all that apply</p>
+      
+      <div className="genres-grid">
+        {musicGenres.map(genre => (
+          <button
+            key={genre}
+            type="button"
+            className={`genre-chip ${formData.musicGenres.includes(genre) ? 'selected' : ''}`}
+            onClick={() => handleGenreToggle(genre)}
+          >
+            {genre}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderStep3 = () => (
+    <div className="step-content">
+      <h2>What's your music mood? 🎭</h2>
+      <p>Choose your primary music vibe</p>
+      
+      <div className="mood-options">
+        {musicMoods.map(mood => (
+          <button
+            key={mood.value}
+            type="button"
+            className={`mood-option ${formData.musicMood === mood.value ? 'selected' : ''}`}
+            onClick={() => setFormData(prev => ({ ...prev, musicMood: mood.value }))}
+          >
+            <span className="mood-emoji">{mood.emoji}</span>
+            <span className="mood-label">{mood.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderStep4 = () => (
+    <div className="step-content">
+      <h2>Privacy Settings 🔒</h2>
+      <p>Control what others can see about your music activity</p>
+      
+      <div className="privacy-settings">
+        <div className="privacy-option">
+          <label className="privacy-label">
+            <input
+              type="checkbox"
+              checked={formData.privacySettings.showListeningActivity}
+              onChange={() => handlePrivacyChange('showListeningActivity')}
+            />
+            <span className="privacy-text">
+              <strong>Show listening activity</strong>
+              <small>Let friends see what you're currently playing</small>
+            </span>
+          </label>
+        </div>
+
+        <div className="privacy-option">
+          <label className="privacy-label">
+            <input
+              type="checkbox"
+              checked={formData.privacySettings.allowFriendRequests}
+              onChange={() => handlePrivacyChange('allowFriendRequests')}
+            />
+            <span className="privacy-text">
+              <strong>Allow friend requests</strong>
+              <small>Let other users send you friend requests</small>
+            </span>
+          </label>
+        </div>
+
+        <div className="privacy-option">
+          <label className="privacy-label">
+            <input
+              type="checkbox"
+              checked={formData.privacySettings.showTopTracks}
+              onChange={() => handlePrivacyChange('showTopTracks')}
+            />
+            <span className="privacy-text">
+              <strong>Show top tracks</strong>
+              <small>Display your most played songs on your profile</small>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="profile-setup-page">
-      <div className="profile-setup-container">
-        <div className="setup-header">
-          <div className="setup-logo">
-            <span>V</span>
-          </div>
-          <h1>Welcome to VibeTune!</h1>
-          <p>Let's set up your profile to get started</p>
+    <div className="profile-setup">
+      <div className="setup-container">
+        <div className="progress-bar">
+          <div 
+            className="progress-fill" 
+            style={{ width: `${(currentStep / 4) * 100}%` }}
+          ></div>
         </div>
 
-        <div className="setup-progress">
-          <div className="progress-bar">
-            <div 
-              className="progress-fill" 
-              style={{ width: `${(step / 3) * 100}%` }}
-            ></div>
-          </div>
-          <span className="progress-text">Step {step} of 3</span>
+        <div className="step-indicator">
+          Step {currentStep} of 4
         </div>
 
-        <form onSubmit={handleSubmit} className="setup-form">
-          {step === 1 && (
-            <div className="setup-step">
-              <div className="step-icon">
-                <Icon icon="material-symbols:person" />
-              </div>
-              <h2>What should we call you?</h2>
-              <p>Choose a display name that other users will see</p>
-              
-              <div className="form-group">
-                <input
-                  type="text"
-                  name="displayName"
-                  value={formData.displayName}
-                  onChange={handleInputChange}
-                  placeholder="Enter your display name"
-                  className="setup-input"
-                  maxLength={30}
-                  required
-                />
-                <div className="input-hint">
-                  {formData.displayName.length}/30 characters
-                </div>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="setup-step">
-              <div className="step-icon">
-                <Icon icon="material-symbols:description" />
-              </div>
-              <h2>Tell us about yourself</h2>
-              <p>Write a short bio to let others know who you are (optional)</p>
-              
-              <div className="form-group">
-                <textarea
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleInputChange}
-                  placeholder="Share something about yourself..."
-                  className="setup-textarea"
-                  rows="4"
-                  maxLength={150}
-                />
-                <div className="input-hint">
-                  {formData.bio.length}/150 characters
-                </div>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="setup-step">
-              <div className="step-icon">
-                <Icon icon="material-symbols:photo-camera" />
-              </div>
-              <h2>Add a profile picture</h2>
-              <p>Upload a photo or use your initials (optional)</p>
-              
-              <div className="profile-picture-section">
-                <div className="profile-preview">
-                  {formData.profilePicture ? (
-                    <img src={formData.profilePicture} alt="Profile preview" />
-                  ) : (
-                    <span>{formData.displayName?.charAt(0)?.toUpperCase() || 'U'}</span>
-                  )}
-                </div>
-                
-                <div className="form-group">
-                  <input
-                    type="url"
-                    name="profilePicture"
-                    value={formData.profilePicture}
-                    onChange={handleInputChange}
-                    placeholder="Paste image URL here"
-                    className="setup-input"
-                  />
-                  <div className="input-hint">
-                    Paste a URL to an image you'd like to use
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+        <form onSubmit={handleSubmit}>
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+          {currentStep === 3 && renderStep3()}
+          {currentStep === 4 && renderStep4()}
 
           {error && (
             <div className="error-message">
-              <Icon icon="material-symbols:error-outline" />
-              <span>{error}</span>
+              {error}
             </div>
           )}
 
-          <div className="setup-actions">
-            {step > 1 && (
-              <button type="button" onClick={prevStep} className="back-btn">
-                <Icon icon="material-symbols:arrow-back" />
-                Back
+          <div className="step-navigation">
+            {currentStep > 1 && (
+              <button type="button" onClick={handleBack} className="back-button">
+                ← Back
               </button>
             )}
             
-            {step < 3 ? (
-              <button type="button" onClick={nextStep} className="next-btn">
-                Next
-                <Icon icon="material-symbols:arrow-forward" />
+            {currentStep < 4 ? (
+              <button type="button" onClick={handleNext} className="next-button">
+                Next →
               </button>
             ) : (
-              <div className="final-actions">
-                <button type="button" onClick={handleSkip} className="skip-btn">
-                  Skip for now
-                </button>
-                <button type="submit" disabled={loading} className="complete-btn">
-                  {loading ? (
-                    <>
-                      <div className="loading-spinner-small"></div>
-                      Creating Profile...
-                    </>
-                  ) : (
-                    <>
-                      Complete Setup
-                      <Icon icon="material-symbols:check" />
-                    </>
-                  )}
-                </button>
-              </div>
+              <button 
+                type="submit" 
+                className="complete-button"
+                disabled={loading || !formData.displayName.trim()}
+              >
+                {loading ? 'Setting up...' : 'Complete Setup 🎉'}
+              </button>
             )}
           </div>
         </form>

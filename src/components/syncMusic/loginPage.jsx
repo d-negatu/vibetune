@@ -14,7 +14,7 @@
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
 import React, { useEffect } from "react";
-import { Icon } from '@iconify/react';
+// import { Icon } from '@iconify/react';
 import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -94,25 +94,22 @@ const LoginPage = () => {
         <div className="login-page">
             <div id="particles-js"></div>
             <div className="login-container">
-                <Icon
-                    icon="mdi:cosine-wave"
-                    className="logo-icon"
-                />
+                <div className="logo-icon">🎵</div>
                 <h1 className="brand-title">Sign in to Vibetune</h1>
                 
                 <div className="auth-options">
                     <button className="auth-button spotify" onClick={handleLogin}>
-                        <Icon icon="mdi:spotify" className="auth-icon" />
+                        <span className="auth-icon">🎵</span>
                         <span>Continue with Spotify</span>
                     </button>
                     
                     <button className="auth-button google">
-                        <Icon icon="mdi:google" className="auth-icon" />
+                        <span className="auth-icon">🔍</span>
                         <span>Continue with Google</span>
                     </button>
                     
                     <button className="auth-button apple">
-                        <Icon icon="mdi:apple" className="auth-icon" />
+                        <span className="auth-icon">🍎</span>
                         <span>Continue with Apple</span>
                     </button>
                 </div>

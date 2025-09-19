@@ -31,3 +31,6 @@ export async function getSpotifyToken(clientId, clientSecret) {
   tokenExpiryTime = currentTime + data.expires_in * 1000; // Cache the expiry time
   return cachedToken;
 }
+
+// Default export for compatibility
+export default { getSpotifyToken };

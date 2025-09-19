@@ -1,189 +1,383 @@
 import React, { useState, useEffect } from 'react';
-import { Icon } from '@iconify/react';
+import { useAuth } from '../../contexts/AuthContext';
 import { useUserProfile } from '../../contexts/UserProfileContext';
-import './UserProfile.css';
+import './userProfile.css';
 
-const UserProfile = ({ userId, onClose, isOwnProfile = false }) => {
-  const { userProfile, getUserById, toggleFollow, updateUserProfile } = useUserProfile();
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
+const UserProfile = () => {
+  const { user, logout } = useAuth();
+  const { userProfile, updateUserProfile } = useUserProfile();
+  
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     displayName: '',
-    bio: ''
+    bio: '',
+    musicGenres: [],
+    musicMood: '',
+    privacySettings: {
+      showListeningActivity: true,
+      allowFriendRequests: true,
+      showTopTracks: true
+    }
   });
 
+  const [stats, setStats] = useState({
+    totalPosts: 47,
+    totalLikes: 234,
+    followers: 89,
+    following: 156,
+    topGenres: ['Pop', 'Hip-Hop', 'Electronic'],
+    topArtists: ['The Weeknd', 'Dua Lipa', 'Olivia Rodrigo'],
+    recentActivity: [
+      { type: 'post', content: 'Shared "Blinding Lights" by The Weeknd', time: '2 hours ago' },
+      { type: 'like', content: 'Liked "Levitating" by Dua Lipa', time: '5 hours ago' },
+      { type: 'follow', content: 'Started following @musiclover23', time: '1 day ago' }
+    ]
+  });
+
+  const [recentPosts, setRecentPosts] = useState([
+    {
+      id: 1,
+      track: {
+        name: 'Blinding Lights',
+        artist: 'The Weeknd',
+        image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'
+      },
+      caption: 'This song hits different at 2 AM 🎵',
+      likes: 42,
+      timestamp: new Date(Date.now() - 3600000)
+    },
+    {
+      id: 2,
+      track: {
+        name: 'Levitating',
+        artist: 'Dua Lipa',
+        image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'
+      },
+      caption: 'Perfect for my morning workout! 💪',
+      likes: 28,
+      timestamp: new Date(Date.now() - 7200000)
+    }
+  ]);
+
   useEffect(() => {
-    const loadProfile = async () => {
-      setLoading(true);
-      try {
-        if (isOwnProfile && userProfile) {
-          setProfile(userProfile);
-          setIsFollowing(false);
-        } else {
-          const userData = await getUserById(userId);
-          if (userData) {
-            setProfile(userData);
-            setIsFollowing(userProfile?.following?.includes(userId) || false);
-          }
+    if (userProfile) {
+      setEditForm({
+        displayName: userProfile.displayName || '',
+        bio: userProfile.bio || '',
+        musicGenres: userProfile.musicGenres || [],
+        musicMood: userProfile.musicMood || '',
+        privacySettings: userProfile.privacySettings || {
+          showListeningActivity: true,
+          allowFriendRequests: true,
+          showTopTracks: true
         }
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      } finally {
-        setLoading(false);
+      });
+    }
+  }, [userProfile]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handlePrivacyChange = (setting) => {
+    setEditForm(prev => ({
+      ...prev,
+      privacySettings: {
+        ...prev.privacySettings,
+        [setting]: !prev.privacySettings[setting]
       }
-    };
+    }));
+  };
 
-    if (userId) {
-      loadProfile();
+  const handleSave = async () => {
+    try {
+      const success = await updateUserProfile(editForm);
+      if (success) {
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Failed to update profile:', error);
     }
-  }, [userId, isOwnProfile, userProfile, getUserById]);
+  };
 
-  const handleFollowToggle = async () => {
-    if (!profile) return;
+  const handleLogout = () => {
+    logout();
+  };
+
+  const formatTimeAgo = (timestamp) => {
+    const now = new Date();
+    const diff = now - timestamp;
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
     
-    const success = await toggleFollow(profile.userId);
-    if (success) {
-      setIsFollowing(!isFollowing);
+    if (hours < 24) {
+      return `${hours}h ago`;
+    } else {
+      return `${days}d ago`;
     }
   };
 
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    const success = await updateUserProfile(editForm);
-    if (success) {
-      setShowEditForm(false);
-      setEditForm({ displayName: '', bio: '' });
-    }
-  };
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: '📊' },
+    { id: 'posts', label: 'Posts', icon: '🎵' },
+    { id: 'activity', label: 'Activity', icon: '📈' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' }
+  ];
 
-  const handleEditClick = () => {
-    setEditForm({
-      displayName: profile?.displayName || '',
-      bio: profile?.bio || ''
-    });
-    setShowEditForm(true);
-  };
+  const renderOverview = () => (
+    <div className="overview-content">
+      <div className="stats-grid">
+        <div className="stat-card">
+          <h3>Posts</h3>
+          <p>{stats.totalPosts}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Likes</h3>
+          <p>{stats.totalLikes}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Followers</h3>
+          <p>{stats.followers}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Following</h3>
+          <p>{stats.following}</p>
+        </div>
+      </div>
 
-  if (loading) {
-    return (
-      <div className="user-profile-modal">
-        <div className="user-profile-content">
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>Loading profile...</p>
+      <div className="music-taste">
+        <h3>Music Taste</h3>
+        <div className="taste-section">
+          <div className="top-genres">
+            <h4>Top Genres</h4>
+            <div className="genre-tags">
+              {stats.topGenres.map(genre => (
+                <span key={genre} className="genre-tag">{genre}</span>
+              ))}
+            </div>
+          </div>
+          <div className="top-artists">
+            <h4>Top Artists</h4>
+            <div className="artist-list">
+              {stats.topArtists.map(artist => (
+                <div key={artist} className="artist-item">
+                  <span className="artist-name">{artist}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (!profile) {
-    return (
-      <div className="user-profile-modal">
-        <div className="user-profile-content">
-          <div className="error-state">
-            <Icon icon="material-symbols:error-outline" className="error-icon" />
-            <p>Profile not found</p>
-            <button onClick={onClose} className="retry-btn">Close</button>
+  const renderPosts = () => (
+    <div className="posts-content">
+      <h3>Recent Posts</h3>
+      <div className="posts-grid">
+        {recentPosts.map(post => (
+          <div key={post.id} className="post-card">
+            <img src={post.track.image} alt={post.track.name} className="post-image" />
+            <div className="post-info">
+              <h4>{post.track.name}</h4>
+              <p>{post.track.artist}</p>
+              <p className="post-caption">{post.caption}</p>
+              <div className="post-stats">
+                <span>❤️ {post.likes}</span>
+                <span>{formatTimeAgo(post.timestamp)}</span>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 
-  return (
-    <div className="user-profile-modal" onClick={onClose}>
-      <div className="user-profile-content" onClick={(e) => e.stopPropagation()}>
-        <div className="profile-header">
-          <button className="close-btn" onClick={onClose}>
-            <Icon icon="material-symbols:close" />
+  const renderActivity = () => (
+    <div className="activity-content">
+      <h3>Recent Activity</h3>
+      <div className="activity-feed">
+        {stats.recentActivity.map((activity, index) => (
+          <div key={index} className="activity-item">
+            <div className="activity-icon">
+              {activity.type === 'post' ? '🎵' : activity.type === 'like' ? '❤️' : '👥'}
+            </div>
+            <div className="activity-content">
+              <p>{activity.content}</p>
+              <span className="activity-time">{activity.time}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSettings = () => (
+    <div className="settings-content">
+      <h3>Profile Settings</h3>
+      
+      {!isEditing ? (
+        <div className="profile-info">
+          <div className="info-item">
+            <label>Display Name</label>
+            <p>{userProfile?.displayName || 'Not set'}</p>
+          </div>
+          <div className="info-item">
+            <label>Bio</label>
+            <p>{userProfile?.bio || 'No bio yet'}</p>
+          </div>
+          <div className="info-item">
+            <label>Music Mood</label>
+            <p>{userProfile?.musicMood || 'Not set'}</p>
+          </div>
+          <button className="edit-button" onClick={() => setIsEditing(true)}>
+            ✏️ Edit Profile
           </button>
         </div>
-
-        <div className="profile-main">
-          <div className="profile-avatar">
-            <div className="avatar-circle">
-              {profile.profilePicture ? (
-                <img src={profile.profilePicture} alt={profile.displayName} />
-              ) : (
-                <span>{profile.displayName?.charAt(0)?.toUpperCase() || 'U'}</span>
-              )}
+      ) : (
+        <div className="edit-form">
+          <div className="form-group">
+            <label htmlFor="displayName">Display Name</label>
+            <input
+              type="text"
+              id="displayName"
+              name="displayName"
+              value={editForm.displayName}
+              onChange={handleInputChange}
+              placeholder="Enter your display name"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="bio">Bio</label>
+            <textarea
+              id="bio"
+              name="bio"
+              value={editForm.bio}
+              onChange={handleInputChange}
+              placeholder="Tell us about your music taste..."
+              rows="3"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="musicMood">Music Mood</label>
+            <input
+              type="text"
+              id="musicMood"
+              name="musicMood"
+              value={editForm.musicMood}
+              onChange={handleInputChange}
+              placeholder="e.g., Energetic, Chill, Romantic"
+            />
+          </div>
+          
+          <div className="privacy-settings">
+            <h4>Privacy Settings</h4>
+            <div className="privacy-option">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editForm.privacySettings.showListeningActivity}
+                  onChange={() => handlePrivacyChange('showListeningActivity')}
+                />
+                <span>Show listening activity</span>
+              </label>
+            </div>
+            <div className="privacy-option">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editForm.privacySettings.allowFriendRequests}
+                  onChange={() => handlePrivacyChange('allowFriendRequests')}
+                />
+                <span>Allow friend requests</span>
+              </label>
+            </div>
+            <div className="privacy-option">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={editForm.privacySettings.showTopTracks}
+                  onChange={() => handlePrivacyChange('showTopTracks')}
+                />
+                <span>Show top tracks</span>
+              </label>
             </div>
           </div>
+          
+          <div className="form-actions">
+            <button className="cancel-button" onClick={() => setIsEditing(false)}>
+              Cancel
+            </button>
+            <button className="save-button" onClick={handleSave}>
+              Save Changes
+            </button>
+          </div>
+        </div>
+      )}
+      
+      <div className="danger-zone">
+        <h4>Danger Zone</h4>
+        <button className="logout-button" onClick={handleLogout}>
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  );
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return renderOverview();
+      case 'posts':
+        return renderPosts();
+      case 'activity':
+        return renderActivity();
+      case 'settings':
+        return renderSettings();
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="user-profile">
+      <div className="profile-header">
+        <div className="profile-avatar-section">
+          <img 
+            src={userProfile?.profilePicture || 'https://randomuser.me/api/portraits/men/6.jpg'} 
+            alt="Profile" 
+            className="profile-avatar"
+          />
           <div className="profile-info">
-            <h2 className="profile-name">{profile.displayName}</h2>
-            <p className="profile-bio">{profile.bio || 'No bio yet'}</p>
-            
-            <div className="profile-stats">
-              <div className="stat">
-                <span className="stat-number">{profile.postsCount || 0}</span>
-                <span className="stat-label">Posts</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">{profile.followers?.length || 0}</span>
-                <span className="stat-label">Followers</span>
-              </div>
-              <div className="stat">
-                <span className="stat-number">{profile.following?.length || 0}</span>
-                <span className="stat-label">Following</span>
-              </div>
-            </div>
+            <h1>{userProfile?.displayName || 'User'}</h1>
+            <p>{userProfile?.email || 'user@example.com'}</p>
+            {userProfile?.bio && <p className="bio">{userProfile.bio}</p>}
           </div>
         </div>
+      </div>
 
-        <div className="profile-actions">
-          {isOwnProfile ? (
-            <button className="edit-btn" onClick={handleEditClick}>
-              <Icon icon="material-symbols:edit" />
-              Edit Profile
-            </button>
-          ) : (
-            <button 
-              className={`follow-btn ${isFollowing ? 'following' : ''}`}
-              onClick={handleFollowToggle}
-            >
-              <Icon icon={isFollowing ? "material-symbols:person-remove" : "material-symbols:person-add"} />
-              {isFollowing ? 'Following' : 'Follow'}
-            </button>
-          )}
-        </div>
+      <div className="profile-tabs">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            <span className="tab-icon">{tab.icon}</span>
+            <span className="tab-label">{tab.label}</span>
+          </button>
+        ))}
+      </div>
 
-        {showEditForm && (
-          <div className="edit-form-overlay">
-            <div className="edit-form">
-              <h3>Edit Profile</h3>
-              <form onSubmit={handleEditSubmit}>
-                <div className="form-group">
-                  <label>Display Name</label>
-                  <input
-                    type="text"
-                    value={editForm.displayName}
-                    onChange={(e) => setEditForm({...editForm, displayName: e.target.value})}
-                    placeholder="Enter display name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Bio</label>
-                  <textarea
-                    value={editForm.bio}
-                    onChange={(e) => setEditForm({...editForm, bio: e.target.value})}
-                    placeholder="Tell us about yourself"
-                    rows="3"
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="button" onClick={() => setShowEditForm(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit">Save Changes</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+      <div className="profile-content">
+        {renderTabContent()}
       </div>
     </div>
   );

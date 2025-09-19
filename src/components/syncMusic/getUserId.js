@@ -16,3 +16,6 @@ export async function getUserId(accessToken) {
     // Return the user ID instead of logging it
     return data.id;
 }
+
+// Default export for compatibility
+export default { getUserId };

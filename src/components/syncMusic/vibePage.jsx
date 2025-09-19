@@ -1,319 +1,286 @@
-import React, { useEffect, useState } from "react";
-import "./vibePage.css";
-import { Icon } from '@iconify/react';
-import SpotifyTrack from '../syncMusic/spotifyTrack';
-import { getSpotifyToken } from "./spotfiyToken";
-import { getPlaylists } from "./getUsersPlaylist";
-import { getUserId } from "./getUserId";
-import ParentComponent from "./playbackParent";
-import SpotifyPlaylists from "./usersPlaylist";
-import MusicPostForm from "./musicPostForm";
-import Dashboard from "./dashboard";
-import Content from "./content";
-import Sidebar from "./sideBar";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUserProfile } from "../../contexts/UserProfileContext";
-import UserProfile from "./UserProfile";
+import MusicPostFeed from "./musicPostFeed";
+import MusicPostForm from "./musicPostForm";
+import EnhancedMusicPlayer from "./EnhancedMusicPlayer";
+import DiscoverPage from "./discoverPage";
+import LibraryPage from "./libraryPage";
+import FriendsPage from "./friendsPage";
+import SearchPage from "./searchPage";
+import NotificationsPage from "./notificationsPage";
+import SettingsPage from "./settingsPage";
+import "./vibePage.css";
 
 const VibePage = () => {
-  const [showPostForm, setShowPostForm] = useState(false);
-  const [refreshFeed, setRefreshFeed] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showUserProfile, setShowUserProfile] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  
-  // Navigation state
-  const [currentPage, setCurrentPage] = useState('home');
-  
-  // Authentication
   const { user, logout } = useAuth();
   const { userProfile } = useUserProfile();
+  
+  // State management
+  const [activeTab, setActiveTab] = useState('feed');
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
-  // Close profile menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (showProfileMenu && !event.target.closest('.profile-circle') && !event.target.closest('.profile-menu')) {
-        setShowProfileMenu(false);
-      }
-    };
+  // Mock data for demonstration
+  const [feedPosts, setFeedPosts] = useState([
+    {
+      id: 1,
+      user: {
+        id: 'user1',
+        name: 'Alex Chen',
+        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+        verified: true
+      },
+      track: {
+        id: 'track1',
+        name: 'Blinding Lights',
+        artist: 'The Weeknd',
+        album: 'After Hours',
+        image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
+        duration: 200000,
+        preview_url: 'https://p.scdn.co/mp3-preview/example1.mp3'
+      },
+      caption: 'This song hits different at 2 AM 🎵',
+      timestamp: new Date(Date.now() - 3600000),
+      likes: 42,
+      comments: 8,
+      isLiked: false,
+      spotifyUrl: 'https://open.spotify.com/track/0VjIjW4UAa4X6jCq5qjIcf'
+    },
+    {
+      id: 2,
+      user: {
+        id: 'user2',
+        name: 'Sarah Johnson',
+        avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
+        verified: false
+      },
+      track: {
+        id: 'track2',
+        name: 'Levitating',
+        artist: 'Dua Lipa',
+        album: 'Future Nostalgia',
+        image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
+        duration: 203000,
+        preview_url: 'https://p.scdn.co/mp3-preview/example2.mp3'
+      },
+      caption: 'Perfect for my morning workout! 💪',
+      timestamp: new Date(Date.now() - 7200000),
+      likes: 28,
+      comments: 5,
+      isLiked: true,
+      spotifyUrl: 'https://open.spotify.com/track/463CkQjx2Zf1y3u0htLzaL'
+    },
+    {
+      id: 3,
+      user: {
+        id: 'user3',
+        name: 'Mike Rodriguez',
+        avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
+        verified: true
+      },
+      track: {
+        id: 'track3',
+        name: 'Good 4 U',
+        artist: 'Olivia Rodrigo',
+        album: 'SOUR',
+        image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
+        duration: 178000,
+        preview_url: 'https://p.scdn.co/mp3-preview/example3.mp3'
+      },
+      caption: 'This song perfectly captures my mood today 😤',
+      timestamp: new Date(Date.now() - 10800000),
+      likes: 67,
+      comments: 12,
+      isLiked: false,
+      spotifyUrl: 'https://open.spotify.com/track/4ZtFanR9U6ndgddUvNcjcG'
+    }
+  ]);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showProfileMenu]);
+  const [discoverTracks, setDiscoverTracks] = useState([
+    {
+      id: 'discover1',
+      name: 'Industry Baby',
+      artist: 'Lil Nas X',
+      album: 'MONTERO',
+      image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
+      duration: 212000,
+      preview_url: 'https://p.scdn.co/mp3-preview/discover1.mp3',
+      spotifyUrl: 'https://open.spotify.com/track/27NovPIUIRrOZoCHxABJwK'
+    },
+    {
+      id: 'discover2',
+      name: 'Stay',
+      artist: 'The Kid LAROI & Justin Bieber',
+      album: 'F*CK LOVE 3: OVER YOU',
+      image: 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36',
+      duration: 141000,
+      preview_url: 'https://p.scdn.co/mp3-preview/discover2.mp3',
+      spotifyUrl: 'https://open.spotify.com/track/5PjdY0CKGZdEuoNab3yDmX'
+    }
+  ]);
 
-  // Fetch posts directly in this component
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('https://us-central1-mapbot-9a988.cloudfunctions.net/getMusicFeed');
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts');
-        }
-        const data = await response.json();
-        setPosts(data);
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        setError('Failed to load music feed');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handlePlayTrack = (track) => {
+    setCurrentTrack(track);
+    setShowPlayer(true);
+  };
 
-    fetchPosts();
-  }, [refreshFeed]);
+  const handleLikePost = (postId) => {
+    setFeedPosts(posts => 
+      posts.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              isLiked: !post.isLiked,
+              likes: post.isLiked ? post.likes - 1 : post.likes + 1
+            }
+          : post
+      )
+    );
+  };
 
-  const handlePostSubmit = () => {
+  const handleAddPost = (newPost) => {
+    setFeedPosts(posts => [newPost, ...posts]);
     setShowPostForm(false);
-    setRefreshFeed(prev => !prev); // Trigger feed refresh
   };
 
-  // Navigation click handlers
-  const handleNavigationClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Logout handler
   const handleLogout = () => {
     logout();
     setShowProfileMenu(false);
   };
 
-  // Profile handlers
-  const handleProfileClick = () => {
-    setSelectedUserId(user?.userId);
-    setShowUserProfile(true);
-    setShowProfileMenu(false);
-  };
+  const tabs = [
+    { id: 'feed', label: 'Feed', icon: '🏠' },
+    { id: 'discover', label: 'Discover', icon: '🔍' },
+    { id: 'library', label: 'Library', icon: '📚' },
+    { id: 'friends', label: 'Friends', icon: '👥' },
+    { id: 'search', label: 'Search', icon: '🔍' },
+    { id: 'notifications', label: 'Notifications', icon: '🔔' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' }
+  ];
 
-  const handleUserClick = (userId) => {
-    setSelectedUserId(userId);
-    setShowUserProfile(true);
-  };
-
-  const handleCloseProfile = () => {
-    setShowUserProfile(false);
-    setSelectedUserId(null);
-  };
-
-  // Render different components based on current page
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'home':
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'feed':
         return (
-          <div className="feed-container">
-            <div className="posts-feed">
-              {loading ? (
-                <div className="loading-state">
-                  <div className="loading-spinner"></div>
-                  <p>Loading vibes...</p>
-                </div>
-              ) : error ? (
-                <div className="error-state">
-                  <Icon icon="material-symbols:error-outline" className="error-icon" />
-                  <p>{error}</p>
-                  <button onClick={() => setRefreshFeed(prev => !prev)} className="retry-btn">
-                    Try Again
-                  </button>
-                </div>
-              ) : posts.length === 0 ? (
-                <div className="empty-state">
-                  <Icon icon="material-symbols:music-note" className="empty-icon" />
-                  <h3>No vibes yet</h3>
-                  <p>Be the first to share your music!</p>
-                </div>
-              ) : (
-                posts.map((post) => (
-                  <div key={post.id} className="post-card">
-                    <div className="post-header">
-                      <div className="post-user" onClick={() => handleUserClick(post.userId)}>
-                        <div className="user-avatar">
-                          <Icon icon="material-symbols:account-circle" />
-                        </div>
-                        <div className="user-info">
-                          <span className="username">{post.userId}</span>
-                          <span className="post-time">{formatTimestamp(post.timestamp)}</span>
-                        </div>
-                      </div>
-                      <div className="post-type-badge">
-                        <Icon icon={getTypeIcon(post.type)} />
-                        <span>{post.type}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="post-content">
-                      <div className="spotify-item">
-                        <Icon icon="simple-icons:spotify" className="spotify-icon" />
-                        <span className="spotify-id">{post.id}</span>
-                      </div>
-                      <p className="post-note">{post.note}</p>
-                    </div>
-                    
-                    <div className="post-actions">
-                      <button className="action-btn">
-                        <Icon icon="material-symbols:favorite-outline" />
-                        <span>Like</span>
-                      </button>
-                      <button className="action-btn">
-                        <Icon icon="material-symbols:chat-bubble-outline" />
-                        <span>Comment</span>
-                      </button>
-                      <button className="action-btn">
-                        <Icon icon="material-symbols:share" />
-                        <span>Share</span>
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+          <MusicPostFeed 
+            posts={feedPosts}
+            onLike={handleLikePost}
+            onPlay={handlePlayTrack}
+            onRefresh={() => setFeedPosts([...feedPosts])}
+          />
         );
-      case 'search':
-        return (
-          <div className="page-content">
-            <h2>Search</h2>
-            <p>Search for music, artists, and playlists</p>
-            {/* Add search functionality here */}
-          </div>
-        );
+      
+      case 'discover':
+        return <DiscoverPage />;
+      
       case 'library':
-        return <Content />;
-      case 'dashboard':
-        return <Dashboard />;
+        return <LibraryPage />;
+      
+      case 'friends':
+        return <FriendsPage />;
+      
+      case 'search':
+        return <SearchPage />;
+      
+      case 'notifications':
+        return <NotificationsPage />;
+      
+      case 'settings':
+        return <SettingsPage />;
+      
       default:
-        return <div>Page not found</div>;
+        return null;
     }
-  };
-
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'track':
-        return 'material-symbols:music-note';
-      case 'artist':
-        return 'material-symbols:person';
-      case 'playlist':
-        return 'material-symbols:queue-music';
-      default:
-        return 'material-symbols:music-note';
-    }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    if (!timestamp) return 'Just now';
-    
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-    return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
 
   return (
     <div className="vibe-page">
       {/* Header */}
-      <div className="vibe-header">
+      <header className="vibe-header">
         <div className="header-left">
-          <Icon
-            icon="mdi:cosine-wave"
-            className="header-icon"
-          />
-          <span className="brand-name">ibetune</span>
+          <h1 className="app-title">🎵 Vibetune</h1>
+        </div>
+        
+        <div className="header-center">
+          <div className="tab-navigation">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <span className="tab-icon">{tab.icon}</span>
+                <span className="tab-label">{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
         
         <div className="header-right">
-          <div className="profile-circle" onClick={() => setShowProfileMenu(!showProfileMenu)}>
-            <span className="profile-text">{user?.userId?.charAt(0)?.toUpperCase() || 'U'}</span>
-          </div>
+          <button 
+            className="add-post-button"
+            onClick={() => setShowPostForm(true)}
+          >
+            ➕ Share Music
+          </button>
           
-          {showProfileMenu && (
-            <div className="profile-menu">
-              <div className="profile-menu-item" onClick={handleProfileClick}>
-                <Icon icon="material-symbols:person" />
-                <span>Profile</span>
+          <div className="profile-section">
+            <img 
+              src={userProfile?.profilePicture || 'https://randomuser.me/api/portraits/men/6.jpg'} 
+              alt="Profile" 
+              className="profile-avatar"
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+            />
+            
+            {showProfileMenu && (
+              <div className="profile-menu">
+                <div className="profile-info">
+                  <h3>{userProfile?.displayName || 'User'}</h3>
+                  <p>{userProfile?.email || 'user@example.com'}</p>
+                </div>
+                <div className="profile-actions">
+                  <button onClick={() => {/* Navigate to profile */}}>
+                    👤 View Profile
+                  </button>
+                  <button onClick={() => {/* Navigate to settings */}}>
+                    ⚙️ Settings
+                  </button>
+                  <button onClick={handleLogout}>
+                    🚪 Logout
+                  </button>
+                </div>
               </div>
-              <div className="profile-menu-item" onClick={handleLogout}>
-                <Icon icon="material-symbols:logout" />
-                <span>Logout</span>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Dynamic Page Content */}
-      {renderCurrentPage()}
+      {/* Main Content */}
+      <main className="vibe-main">
+        {renderTabContent()}
+      </main>
 
-      {/* Music Player Card - Fixed at bottom */}
-      <div className="music-player-card-bottom">
-        <ParentComponent />
-      </div>
-
-      {/* Navigation Bar - Fixed at bottom */}
-      <div className="nav-bar-bottom">
-        <Icon 
-          icon="material-symbols:home-rounded" 
-          className={`nav-icon ${currentPage === 'home' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('home')}
+      {/* Music Player */}
+      {showPlayer && currentTrack && (
+        <EnhancedMusicPlayer 
+          track={currentTrack}
+          onClose={() => setShowPlayer(false)}
         />
-        <Icon 
-          icon="material-symbols:search-rounded" 
-          className={`nav-icon ${currentPage === 'search' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('search')}
-        />
-        <Icon 
-          icon="foundation:social-treehouse" 
-          className={`nav-icon ${currentPage === 'dashboard' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('dashboard')}
-        />
-        <Icon 
-          icon="fluent:library-20-filled" 
-          className={`nav-icon ${currentPage === 'library' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('library')}
-        />
-      </div>
-
-      {/* Subtle Post Button - Instagram Style */}
-      <div className="post-button" onClick={() => setShowPostForm(true)}>
-        <Icon icon="material-symbols:add" />
-      </div>
+      )}
 
       {/* Post Form Modal */}
       {showPostForm && (
-        <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Share Your Vibe</h3>
-              <button 
-                className="modal-close" 
-                onClick={() => setShowPostForm(false)}
-              >
-                <Icon icon="material-symbols:close" />
-              </button>
-            </div>
-            <MusicPostForm onPostSubmit={handlePostSubmit} />
-          </div>
+        <div className="modal-overlay">
+          <MusicPostForm 
+            onSubmit={handleAddPost}
+            onCancel={() => setShowPostForm(false)}
+          />
         </div>
       )}
-
-      {/* User Profile Modal */}
-      {showUserProfile && selectedUserId && (
-        <UserProfile 
-          userId={selectedUserId}
-          onClose={handleCloseProfile}
-          isOwnProfile={selectedUserId === user?.userId}
-        />
-      )}
-
     </div>
   );
 };

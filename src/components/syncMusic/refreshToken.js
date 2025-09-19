@@ -53,3 +53,6 @@ export const refreshToken = async (userId) => {
         return null;
     }
 };
+
+// Default export for compatibility
+export default { refreshToken };

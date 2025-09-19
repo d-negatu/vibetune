@@ -22,3 +22,6 @@ export async function getPlaylists(accessToken) {
     const data = await response.json();
     //console.log(data); // This will contain the user's playlists
 }
+
+// Default export for compatibility
+export default { getPlaylists };

@@ -1,314 +1,296 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
 import { useAuth } from '../../contexts/AuthContext';
 import './EnhancedMusicPlayer.css';
 
-const EnhancedMusicPlayer = () => {
+const EnhancedMusicPlayer = ({ track, onClose }) => {
   const { user } = useAuth();
-  const [player, setPlayer] = useState(null);
-  const [isActive, setIsActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(null);
-  const [position, setPosition] = useState(0);
+  const audioRef = useRef(null);
+  
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(50);
-  const [isShuffled, setIsShuffled] = useState(false);
-  const [repeatMode, setRepeatMode] = useState(0); // 0: off, 1: context, 2: track
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [volume, setVolume] = useState(70);
+  const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const positionInterval = useRef(null);
+  const [error, setError] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [repeatMode, setRepeatMode] = useState(0); // 0: off, 1: all, 2: one
 
-  // Initialize Spotify Web Playback SDK
   useEffect(() => {
-    if (!user?.accessToken) return;
-
-    const script = document.createElement('script');
-    script.src = 'https://sdk.scdn.co/spotify-player.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const spotifyPlayer = new window.Spotify.Player({
-        name: 'VibeTune Player',
-        getOAuthToken: cb => {
-          cb(user.accessToken);
-        },
-        volume: volume / 100
-      });
-
-      setPlayer(spotifyPlayer);
-
-      // Player ready
-      spotifyPlayer.addListener('ready', ({ device_id }) => {
-        console.log('Spotify Player Ready with Device ID:', device_id);
-        setIsActive(true);
-        setIsLoading(false);
-      });
-
-      // Player not ready
-      spotifyPlayer.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
-        setIsActive(false);
-      });
-
-      // Player state changed
-      spotifyPlayer.addListener('player_state_changed', (state) => {
-        if (!state) return;
-
-        setCurrentTrack(state.track_window.current_track);
-        setIsPaused(state.paused);
-        setPosition(state.position);
-        setDuration(state.duration);
-        setIsShuffled(state.shuffle);
-        setRepeatMode(state.repeat_mode);
-      });
-
-      // Initialization error
-      spotifyPlayer.addListener('initialization_error', ({ message }) => {
-        console.error('Failed to initialize Spotify Player:', message);
-        setIsLoading(false);
-      });
-
-      // Authentication error
-      spotifyPlayer.addListener('authentication_error', ({ message }) => {
-        console.error('Failed to authenticate with Spotify:', message);
-        setIsLoading(false);
-      });
-
-      // Account error
-      spotifyPlayer.addListener('account_error', ({ message }) => {
-        console.error('Failed to validate Spotify account:', message);
-        setIsLoading(false);
-      });
-
-      // Playback error
-      spotifyPlayer.addListener('playback_error', ({ message }) => {
-        console.error('Failed to perform playback:', message);
-      });
-
-      spotifyPlayer.connect();
+    if (track && audioRef.current) {
       setIsLoading(true);
+      setError('');
+      
+      // Set audio source
+      if (track.preview_url) {
+        audioRef.current.src = track.preview_url;
+      } else {
+        setError('Preview not available for this track');
+        setIsLoading(false);
+      }
+    }
+  }, [track]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+      setIsLoading(false);
     };
 
-    return () => {
-      if (player) {
-        player.disconnect();
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+      if (repeatMode === 2) {
+        audio.currentTime = 0;
+        audio.play();
+        setIsPlaying(true);
       }
     };
-  }, [user?.accessToken]);
 
-  // Update position every second
+    const handleError = () => {
+      setError('Failed to load audio');
+      setIsLoading(false);
+    };
+
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    return () => {
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+    };
+  }, [repeatMode]);
+
   useEffect(() => {
-    if (isActive && !isPaused) {
-      positionInterval.current = setInterval(() => {
-        setPosition(prev => prev + 1000);
-      }, 1000);
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume / 100;
+    }
+  }, [volume, isMuted]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      clearInterval(positionInterval.current);
-    }
-
-    return () => clearInterval(positionInterval.current);
-  }, [isActive, isPaused]);
-
-  // Player controls
-  const togglePlay = () => {
-    if (player) {
-      player.togglePlay();
+      audioRef.current.play();
+      setIsPlaying(true);
     }
   };
 
-  const previousTrack = () => {
-    if (player) {
-      player.previousTrack();
-    }
+  const handleSeek = (e) => {
+    if (!audioRef.current) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const newTime = (clickX / width) * duration;
+    
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
   };
 
-  const nextTrack = () => {
-    if (player) {
-      player.nextTrack();
-    }
-  };
-
-  const setVolumeLevel = (newVolume) => {
+  const handleVolumeChange = (e) => {
+    const newVolume = parseInt(e.target.value);
     setVolume(newVolume);
-    if (player) {
-      player.setVolume(newVolume / 100);
-    }
+    setIsMuted(newVolume === 0);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
   };
 
   const toggleShuffle = () => {
-    if (player) {
-      player.setShuffle(!isShuffled);
-    }
+    setIsShuffled(!isShuffled);
   };
 
   const toggleRepeat = () => {
-    if (player) {
-      const newRepeatMode = (repeatMode + 1) % 3;
-      player.setRepeat(newRepeatMode);
-    }
+    setRepeatMode((prev) => (prev + 1) % 3);
   };
 
-  const seekTo = (positionMs) => {
-    if (player) {
-      player.seek(positionMs);
-    }
-  };
-
-  const formatTime = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
+  const formatTime = (time) => {
+    if (isNaN(time)) return '0:00';
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const progressPercentage = duration > 0 ? (position / duration) * 100 : 0;
+  const handleSpotifyClick = () => {
+    if (track.spotifyUrl) {
+      window.open(track.spotifyUrl, '_blank');
+    }
+  };
 
-  if (!isActive && !isLoading) {
-    return null; // Don't show player if not connected
-  }
+  const handleLike = () => {
+    // TODO: Implement like functionality
+    console.log('Liked track:', track.name);
+  };
 
-  if (isLoading) {
-    return (
-      <div className="enhanced-music-player loading">
-        <div className="player-content">
-          <div className="loading-spinner"></div>
-          <span>Connecting to Spotify...</span>
-        </div>
-      </div>
-    );
-  }
+  const handleShare = () => {
+    if (navigator.share && track.spotifyUrl) {
+      navigator.share({
+        title: `${track.name} by ${track.artist}`,
+        text: `Check out this song on Vibetune!`,
+        url: track.spotifyUrl
+      });
+    } else {
+      navigator.clipboard.writeText(track.spotifyUrl);
+      // TODO: Show toast notification
+    }
+  };
+
+  if (!track) return null;
 
   return (
-    <div className={`enhanced-music-player ${isExpanded ? 'expanded' : ''}`}>
+    <div className={`music-player ${isExpanded ? 'expanded' : ''}`}>
+      <audio ref={audioRef} preload="metadata" />
+      
+      {/* Player Header */}
+      <div className="player-header">
+        <div className="track-info">
+          <img src={track.image} alt={track.name} className="track-image" />
+          <div className="track-details">
+            <h3 className="track-name">{track.name}</h3>
+            <p className="track-artist">{track.artist}</p>
+          </div>
+        </div>
+        
+        <div className="player-controls-header">
+          <button className="control-button" onClick={handleLike}>
+            ❤️
+          </button>
+          <button className="control-button" onClick={handleShare}>
+            📤
+          </button>
+          <button className="control-button" onClick={handleSpotifyClick}>
+            🎵
+          </button>
+          <button className="control-button" onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? '🔽' : '🔼'}
+          </button>
+          <button className="control-button close-button" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+      </div>
+
       {/* Progress Bar */}
-      <div className="progress-bar-container">
-        <div 
-          className="progress-bar"
-          onClick={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const newPosition = (clickX / rect.width) * duration;
-            seekTo(newPosition);
-          }}
-        >
+      <div className="progress-section">
+        <span className="time-display">{formatTime(currentTime)}</span>
+        <div className="progress-bar" onClick={handleSeek}>
           <div 
             className="progress-fill" 
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
+            style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+          />
         </div>
+        <span className="time-display">{formatTime(duration)}</span>
       </div>
 
-      <div className="player-content">
-        {/* Track Info */}
-        <div className="track-info" onClick={() => setIsExpanded(!isExpanded)}>
-          <div className="album-art">
-            {currentTrack?.album?.images?.[0]?.url ? (
-              <img 
-                src={currentTrack.album.images[0].url} 
-                alt={currentTrack.name}
-              />
-            ) : (
-              <div className="default-art">
-                <Icon icon="material-symbols:music-note" />
-              </div>
-            )}
-          </div>
-          <div className="track-details">
-            <div className="track-name">
-              {currentTrack?.name || 'No track playing'}
-            </div>
-            <div className="artist-name">
-              {currentTrack?.artists?.map(artist => artist.name).join(', ') || 'Unknown Artist'}
-            </div>
-          </div>
+      {/* Main Controls */}
+      <div className="main-controls">
+        <button 
+          className={`control-button shuffle-button ${isShuffled ? 'active' : ''}`}
+          onClick={toggleShuffle}
+        >
+          🔀
+        </button>
+        
+        <button className="control-button skip-button">
+          ⏮️
+        </button>
+        
+        <button 
+          className="play-pause-button"
+          onClick={togglePlayPause}
+          disabled={isLoading || error}
+        >
+          {isLoading ? '⏳' : isPlaying ? '⏸️' : '▶️'}
+        </button>
+        
+        <button className="control-button skip-button">
+          ⏭️
+        </button>
+        
+        <button 
+          className={`control-button repeat-button ${repeatMode > 0 ? 'active' : ''}`}
+          onClick={toggleRepeat}
+        >
+          {repeatMode === 0 ? '🔁' : repeatMode === 1 ? '🔁' : '🔂'}
+        </button>
+      </div>
+
+      {/* Volume and Additional Controls */}
+      <div className="volume-section">
+        <button className="control-button" onClick={toggleMute}>
+          {isMuted ? '🔇' : '🔊'}
+        </button>
+        
+        <div className="volume-bar">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={isMuted ? 0 : volume}
+            onChange={handleVolumeChange}
+            className="volume-slider"
+          />
         </div>
+        
+        <span className="volume-display">{isMuted ? 0 : volume}%</span>
+      </div>
 
-        {/* Controls */}
-        <div className="player-controls">
-          <button 
-            className={`control-btn shuffle ${isShuffled ? 'active' : ''}`}
-            onClick={toggleShuffle}
-            title="Shuffle"
-          >
-            <Icon icon="material-symbols:shuffle" />
-          </button>
-
-          <button 
-            className="control-btn previous"
-            onClick={previousTrack}
-            title="Previous"
-          >
-            <Icon icon="material-symbols:skip-previous" />
-          </button>
-
-          <button 
-            className="control-btn play-pause"
-            onClick={togglePlay}
-            title={isPaused ? 'Play' : 'Pause'}
-          >
-            <Icon icon={isPaused ? "material-symbols:play-arrow" : "material-symbols:pause"} />
-          </button>
-
-          <button 
-            className="control-btn next"
-            onClick={nextTrack}
-            title="Next"
-          >
-            <Icon icon="material-symbols:skip-next" />
-          </button>
-
-          <button 
-            className={`control-btn repeat ${repeatMode > 0 ? 'active' : ''}`}
-            onClick={toggleRepeat}
-            title={repeatMode === 0 ? 'Repeat Off' : repeatMode === 1 ? 'Repeat All' : 'Repeat One'}
-          >
-            <Icon icon={repeatMode === 2 ? "material-symbols:repeat-one" : "material-symbols:repeat"} />
-          </button>
-        </div>
-
-        {/* Time and Volume */}
-        <div className="player-info">
-          <div className="time-display">
-            <span>{formatTime(position)}</span>
-            <span>/</span>
-            <span>{formatTime(duration)}</span>
+      {/* Expanded Controls */}
+      {isExpanded && (
+        <div className="expanded-controls">
+          <div className="playback-rate-controls">
+            <label>Playback Speed:</label>
+            <div className="rate-buttons">
+              {[0.5, 0.75, 1, 1.25, 1.5, 2].map(rate => (
+                <button
+                  key={rate}
+                  className={`rate-button ${playbackRate === rate ? 'active' : ''}`}
+                  onClick={() => setPlaybackRate(rate)}
+                >
+                  {rate}x
+                </button>
+              ))}
+            </div>
           </div>
           
-          <div className="volume-control">
-            <Icon icon="material-symbols:volume-down" />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volume}
-              onChange={(e) => setVolumeLevel(parseInt(e.target.value))}
-              className="volume-slider"
-            />
-            <Icon icon="material-symbols:volume-up" />
+          <div className="track-metadata">
+            <h4>Track Details</h4>
+            <p><strong>Album:</strong> {track.album}</p>
+            <p><strong>Duration:</strong> {formatTime(duration)}</p>
+            <p><strong>Artist:</strong> {track.artist}</p>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Expanded View */}
-      {isExpanded && (
-        <div className="expanded-view">
-          <div className="expanded-album-art">
-            {currentTrack?.album?.images?.[0]?.url ? (
-              <img 
-                src={currentTrack.album.images[0].url} 
-                alt={currentTrack.name}
-              />
-            ) : (
-              <div className="default-art-large">
-                <Icon icon="material-symbols:music-note" />
-              </div>
-            )}
-          </div>
-          <div className="expanded-track-info">
-            <h3>{currentTrack?.name || 'No track playing'}</h3>
-            <p>{currentTrack?.artists?.map(artist => artist.name).join(', ') || 'Unknown Artist'}</p>
-            <p className="album-name">{currentTrack?.album?.name || ''}</p>
-          </div>
+      {/* Error Message */}
+      {error && (
+        <div className="error-message">
+          <span>⚠️ {error}</span>
+          <button onClick={() => setError('')}>✕</button>
         </div>
       )}
     </div>
