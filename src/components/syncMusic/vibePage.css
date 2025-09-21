@@ -1,17 +1,18 @@
-/* VibePage Styles */
+/* VibePage Styles - Merged Design */
 .vibe-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #1B1A1A 0%, #2D1B69 100%);
   color: #FFFFFF;
   font-family: 'Poppins', sans-serif;
+  padding-bottom: 120px; /* Space for bottom navigation */
 }
 
-/* Header */
+/* Header - Your original design with modern touches */
 .vibe-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 30px;
+  padding: 15px 20px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -20,70 +21,64 @@
   z-index: 100;
 }
 
-.header-left .app-title {
-  font-size: 28px;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.current-track-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-left: 15px;
+}
+
+.track-icon {
+  font-size: 16px;
+  color: #8B5CF6;
+}
+
+.track-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-icon {
+  font-size: 24px;
+  color: #8B5CF6;
+}
+
+.brand-name {
+  font-size: 24px;
   font-weight: 700;
   background: linear-gradient(135deg, #8B5CF6, #EC4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0;
-}
-
-.header-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.tab-navigation {
-  display: flex;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-}
-
-.tab-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 12px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-}
-
-.tab-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-}
-
-.tab-button.active {
-  background: linear-gradient(135deg, #8B5CF6, #EC4899);
-  color: #FFFFFF;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-}
-
-.tab-icon {
-  font-size: 16px;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
 }
 
-.add-post-button {
-  padding: 12px 24px;
+.play-now-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
   background: linear-gradient(135deg, #8B5CF6, #EC4899);
   color: #FFFFFF;
   border: none;
@@ -95,27 +90,38 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.add-post-button:hover {
+.play-now-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
 }
 
-.profile-section {
-  position: relative;
+.play-now-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.profile-avatar {
+.profile-circle {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.profile-avatar:hover {
-  border-color: #8B5CF6;
+.profile-circle:hover {
   transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.profile-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
 }
 
 .profile-menu {
@@ -125,219 +131,293 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border-radius: 15px;
-  padding: 20px;
-  min-width: 250px;
+  padding: 15px;
+  min-width: 200px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
 }
 
-.profile-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.profile-info p {
-  margin: 0 0 15px 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-}
-
-.profile-actions {
+.profile-menu-item {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 10px;
-}
-
-.profile-actions button {
   padding: 10px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
   border-radius: 8px;
-  color: #FFFFFF;
-  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-align: left;
-  font-family: 'Poppins', sans-serif;
+  color: #FFFFFF;
+  font-size: 14px;
 }
 
-.profile-actions button:hover {
-  background: rgba(255, 255, 255, 0.2);
+.profile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* Main Content */
-.vibe-main {
-  padding: 30px;
-  max-width: 1200px;
+/* Feed Container - Your original structure */
+.feed-container {
+  padding: 20px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-/* Discover Content */
-.discover-content h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.discover-tracks {
-  display: grid;
-  gap: 20px;
-}
-
-.discover-track {
+.posts-feed {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 20px;
-  padding: 20px;
+}
+
+.post-card {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
   backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
-.discover-track:hover {
+.post-card:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
-.track-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  object-fit: cover;
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
-.track-info {
-  flex: 1;
+.post-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
 }
 
-.track-info h3 {
-  margin: 0 0 5px 0;
+.user-avatar {
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
   font-size: 16px;
   font-weight: 600;
-}
-
-.track-info p {
-  margin: 0 0 3px 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-}
-
-.track-info .album {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-}
-
-.play-button {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #8B5CF6, #EC4899);
-  border: none;
   color: #FFFFFF;
-  font-size: 18px;
+}
+
+.post-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.post-type-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  font-size: 12px;
+  color: #8B5CF6;
+}
+
+.post-content {
+  margin-bottom: 15px;
+}
+
+.spotify-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.spotify-icon {
+  font-size: 16px;
+  color: #1DB954;
+}
+
+.spotify-id {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Courier New', monospace;
+}
+
+.post-note {
+  font-size: 14px;
+  color: #FFFFFF;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.post-actions {
+  display: flex;
+  gap: 20px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.action-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.play-btn {
+  background: linear-gradient(135deg, #8B5CF6, #EC4899) !important;
+  color: #FFFFFF !important;
+}
+
+.play-btn:hover {
+  background: linear-gradient(135deg, #7C3AED, #DB2777) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.play-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading and Error States */
+.loading-state, .error-state, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #8B5CF6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-icon, .empty-icon {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 15px;
+}
+
+.retry-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.play-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
 }
 
-/* Library Content */
-.library-content h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.library-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.stat-card {
-  padding: 25px;
+/* Bottom Navigation - Modern mobile approach */
+.nav-bar-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: center;
-}
-
-.stat-card h3 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.stat-card p {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #8B5CF6, #EC4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Friends Content */
-.friends-content h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.friends-list {
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  justify-content: space-around;
+  padding: 15px 0;
+  z-index: 100;
 }
 
-.friend-item {
+.nav-icon {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.nav-icon:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-icon.active {
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.2);
+}
+
+/* Music Player Card */
+.music-player-card-bottom {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 99;
+}
+
+/* Post Button - Instagram Style */
+.post-button {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #8B5CF6, #EC4899);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  transition: all 0.3s ease;
+  z-index: 100;
 }
 
-.friend-item img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
+.post-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 25px rgba(139, 92, 246, 0.6);
 }
 
-.friend-info {
-  flex: 1;
+.post-button .iconify {
+  font-size: 24px;
+  color: #FFFFFF;
 }
 
-.friend-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.friend-info p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-}
-
-.online-indicator {
-  font-size: 12px;
-}
-
-/* Modal Overlay */
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -352,65 +432,139 @@
   padding: 20px;
 }
 
+.modal-content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #FFFFFF;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .vibe-header {
-    padding: 15px 20px;
-    flex-direction: column;
-    gap: 15px;
+    padding: 15px;
   }
   
-  .header-center {
-    order: -1;
+  .brand-name {
+    font-size: 20px;
   }
   
-  .tab-navigation {
-    flex-wrap: wrap;
-    justify-content: center;
+  .feed-container {
+    padding: 15px;
   }
   
-  .tab-button {
-    padding: 10px 15px;
-    font-size: 13px;
+  .post-card {
+    padding: 15px;
   }
   
-  .tab-label {
-    display: none;
+  .nav-bar-bottom {
+    padding: 12px 0;
   }
   
-  .vibe-main {
-    padding: 20px 15px;
+  .nav-icon {
+    font-size: 20px;
+    padding: 8px;
   }
   
-  .discover-track {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
+  .post-button {
+    width: 50px;
+    height: 50px;
+    bottom: 90px;
+    right: 15px;
   }
   
-  .library-stats {
-    grid-template-columns: 1fr;
-  }
-  
-  .friend-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
+  .music-player-card-bottom {
+    left: 15px;
+    right: 15px;
+    bottom: 70px;
   }
 }
 
 @media (max-width: 480px) {
-  .header-left .app-title {
-    font-size: 24px;
+  .vibe-page {
+    padding-bottom: 100px;
   }
   
-  .add-post-button {
-    padding: 10px 16px;
-    font-size: 13px;
+  .brand-name {
+    font-size: 18px;
   }
   
-  .profile-menu {
-    min-width: 200px;
-    right: -50px;
+  .header-icon {
+    font-size: 20px;
+  }
+  
+  .feed-container {
+    padding: 10px;
+  }
+  
+  .post-card {
+    padding: 12px;
+  }
+  
+  .post-actions {
+    gap: 15px;
+  }
+  
+  .action-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .nav-bar-bottom {
+    padding: 10px 0;
+  }
+  
+  .nav-icon {
+    font-size: 18px;
+    padding: 6px;
+  }
+  
+  .post-button {
+    width: 48px;
+    height: 48px;
+    bottom: 85px;
+    right: 12px;
+  }
+  
+  .post-button .iconify {
+    font-size: 20px;
+  }
+  
+  .music-player-card-bottom {
+    left: 12px;
+    right: 12px;
+    bottom: 65px;
   }
 }

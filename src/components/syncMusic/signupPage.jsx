@@ -109,27 +109,61 @@ const SignupPage = () => {
     setLoading(true);
     
     try {
-      // Mock user creation for now (replace with actual Firebase function later)
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
-      // Create mock user data
-      const userData = {
-        uid: `user_${Date.now()}`,
-        email: formData.email,
-        username: formData.username,
-        displayName: formData.username,
-        profileCompleted: false
-      };
-      
-      // Simulate successful signup
-      login(userData);
-      
-      // Redirect to profile setup
-      window.location.href = '/profile-setup';
+      // Call the createUser Cloud Function
+      const response = await fetch('https://us-central1-mapbot-9a988.cloudfunctions.net/createUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          username: formData.username
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Signup failed');
+      }
+
+      if (result.success) {
+        // Create user data for the auth context
+        const userData = {
+          uid: result.user.uid,
+          email: result.user.email,
+          username: formData.username,
+          displayName: formData.username,
+          profileCompleted: false
+        };
+        
+        // Login the user
+        login(userData);
+        
+        // Redirect to profile setup
+        window.location.href = '/profile-setup';
+      } else {
+        throw new Error(result.error || 'Signup failed');
+      }
       
     } catch (error) {
       console.error('Signup error:', error);
-      setErrors({ general: 'Signup failed. Please try again.' });
+      
+      // Handle specific error messages
+      let errorMessage = 'Signup failed. Please try again.';
+      
+      if (error.message.includes('email-already-exists')) {
+        errorMessage = 'This email is already registered. Please use a different email or try logging in.';
+      } else if (error.message.includes('invalid-email')) {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.message.includes('weak-password')) {
+        errorMessage = 'Password should be at least 6 characters long.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
     }

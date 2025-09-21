@@ -52,6 +52,9 @@ const{getMusicFeed} = require("./src/getMusicFeed.js");
 //Import updateLikes
 const{updateLikes} = require("./src/updateLikes.js");
 
+//Import createUser function
+const{createUser} = require("./src/createUser.js");
+
 // Import user profile functions
 const {
   getUserProfile,
@@ -63,8 +66,6 @@ const {
   getUserFollowing
 } = require('./src/userProfile.js');
 
-// Import createUser function
-const { createUser } = require('./src/createUser.js');
 
 // Export the createSession function as an HTTP endpoint
 //a POST request to create a new session in Sync Bot .

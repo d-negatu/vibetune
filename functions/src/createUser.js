@@ -1,78 +1,69 @@
-import { onRequest } from "firebase-functions/v2/https";
-import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
+const admin = require('firebase-admin');
 
-const db = getFirestore();
-
-export const createUser = onRequest(async (req, res) => {
-  // Enable CORS
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    res.status(204).send('');
-    return;
-  }
-
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
+// Function to handle user registration
+const createUser = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password } = req.body;
 
     // Validate input
-    if (!email || !password || !username) {
-      res.status(400).json({ error: 'Email, password, and username are required' });
-      return;
+    if (!email || !password) {
+      return res.status(400).json({ 
+        error: 'Email and password are required' 
+      });
     }
 
-    // Create user with Firebase Auth
-    const userRecord = await getAuth().createUser({
+    // Create user using Firebase Admin SDK
+    const userRecord = await admin.auth().createUser({
       email: email,
-      password: password,
-      displayName: username,
+      password: password
     });
 
-    // Create user document in Firestore
-    await db.collection('users').doc(userRecord.uid).set({
-      uid: userRecord.uid,
-      email: email,
-      username: username,
-      displayName: username,
-      createdAt: new Date(),
-      profileCompleted: false,
-      spotifyConnected: false,
-      preferences: {
-        musicGenres: [],
-        privacy: 'public'
-      }
-    });
+    console.log('User created successfully:', userRecord.uid);
+    console.log('User email:', userRecord.email);
+
+    // You can add additional user data to Firestore here
+    // Example: await admin.firestore().collection('users').doc(userRecord.uid).set({...});
 
     res.status(201).json({
       success: true,
       user: {
         uid: userRecord.uid,
-        email: email,
-        username: username,
-        displayName: username
+        email: userRecord.email,
+        emailVerified: userRecord.emailVerified
       }
     });
 
   } catch (error) {
-    console.error('Error creating user:', error);
-    
-    let errorMessage = 'Failed to create user';
-    if (error.code === 'auth/email-already-exists') {
-      errorMessage = 'Email already exists';
-    } else if (error.code === 'auth/weak-password') {
-      errorMessage = 'Password is too weak';
-    } else if (error.code === 'auth/invalid-email') {
-      errorMessage = 'Invalid email address';
+    console.error('Registration error:', error.code, error.message);
+
+    // Handle specific errors
+    let errorMessage = 'Registration failed';
+    let statusCode = 500;
+
+    switch (error.code) {
+      case 'auth/email-already-exists':
+        errorMessage = 'This email is already registered';
+        statusCode = 409;
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Please enter a valid email address';
+        statusCode = 400;
+        break;
+      case 'auth/weak-password':
+        errorMessage = 'Password should be at least 6 characters';
+        statusCode = 400;
+        break;
+      default:
+        errorMessage = error.message || 'Registration failed';
     }
 
-    res.status(400).json({ error: errorMessage });
+    res.status(statusCode).json({
+      success: false,
+      error: errorMessage,
+      code: error.code
+    });
   }
-});
+};
+
+// Export the function
+module.exports = { createUser };
