@@ -21,15 +21,39 @@ const createUser = async (req, res) => {
     console.log('User created successfully:', userRecord.uid);
     console.log('User email:', userRecord.email);
 
-    // You can add additional user data to Firestore here
-    // Example: await admin.firestore().collection('users').doc(userRecord.uid).set({...});
+    // Create user document in Firestore
+    const db = admin.firestore();
+    const userData = {
+      uid: userRecord.uid,
+      email: userRecord.email,
+      emailVerified: userRecord.emailVerified,
+      displayName: userRecord.displayName || '',
+      photoURL: userRecord.photoURL || '',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt: admin.firestore.FieldValue.serverTimestamp(),
+      isActive: true,
+      // Additional fields for VibeTune
+      username: req.body.username || '',
+      profileCompleted: false,
+      spotifyConnected: false,
+      preferences: {
+        theme: 'dark',
+        notifications: true,
+        privacy: 'public'
+      }
+    };
+
+    await db.collection('users').doc(userRecord.uid).set(userData);
+    console.log('User document created in Firestore:', userRecord.uid);
 
     res.status(201).json({
       success: true,
       user: {
         uid: userRecord.uid,
         email: userRecord.email,
-        emailVerified: userRecord.emailVerified
+        emailVerified: userRecord.emailVerified,
+        username: userData.username,
+        profileCompleted: userData.profileCompleted
       }
     });
 

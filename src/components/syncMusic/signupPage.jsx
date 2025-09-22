@@ -22,7 +22,15 @@ const SignupPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user, logout } = useAuth();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (user) {
+      // User is already logged in, redirect to dashboard or vibe page
+      window.location.href = '/vibe';
+    }
+  }, [user]);
 
   // Initialize particles when component mounts
   useEffect(() => {
@@ -133,9 +141,9 @@ const SignupPage = () => {
         const userData = {
           uid: result.user.uid,
           email: result.user.email,
-          username: formData.username,
-          displayName: formData.username,
-          profileCompleted: false
+          username: result.user.username,
+          displayName: result.user.username,
+          profileCompleted: result.user.profileCompleted
         };
         
         // Login the user
@@ -296,6 +304,26 @@ const SignupPage = () => {
           <span>Already have an account? </span>
           <a href="/login" className="login-text">Sign in</a>
         </div>
+
+        {/* Debug: Logout button for testing */}
+        {user && (
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <p>You are already logged in as: {user.email}</p>
+            <button 
+              onClick={logout}
+              style={{ 
+                padding: '10px 20px', 
+                backgroundColor: '#ff4444', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: '5px',
+                cursor: 'pointer'
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

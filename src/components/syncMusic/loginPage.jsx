@@ -15,6 +15,7 @@
 // These values are necessary for OAuth2 authentication flow.
 import React, { useEffect } from "react";
 // import { Icon } from '@iconify/react';
+import { useAuth } from '../../contexts/AuthContext';
 import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -65,6 +66,16 @@ const handleLogin = () => {
 
 
 const LoginPage = () => {
+    const { user, logout } = useAuth();
+
+    // Check if user is already logged in
+    useEffect(() => {
+        if (user) {
+            // User is already logged in, redirect to dashboard or vibe page
+            window.location.href = '/vibe';
+        }
+    }, [user]);
+
     // Initialize particles when component mounts
     useEffect(() => {
         // Wait for particles.js to be available
