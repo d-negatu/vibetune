@@ -3,7 +3,7 @@
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/d-negatu/vibetune/blob/main/CONTRIBUTING.md)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)](https://github.com/d-negatu/vibetune/releases)
 
-<div style="width: 50px; height: auto;">
+<div style="width: 70px; height: auto;">
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 8%; height: auto;" alt="VibeTune Logo" />
 
 ---
