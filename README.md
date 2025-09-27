@@ -14,7 +14,6 @@ Built on Spotify, Apple Music, and YouTube Music APIs, VibeTune allows users to 
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
