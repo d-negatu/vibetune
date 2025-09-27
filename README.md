@@ -2,9 +2,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/d-negatu/vibetune/blob/main/CONTRIBUTING.md)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/d-negatu/vibetune)](https://github.com/d-negatu/vibetune/releases)
-[![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://reactjs.org/)
-[![Firebase](https://img.shields.io/badge/Firebase-Cloud-orange.svg)](https://firebase.google.com/)
-[![Spotify API](https://img.shields.io/badge/Spotify-API-green.svg)](https://developer.spotify.com/)
 
 <div style="width: 50px; height: auto;">
   <img src="https://github.com/user-attachments/assets/710b7038-923d-4020-b2bd-bbb59e8ab650" style="width: 8%; height: auto;" alt="VibeTune Logo" />
