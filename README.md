@@ -8,7 +8,7 @@
 
 ---
 
-Vibetune builds on Spotify, Apple Music and Youtube Music APIs and provides users features to share music posts, manange playlists and vibe with Spotify, Apple Music and Youtube Music users.
+Built on Spotify, Apple Music, and YouTube Music APIs, VibeTune allows users to share music posts, manage playlists, and interact with listeners across multiple streaming platforms.
 
 
 
