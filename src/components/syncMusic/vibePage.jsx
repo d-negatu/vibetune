@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./vibePage.css";
 import { Icon } from '@iconify/react';
-import SpotifyTrack from '../syncMusic/spotifyTrack';
+import { useNavigate } from 'react-router-dom';
+import SpotifyTrack from './spotifyTrack';
 import { getSpotifyToken } from "./spotfiyToken";
 import { getPlaylists } from "./getUsersPlaylist";
 import { getUserId } from "./getUserId";
 import ParentComponent from "./playbackParent";
+import MusicPlayer from "./musicPlayer";
 import SpotifyPlaylists from "./usersPlaylist";
 import MusicPostForm from "./musicPostForm";
 import Dashboard from "./dashboard";
@@ -13,16 +15,10 @@ import Content from "./content";
 import Sidebar from "./sideBar";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUserProfile } from "../../contexts/UserProfileContext";
-import UserProfile from "./UserProfile";
-import DiscoverPage from "./discoverPage";
-import LibraryPage from "./libraryPage";
-import FriendsPage from "./friendsPage";
-import SearchPage from "./searchPage";
-import NotificationsPage from "./notificationsPage";
-import SettingsPage from "./settingsPage";
-import MusicPlayer from "./musicPlayer";
+import UserProfile from "./userProfile";
 
 const VibePage = () => {
+  const navigate = useNavigate();
   const [showPostForm, setShowPostForm] = useState(false);
   const [refreshFeed, setRefreshFeed] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -35,8 +31,199 @@ const VibePage = () => {
   // Music player state
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlayerLoading, setIsPlayerLoading] = useState(false);
+  const [audioElement, setAudioElement] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   
-  // Navigation state - keeping your original structure
+  // Spotify Web Playback SDK state
+  const [spotifyPlayer, setSpotifyPlayer] = useState(null);
+  const [isWebPlaybackReady, setIsWebPlaybackReady] = useState(false);
+  const [playbackMode, setPlaybackMode] = useState('unknown'); // 'webplayback', 'preview', 'demo'
+  
+  // Initialize Spotify Web Playback SDK
+  useEffect(() => {
+    const initializeSpotifyPlayer = async () => {
+      try {
+        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+        const clientSecret = import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET;
+        
+        if (!clientId || !clientSecret) {
+          console.log('Spotify credentials not found, skipping Web Playback');
+          return;
+        }
+
+        // Get Spotify token
+        const token = await getSpotifyToken(clientId, clientSecret);
+        console.log('Token obtained for Web Playback:', token ? 'YES' : 'NO');
+
+        // Load Spotify Web Playback SDK
+        if (!window.Spotify) {
+          const script = document.createElement('script');
+          script.src = 'https://sdk.scdn.co/spotify-player.js';
+          script.async = true;
+          document.body.appendChild(script);
+
+          script.onload = () => {
+            window.onSpotifyWebPlaybackSDKReady = () => {
+              const player = new window.Spotify.Player({
+                name: 'Vibetune Player',
+                getOAuthToken: cb => cb(token),
+                volume: 0.5
+              });
+
+              // Player ready
+              player.addListener('ready', ({ device_id }) => {
+                console.log('Spotify Web Playback Ready with Device ID:', device_id);
+                setSpotifyPlayer(player);
+                setIsWebPlaybackReady(true);
+                setPlaybackMode('webplayback');
+              });
+
+              // Player not ready
+              player.addListener('not_ready', ({ device_id }) => {
+                console.log('Spotify Web Playback not ready:', device_id);
+                setIsWebPlaybackReady(false);
+              });
+
+              // Player state changed
+              player.addListener('player_state_changed', (state) => {
+                if (!state) return;
+                setIsPlaying(!state.paused);
+              });
+
+              // Error handlers
+              player.addListener('initialization_error', ({ message }) => {
+                console.error('Spotify Web Playback initialization error:', message);
+                setIsWebPlaybackReady(false);
+              });
+
+              player.addListener('authentication_error', ({ message }) => {
+                console.error('Spotify Web Playback auth error:', message);
+                setIsWebPlaybackReady(false);
+              });
+
+              player.connect();
+            };
+          };
+        }
+      } catch (error) {
+        console.error('Error initializing Spotify Web Playback:', error);
+        setIsWebPlaybackReady(false);
+      }
+    };
+
+    initializeSpotifyPlayer();
+  }, []);
+
+  // Load default track "No Time Wasted" on component mount
+  useEffect(() => {
+    const loadDefaultTrack = async () => {
+      try {
+        setIsPlayerLoading(true);
+        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+        const clientSecret = import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET;
+        
+        if (!clientId || !clientSecret) {
+          console.error('Spotify credentials not found');
+          return;
+        }
+
+        // Get Spotify token
+        const token = await getSpotifyToken(clientId, clientSecret);
+        console.log('Token obtained:', token ? 'YES' : 'NO');
+        
+        // Try multiple popular songs to find one with preview URL
+        const searchQueries = ["blinding lights", "watermelon sugar", "good 4 u", "drivers license"];
+        
+        let selectedTrack = null;
+        for (const searchQuery of searchQueries) {
+          console.log(`Trying search: ${searchQuery}`);
+          
+          try {
+            const searchResponse = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track&limit=5`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (searchResponse.ok) {
+              const searchData = await searchResponse.json();
+              
+              // Check each track for preview URL
+              if (searchData.tracks?.items) {
+                for (const track of searchData.tracks.items) {
+                  console.log(`Checking ${searchQuery}: ${track.name} - Preview URL: ${track.preview_url ? 'YES' : 'NO'}`);
+                  if (track.preview_url) {
+                    selectedTrack = track;
+                    console.log(`Found track with preview: ${track.name}`);
+                    break;
+                  }
+                }
+              }
+              
+              if (selectedTrack) break; // Stop searching once we found one
+            }
+          } catch (error) {
+            console.log(`Error searching for ${searchQuery}:`, error.message);
+          }
+        }
+
+        // If no track with preview found in search, try a guaranteed track ID that has preview
+        if (!selectedTrack) {
+          console.log('No tracks with preview found in search, trying guaranteed track...');
+          const guaranteedTrackId = "4uLU6hMCjMI75M1A2tKUQC"; // As It Was - Harry Styles
+          const guaranteedResponse = await fetch(`https://api.spotify.com/v1/tracks/${guaranteedTrackId}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          
+          if (guaranteedResponse.ok) {
+            const guaranteedTrack = await guaranteedResponse.json();
+            console.log(`Guaranteed track: ${guaranteedTrack.name} - Preview URL: ${guaranteedTrack.preview_url ? 'YES' : 'NO'}`);
+            if (guaranteedTrack.preview_url) {
+              selectedTrack = guaranteedTrack;
+            } else {
+              // Load the track anyway so user sees something
+              selectedTrack = guaranteedTrack;
+            }
+          } else {
+            console.log(`Guaranteed track failed with status: ${guaranteedResponse.status}`);
+          }
+        }
+
+        if (selectedTrack) {
+          setCurrentTrack(selectedTrack);
+          console.log('Loaded track:', selectedTrack.name, '- Preview:', selectedTrack.preview_url ? 'YES' : 'NO');
+        } else {
+          console.log('No tracks with preview found, creating demo track...');
+          // Create a demo track object for testing
+          const demoTrack = {
+            id: "demo_track",
+            name: "Demo Track (No Preview)",
+            artists: [{ name: "Demo Artist" }],
+            album: {
+              images: [{ url: "https://via.placeholder.com/300x300/8B5CF6/FFFFFF?text=🎵" }]
+            },
+            preview_url: null
+          };
+          setCurrentTrack(demoTrack);
+        }
+
+        // The track loading logic is now above in the search/guaranteed track section
+      } catch (error) {
+        console.error('Error loading default track:', error);
+      } finally {
+        setIsPlayerLoading(false);
+      }
+    };
+
+    loadDefaultTrack();
+  }, []);
+  
+  // Navigation state
   const [currentPage, setCurrentPage] = useState('home');
   
   // Authentication
@@ -80,48 +267,6 @@ const VibePage = () => {
     fetchPosts();
   }, [refreshFeed]);
 
-  // Load default track "No Time Wasted" on component mount
-  useEffect(() => {
-    const loadDefaultTrack = async () => {
-      try {
-        setIsPlayerLoading(true);
-        const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-        const clientSecret = import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET;
-        
-        if (!clientId || !clientSecret) {
-          console.error('Spotify credentials not found');
-          return;
-        }
-
-        // Get Spotify token
-        const token = await getSpotifyToken(clientId, clientSecret);
-        
-        // Fetch "No Time Wasted" track
-        const trackId = "4MUlNqSrMeFAHA6VpJKMo8"; // No Time Wasted track ID
-        const trackResponse = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (trackResponse.ok) {
-          const trackData = await trackResponse.json();
-          setCurrentTrack(trackData);
-          console.log('Loaded track:', trackData.name);
-        } else {
-          console.error('Failed to fetch track:', trackResponse.statusText);
-        }
-      } catch (error) {
-        console.error('Error loading default track:', error);
-      } finally {
-        setIsPlayerLoading(false);
-      }
-    };
-
-    loadDefaultTrack();
-  }, []);
-
   const handlePostSubmit = () => {
     setShowPostForm(false);
     setRefreshFeed(prev => !prev); // Trigger feed refresh
@@ -155,44 +300,98 @@ const VibePage = () => {
     setSelectedUserId(null);
   };
 
-  // Function to play a track from the feed
-  const handlePlayTrack = async (trackId) => {
+  // Hybrid playback strategy: Spotify Premium → Preview Fallback
+  const togglePlay = async () => {
+    if (!currentTrack) return;
+    
     try {
-      setIsPlayerLoading(true);
-      const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-      const clientSecret = import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET;
+      // Strategy 1: Try Spotify Web Playback SDK (Premium full tracks)
+      if (isWebPlaybackReady && spotifyPlayer) {
+        console.log('🎧 Attempting Spotify Premium Web Playback...');
+        setPlaybackMode('webplayback');
+        
+        try {
+          const token = await getSpotifyToken(import.meta.env.VITE_SPOTIFY_CLIENT_ID, import.meta.env.VITE_APP_SPOTIFY_CLIENT_SECRET);
+          
+          const response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              uris: [`spotify:track:${currentTrack.id}`]
+            })
+          });
+          
+          if (response.ok) {
+            console.log('✅ Spotify Premium Web Playback successful - playing full track');
+            setIsPlaying(true);
+            return;
+          } else {
+            console.log('❌ Spotify Premium failed (likely not Premium user), falling back to preview...');
+            // Don't return here, continue to preview fallback
+          }
+        } catch (error) {
+          console.log('❌ Spotify Premium Web Playback error, falling back to preview...', error);
+          // Don't return here, continue to preview fallback
+        }
+      } else {
+        console.log('🎵 Spotify Web Playback not ready, using preview fallback...');
+        setPlaybackMode('preview');
+      }
       
-      if (!clientId || !clientSecret) {
-        console.error('Spotify credentials not found');
+      // Strategy 2: Fall back to preview URLs (30-second clips)
+      if (currentTrack.preview_url) {
+        console.log('🎵 Using preview URL fallback (30-second clip)');
+        setPlaybackMode('preview');
+        
+        if (!audioElement) {
+          const audio = new Audio(currentTrack.preview_url);
+          audio.addEventListener('ended', () => setIsPlaying(false));
+          setAudioElement(audio);
+          audio.play();
+          setIsPlaying(true);
+        } else {
+          if (isPlaying) {
+            audioElement.pause();
+            setIsPlaying(false);
+          } else {
+            audioElement.play();
+            setIsPlaying(true);
+          }
+        }
         return;
       }
-
-      // Get Spotify token
-      const token = await getSpotifyToken(clientId, clientSecret);
       
-      // Fetch track data
-      const trackResponse = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (trackResponse.ok) {
-        const trackData = await trackResponse.json();
-        setCurrentTrack(trackData);
-        console.log('Now playing:', trackData.name);
-      } else {
-        console.error('Failed to fetch track:', trackResponse.statusText);
-      }
+      // Strategy 3: Demo mode (visual feedback only) - only if no preview available
+      console.log('🎭 No preview available - using demo mode');
+      setPlaybackMode('demo');
+      setIsPlaying(true);
+      
+      setTimeout(() => {
+        setIsPlaying(false);
+        alert(`🎵 Demo Mode\n\n"${currentTrack.name}" by ${currentTrack.artists?.map(a => a.name).join(', ')}\n\nNo audio preview available for this track.\n\nTry Spotify Premium for full track playback!`);
+      }, 2000);
+      
     } catch (error) {
-      console.error('Error playing track:', error);
-    } finally {
-      setIsPlayerLoading(false);
+      console.error('Error in hybrid playback:', error);
+      // Fallback to demo mode
+      setPlaybackMode('demo');
+      setIsPlaying(true);
+      setTimeout(() => setIsPlaying(false), 2000);
     }
   };
 
-  // Render different components based on current page - combining both approaches
+  // Mute/unmute functionality
+  const toggleMute = () => {
+    if (audioElement) {
+      audioElement.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  // Render different components based on current page
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
@@ -246,13 +445,9 @@ const VibePage = () => {
                     </div>
                     
                     <div className="post-actions">
-                      <button 
-                        className="action-btn play-btn" 
-                        onClick={() => handlePlayTrack(post.id)}
-                        disabled={isPlayerLoading}
-                      >
+                      <button className="action-btn">
                         <Icon icon="material-symbols:play-arrow" />
-                        <span>{isPlayerLoading ? 'Loading...' : 'Play'}</span>
+                        <span>Play</span>
                       </button>
                       <button className="action-btn">
                         <Icon icon="material-symbols:favorite-outline" />
@@ -273,18 +468,16 @@ const VibePage = () => {
             </div>
           </div>
         );
-      case 'discover':
-        return <DiscoverPage />;
-      case 'library':
-        return <LibraryPage />;
-      case 'friends':
-        return <FriendsPage />;
       case 'search':
-        return <SearchPage />;
-      case 'notifications':
-        return <NotificationsPage />;
-      case 'settings':
-        return <SettingsPage />;
+        return (
+          <div className="page-content">
+            <h2>Search</h2>
+            <p>Search for music, artists, and playlists</p>
+            {/* Add search functionality here */}
+          </div>
+        );
+      case 'library':
+        return <Content />;
       case 'dashboard':
         return <Dashboard />;
       default:
@@ -320,32 +513,24 @@ const VibePage = () => {
 
   return (
     <div className="vibe-page">
-      {/* Header - Your original design with modern touches */}
+      {/* Header */}
       <div className="vibe-header">
         <div className="header-left">
           <Icon
             icon="mdi:cosine-wave"
             className="header-icon"
           />
-          <span className="brand-name">Vibetune</span>
-          {currentTrack && (
-            <div className="current-track-info">
-              <Icon icon="material-symbols:music-note" className="track-icon" />
-              <span className="track-name">{currentTrack.name}</span>
-            </div>
-          )}
+          <span className="brand-name">ibetune</span>
         </div>
         
         <div className="header-right">
           <button 
-            className="play-now-btn"
-            onClick={() => currentTrack && handlePlayTrack(currentTrack.id)}
-            disabled={!currentTrack || isPlayerLoading}
+            className="test-webplayback-btn"
+            onClick={() => navigate('/test-webplayback')}
+            title="Test Spotify Web Playback SDK"
           >
-            <Icon icon="material-symbols:play-arrow" />
-            <span>{isPlayerLoading ? 'Loading...' : 'Play Now'}</span>
+            🎧 Test Player
           </button>
-          
           <div className="profile-circle" onClick={() => setShowProfileMenu(!showProfileMenu)}>
             <span className="profile-text">{user?.userId?.charAt(0)?.toUpperCase() || 'U'}</span>
           </div>
@@ -370,10 +555,53 @@ const VibePage = () => {
 
       {/* Music Player Card - Fixed at bottom */}
       <div className="music-player-card-bottom">
-        <MusicPlayer trackData={currentTrack} />
+        {isPlayerLoading ? (
+          <div className="player-loading">
+            <div className="loading-spinner"></div>
+            <p>Loading track...</p>
+          </div>
+        ) : currentTrack ? (
+          <div className="simple-player">
+            <div className="track-info-clickable" onClick={togglePlay}>
+              <img 
+                src={currentTrack.album?.images?.[0]?.url || '/default-album-art.jpg'} 
+                alt="Track Art" 
+                className="track-art"
+              />
+              <div className="track-details">
+                <h4 className="track-name">{currentTrack.name}</h4>
+                <p className="artist-name">{currentTrack.artists?.map(artist => artist.name).join(", ")}</p>
+                <div className="playback-mode-indicators">
+                  {playbackMode === 'webplayback' && (
+                    <span className="mode-badge webplayback-badge">🎧 Spotify Premium</span>
+                  )}
+                  {playbackMode === 'preview' && (
+                    <span className="mode-badge preview-badge">🎵 Preview (30s)</span>
+                  )}
+                  {playbackMode === 'demo' && (
+                    <span className="mode-badge demo-badge">🎭 Demo Mode</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="player-controls">
+              <button className="control-btn play-btn" onClick={togglePlay}>
+                <Icon icon={isPlaying ? "material-symbols:pause" : "material-symbols:play-arrow"} />
+              </button>
+              <button className="control-btn mute-btn" onClick={toggleMute}>
+                <Icon icon={isMuted ? "material-symbols:volume-off" : "material-symbols:volume-up"} />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="no-track">
+            <Icon icon="material-symbols:music-note" />
+            <p>No track loaded</p>
+          </div>
+        )}
       </div>
 
-      {/* Navigation Bar - Fixed at bottom with modern icons */}
+      {/* Navigation Bar - Fixed at bottom */}
       <div className="nav-bar-bottom">
         <Icon 
           icon="material-symbols:home-rounded" 
@@ -381,24 +609,19 @@ const VibePage = () => {
           onClick={() => handleNavigationClick('home')}
         />
         <Icon 
-          icon="material-symbols:explore-rounded" 
-          className={`nav-icon ${currentPage === 'discover' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('discover')}
-        />
-        <Icon 
           icon="material-symbols:search-rounded" 
           className={`nav-icon ${currentPage === 'search' ? 'active' : ''}`}
           onClick={() => handleNavigationClick('search')}
         />
         <Icon 
-          icon="material-symbols:library-music-rounded" 
-          className={`nav-icon ${currentPage === 'library' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('library')}
+          icon="foundation:social-treehouse" 
+          className={`nav-icon ${currentPage === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleNavigationClick('dashboard')}
         />
         <Icon 
-          icon="material-symbols:group-rounded" 
-          className={`nav-icon ${currentPage === 'friends' ? 'active' : ''}`}
-          onClick={() => handleNavigationClick('friends')}
+          icon="fluent:library-20-filled" 
+          className={`nav-icon ${currentPage === 'library' ? 'active' : ''}`}
+          onClick={() => handleNavigationClick('library')}
         />
       </div>
 

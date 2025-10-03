@@ -12,6 +12,7 @@ import ProfileSetup from './components/syncMusic/ProfileSetup';
 import VibePage from './components/syncMusic/vibePage';
 import Dashboard from './components/syncMusic/dashboard';
 import UserProfile from './components/syncMusic/userProfile';
+import WebPlaybackTest from './components/syncMusic/webPlaybackTest';
 
 // Loading component
 const LoadingScreen = () => (
@@ -117,6 +118,13 @@ const AppRoutes = () => {
       <Route path="/" element={
         <ProtectedRoute>
           <VibePage />
+        </ProtectedRoute>
+      } />
+      
+      {/* Test Route for WebPlayback */}
+      <Route path="/test-webplayback" element={
+        <ProtectedRoute>
+          <WebPlaybackTest />
         </ProtectedRoute>
       } />
       
