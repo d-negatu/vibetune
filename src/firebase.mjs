@@ -17,19 +17,20 @@
 import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 import { getAnalytics,  isSupported } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCiCpGFCrISLgE6sft9HwA7CFmlcBqPZAs",
-  authDomain: "mapbot-426401.firebaseapp.com",
-  projectId: "mapbot-426401",
-  storageBucket: "mapbot-426401.appspot.com",
-  messagingSenderId: "99514484065",
-  appId: "1:99514484065:web:311caba5b77993ff31b120",
-  measurementId: "G-9H6LSMJ771"
+  apiKey: "AIzaSyDL5V5Kzmt5HHXxGGuT7ckoRi6dHunfvTs",
+  authDomain: "mapbot-9a988.firebaseapp.com",
+  projectId: "mapbot-9a988",
+  storageBucket: "mapbot-9a988.firebasestorage.app",
+  messagingSenderId: "938260712730",
+  appId: "1:938260712730:web:9eb0cf1f25b0c6919570a3",
+  measurementId: "G-EPRKBHTWZ4"
 };
 
 // Initialize Firebase
@@ -45,5 +46,6 @@ if (typeof window !== 'undefined') {
 }
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-export { db };
+export { db, auth };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { UserProfileProvider, useUserProfile } from './contexts/UserProfileContext';
+import { FirebaseAuthProvider, useFirebaseAuth } from './contexts/FirebaseAuthContext';
 import './App.css';
 
 // Import components
@@ -13,6 +14,7 @@ import VibePage from './components/syncMusic/vibePage';
 import Dashboard from './components/syncMusic/dashboard';
 import UserProfile from './components/syncMusic/userProfile';
 import WebPlaybackTest from './components/syncMusic/webPlaybackTest';
+import FirebaseAuthTest from './components/FirebaseAuthTest';
 
 // Loading component
 const LoadingScreen = () => (
@@ -49,12 +51,14 @@ const LoadingScreen = () => (
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   const { userProfile, loading: profileLoading } = useUserProfile();
+  const { currentUser, loading: firebaseLoading } = useFirebaseAuth();
 
-  if (loading || profileLoading) {
+  if (loading || profileLoading || firebaseLoading) {
     return <LoadingScreen />;
   }
 
-  if (!isAuthenticated) {
+  // Check authentication from either AuthContext or Firebase Auth
+  if (!isAuthenticated && !currentUser) {
     return <Navigate to="/login" replace />;
   }
 
@@ -70,12 +74,14 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   const { userProfile, loading: profileLoading } = useUserProfile();
+  const { currentUser, loading: firebaseLoading } = useFirebaseAuth();
 
-  if (loading || profileLoading) {
+  if (loading || profileLoading || firebaseLoading) {
     return <LoadingScreen />;
   }
 
-  if (isAuthenticated && userProfile && userProfile.profileCompleted) {
+  // Check authentication from either AuthContext or Firebase Auth
+  if ((isAuthenticated || currentUser) && userProfile && userProfile.profileCompleted) {
     return <Navigate to="/" replace />;
   }
 
@@ -128,6 +134,9 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
+      {/* Test Route for Firebase Auth */}
+      <Route path="/test-firebase-auth" element={<FirebaseAuthTest />} />
+      
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -137,13 +146,15 @@ const AppRoutes = () => {
 // Main App Component
 function App() {
   return (
-    <AuthProvider>
-      <UserProfileProvider>
-        <div className="App">
-          <AppRoutes />
-        </div>
-      </UserProfileProvider>
-    </AuthProvider>
+    <FirebaseAuthProvider>
+      <AuthProvider>
+        <UserProfileProvider>
+          <div className="App">
+            <AppRoutes />
+          </div>
+        </UserProfileProvider>
+      </AuthProvider>
+    </FirebaseAuthProvider>
   );
 }
 

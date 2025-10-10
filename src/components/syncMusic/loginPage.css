@@ -528,6 +528,39 @@ html, body {
   font-size: 0.9rem;
 }
 
+/* Error Message Styles */
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.general-error {
+  margin-bottom: 20px;
+}
+
+.error-text {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: block;
+}
+
+.input-field.error {
+  border-color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.loading-icon {
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .login-container {

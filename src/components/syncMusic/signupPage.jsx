@@ -10,6 +10,7 @@
 import React, { useState, useEffect } from "react";
 // import { Icon } from '@iconify/react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './signupPage.css';
 
 const SignupPage = () => {
@@ -23,14 +24,15 @@ const SignupPage = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const { login, user, logout } = useAuth();
+  const { signUp: firebaseSignUp, user: firebaseUser, loading: firebaseLoading } = useFirebaseAuth();
 
   // Check if user is already logged in
   useEffect(() => {
-    if (user) {
+    if (user || firebaseUser) {
       // User is already logged in, redirect to dashboard or vibe page
       window.location.href = '/vibe';
     }
-  }, [user]);
+  }, [user, firebaseUser]);
 
   // Initialize particles when component mounts
   useEffect(() => {
@@ -117,56 +119,84 @@ const SignupPage = () => {
     setLoading(true);
     
     try {
-      // Call the createUser Cloud Function
-      const response = await fetch('https://us-central1-mapbot-9a988.cloudfunctions.net/createUser', {
+      // Use Firebase Auth to create user
+      const firebaseUser = await firebaseSignUp(formData.email, formData.password);
+      
+      // Create user profile in Firestore
+      const profileData = {
+        userId: firebaseUser.uid,
+        displayName: formData.username,
+        bio: '',
+        profilePicture: '',
+        musicGenres: [],
+        favoriteArtists: [],
+        musicMood: '',
+        spotifyConnected: false,
+        followers: [],
+        following: [],
+        postsCount: 0,
+        likesReceived: 0,
+        profileCompleted: false,
+        setupCompletedAt: null,
+        preferences: {
+          theme: 'dark',
+          notifications: true,
+          privacy: 'public'
+        },
+        privacySettings: {
+          showListeningActivity: true,
+          allowFriendRequests: true,
+          showTopTracks: true
+        }
+      };
+
+      // Call createUserProfile Cloud Function
+      const apiBaseUrl = import.meta.env.DEV 
+        ? 'http://localhost:5001/mapbot-9a988/us-central1'
+        : 'https://us-central1-mapbot-9a988.cloudfunctions.net';
+
+      const profileResponse = await fetch(`${apiBaseUrl}/createUserProfile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          username: formData.username
-        })
+        body: JSON.stringify(profileData)
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Signup failed');
+      if (!profileResponse.ok) {
+        console.warn('Failed to create user profile, but user was created successfully');
       }
-
-      if (result.success) {
-        // Create user data for the auth context
-        const userData = {
-          uid: result.user.uid,
-          email: result.user.email,
-          username: result.user.username,
-          displayName: result.user.username,
-          profileCompleted: result.user.profileCompleted
-        };
-        
-        // Login the user
-        login(userData);
-        
-        // Redirect to profile setup
-        window.location.href = '/profile-setup';
-      } else {
-        throw new Error(result.error || 'Signup failed');
-      }
+      
+      // Create user data for the auth context
+      const userData = {
+        uid: firebaseUser.uid,
+        userId: firebaseUser.uid, // Map uid to userId for compatibility
+        email: firebaseUser.email,
+        username: formData.username,
+        displayName: formData.username,
+        profileCompleted: false
+      };
+      
+      // Login the user using the existing auth context
+      login(userData);
+      
+      // Redirect to profile setup
+      window.location.href = '/profile-setup';
       
     } catch (error) {
       console.error('Signup error:', error);
       
-      // Handle specific error messages
+      // Handle Firebase Auth specific error messages
       let errorMessage = 'Signup failed. Please try again.';
       
-      if (error.message.includes('email-already-exists')) {
+      if (error.code === 'auth/email-already-in-use') {
         errorMessage = 'This email is already registered. Please use a different email or try logging in.';
-      } else if (error.message.includes('invalid-email')) {
+      } else if (error.code === 'auth/invalid-email') {
         errorMessage = 'Please enter a valid email address.';
-      } else if (error.message.includes('weak-password')) {
+      } else if (error.code === 'auth/weak-password') {
         errorMessage = 'Password should be at least 6 characters long.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        errorMessage = 'Email/password accounts are not enabled. Please contact support.';
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -306,9 +336,9 @@ const SignupPage = () => {
         </div>
 
         {/* Debug: Logout button for testing */}
-        {user && (
+        {(user || firebaseUser) && (
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <p>You are already logged in as: {user.email}</p>
+            <p>You are already logged in as: {user?.email || firebaseUser?.email}</p>
             <button 
               onClick={logout}
               style={{ 

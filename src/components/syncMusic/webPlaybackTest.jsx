@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 
 function WebPlaybackTest() {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Use Firebase Auth
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,16 +21,18 @@ function WebPlaybackTest() {
         }
 
         console.log('🔑 Getting user Spotify token via Cloud Function...');
-        console.log('User ID:', user.userId);
+        console.log('User ID:', user.uid);
+
+        console.log('🔐 Using custom auth system - sending userId directly');
 
         // Call the cloud function to get current Spotify token
         const response = await fetch('https://us-central1-mapbot-9a988.cloudfunctions.net/getCurrentSpotifyToken', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            userId: user.userId
+            userId: user.uid // Send userId directly for now
           })
         });
 
@@ -87,7 +89,8 @@ function WebPlaybackTest() {
     <div style={{ padding: '20px' }}>
       <h1>🎧 Spotify Web Playback SDK Test</h1>
       <p><strong>Token Status:</strong> ✅ User Token Available</p>
-        <p><strong>User ID:</strong> {user?.userId || 'Unknown'}</p>
+      <p><strong>User ID:</strong> {user?.uid || 'Unknown'}</p>
+      <p><strong>Email:</strong> {user?.email || 'Unknown'}</p>
       <p><strong>Note:</strong> This requires Spotify Premium to work properly</p>
       
       <WebPlayback token={token} />

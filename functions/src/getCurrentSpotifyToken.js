@@ -1,13 +1,13 @@
 /**
  * A Firebase Cloud Function to retrieve the current user's Spotify access token.
- * This function gets the user's current access token from Firestore and refreshes it if needed.
+ * This function verifies the Firebase ID token and gets the user's Spotify token from Firestore.
  *
  * @function
  * @async
  * @param {Object} req - The HTTP request object.
  * @param {string} req.method - The HTTP method of the request (must be 'POST').
- * @param {Object} req.body - The body of the HTTP request.
- * @param {string} req.body.userId - The unique identifier for the user.
+ * @param {Object} req.headers - The HTTP headers.
+ * @param {string} req.headers.authorization - The Firebase ID token (Bearer token).
  * @param {Object} res - The HTTP response object.
  * 
  * @returns {void} Responds with JSON containing the access token or an error message.
@@ -15,15 +15,10 @@
 
 const cors = require('cors');
 const fetch = require('node-fetch');
-const { firestore } = require('firebase-admin');
+const { firestore, auth } = require('firebase-admin');
 
-// Initialize CORS middleware
-const corsHandler = cors({ 
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'https://yourdomain.com'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
-});
+// Initialize CORS middleware to allow requests from any origin
+const corsHandler = cors({ origin: true });
 
 const getCurrentSpotifyToken = async (req, res) => {
   corsHandler(req, res, async () => {
@@ -31,11 +26,30 @@ const getCurrentSpotifyToken = async (req, res) => {
       try {
         console.log('[INFO] Received get current Spotify token request');
 
-        // Extract userId from request body
-        const { userId } = req.body;
-        if (!userId) {
-          console.error('[ERROR] Missing userId in request');
-          return res.status(400).json({ message: 'Missing required parameter: userId' });
+        // Check for Firebase token first, fallback to direct userId
+        const authHeader = req.headers.authorization;
+        let userId;
+
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          // Firebase token authentication
+          const idToken = authHeader.split('Bearer ')[1];
+          try {
+            const decodedToken = await auth().verifyIdToken(idToken);
+            userId = decodedToken.uid;
+            console.log(`[INFO] Firebase token verified for user: ${userId}`);
+          } catch (tokenError) {
+            console.error('[ERROR] Invalid Firebase token:', tokenError);
+            return res.status(401).json({ message: 'Invalid Firebase token' });
+          }
+        } else {
+          // Direct userId authentication (for custom auth system)
+          const { userId: directUserId } = req.body;
+          if (!directUserId) {
+            console.error('[ERROR] Missing userId in request body');
+            return res.status(400).json({ message: 'Missing required parameter: userId' });
+          }
+          userId = directUserId;
+          console.log(`[INFO] Using direct userId: ${userId}`);
         }
 
         console.log(`[INFO] Processing request for userId: ${userId}`);
@@ -103,6 +117,7 @@ const getCurrentSpotifyToken = async (req, res) => {
               console.log('[INFO] Token refreshed successfully');
               return res.status(200).json({ 
                 accessToken: newAccessToken,
+                userId: userId,
                 refreshed: true 
               });
             } else {
@@ -118,6 +133,7 @@ const getCurrentSpotifyToken = async (req, res) => {
         console.log('[INFO] Returning current valid token');
         res.status(200).json({ 
           accessToken: accessToken,
+          userId: userId,
           refreshed: false 
         });
 

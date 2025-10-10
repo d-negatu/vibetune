@@ -13,9 +13,10 @@
 
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import { Icon } from '@iconify/react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './loginPage.css'; // Import your CSS file for styling
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -66,15 +67,23 @@ const handleLogin = () => {
 
 
 const LoginPage = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, login } = useAuth();
+    const { login: firebaseLogin, user: firebaseUser, loading: firebaseLoading } = useFirebaseAuth();
+    
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     // Check if user is already logged in
     useEffect(() => {
-        if (user) {
+        if (user || firebaseUser) {
             // User is already logged in, redirect to dashboard or vibe page
             window.location.href = '/vibe';
         }
-    }, [user]);
+    }, [user, firebaseUser]);
 
     // Initialize particles when component mounts
     useEffect(() => {
@@ -100,6 +109,96 @@ const LoginPage = () => {
             }
         };
     }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Email validation
+        if (!formData.email) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Please enter a valid email';
+        }
+
+        // Password validation
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleEmailLogin = async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+
+        setLoading(true);
+        
+        try {
+            // Use Firebase Auth to sign in
+            const firebaseUser = await firebaseLogin(formData.email, formData.password);
+            
+            // Create user data for the auth context
+            const userData = {
+                uid: firebaseUser.uid,
+                userId: firebaseUser.uid, // Map uid to userId for compatibility
+                email: firebaseUser.email,
+                username: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                displayName: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                profileCompleted: true // Assume profile is completed for existing users
+            };
+            
+            // Login the user using the existing auth context
+            login(userData);
+            
+            // Redirect to main app
+            window.location.href = '/vibe';
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            
+            // Handle Firebase Auth specific error messages
+            let errorMessage = 'Login failed. Please try again.';
+            
+            if (error.code === 'auth/user-not-found') {
+                errorMessage = 'No account found with this email. Please sign up first.';
+            } else if (error.code === 'auth/wrong-password') {
+                errorMessage = 'Incorrect password. Please try again.';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Please enter a valid email address.';
+            } else if (error.code === 'auth/user-disabled') {
+                errorMessage = 'This account has been disabled. Please contact support.';
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = 'Too many failed attempts. Please try again later.';
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            setErrors({ general: errorMessage });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="login-page">
@@ -129,17 +228,50 @@ const LoginPage = () => {
                     <span>or</span>
                 </div>
                 
-                <div className="manual-login">
+                {errors.general && (
+                    <div className="error-message general-error">
+                        {errors.general}
+                    </div>
+                )}
+
+                <form onSubmit={handleEmailLogin} className="manual-login">
                     <div className="form-group">
-                        <input type="email" className="input-field" placeholder="Email address" />
+                        <input 
+                            type="email" 
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            className={`input-field ${errors.email ? 'error' : ''}`}
+                            placeholder="Email address" 
+                        />
+                        {errors.email && <span className="error-text">{errors.email}</span>}
                     </div>
                     <div className="form-group">
-                        <input type="password" className="input-field" placeholder="Password" />
+                        <input 
+                            type="password" 
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            className={`input-field ${errors.password ? 'error' : ''}`}
+                            placeholder="Password" 
+                        />
+                        {errors.password && <span className="error-text">{errors.password}</span>}
                     </div>
-                    <button className="login-button">
-                        <span>Log In</span>
+                    <button 
+                        type="submit" 
+                        className="login-button"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <span className="loading-icon">⏳</span>
+                                Signing In...
+                            </>
+                        ) : (
+                            <span>Log In</span>
+                        )}
                     </button>
-                </div>
+                </form>
                 
                 <div className="footer">
                     <a href="#" className="forgot-password">Forgot your password?</a>
