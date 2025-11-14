@@ -14,8 +14,8 @@
 // Client ID and redirect URI should be obtained from Spotify Developer Dashboard
 // These values are necessary for OAuth2 authentication flow.
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 // import { Icon } from '@iconify/react';
-import { useAuth } from '../../contexts/AuthContext';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './loginPage.css'; // Import your CSS file for styling
 
@@ -67,8 +67,8 @@ const handleLogin = () => {
 
 
 const LoginPage = () => {
-    const { user, logout, login } = useAuth();
-    const { login: firebaseLogin, user: firebaseUser, loading: firebaseLoading } = useFirebaseAuth();
+    const navigate = useNavigate();
+    const { signIn: firebaseLogin, user: firebaseUser, loading: firebaseLoading, logout } = useFirebaseAuth();
     
     const [formData, setFormData] = useState({
         email: '',
@@ -77,13 +77,8 @@ const LoginPage = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
-    // Check if user is already logged in
-    useEffect(() => {
-        if (user || firebaseUser) {
-            // User is already logged in, redirect to dashboard or vibe page
-            window.location.href = '/vibe';
-        }
-    }, [user, firebaseUser]);
+    // Note: Redirect logic is handled by PublicRoute in App.jsx
+    // No need for component-level redirect here
 
     // Initialize particles when component mounts
     useEffect(() => {
@@ -155,27 +150,15 @@ const LoginPage = () => {
         setLoading(true);
         
         try {
-            // Use Firebase Auth to sign in
-            const firebaseUser = await firebaseLogin(formData.email, formData.password);
-            
-            // Create user data for the auth context
-            const userData = {
-                uid: firebaseUser.uid,
-                userId: firebaseUser.uid, // Map uid to userId for compatibility
-                email: firebaseUser.email,
-                username: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-                displayName: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-                profileCompleted: true // Assume profile is completed for existing users
-            };
-            
-            // Login the user using the existing auth context
-            login(userData);
-            
-            // Redirect to main app
-            window.location.href = '/vibe';
+            console.log('[LoginPage] Attempting Firebase sign-in', { email: formData.email });
+            const signedIn = await firebaseLogin(formData.email, formData.password);
+            console.log('[LoginPage] Firebase sign-in success', { uid: signedIn?.uid });
+            // Redirect will be handled by PublicRoute/ProtectedRoute based on auth state
+            // Navigate to home - route guards will handle profile setup if needed
+            navigate('/');
             
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('[LoginPage] Login error:', { code: error?.code, message: error?.message });
             
             // Handle Firebase Auth specific error messages
             let errorMessage = 'Login failed. Please try again.';

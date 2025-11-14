@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
+import { useFirebaseAuth } from './FirebaseAuthContext';
 
 const UserProfileContext = createContext();
 
@@ -12,7 +12,8 @@ export const useUserProfile = () => {
 };
 
 export const UserProfileProvider = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useFirebaseAuth();
+  const isAuthenticated = !!user;
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -202,12 +203,12 @@ export const UserProfileProvider = ({ children }) => {
 
   // Load user profile when authenticated
   useEffect(() => {
-    if (isAuthenticated && user?.userId) {
-      fetchUserProfile(user.userId);
+    if (isAuthenticated && user?.uid) {
+      fetchUserProfile(user.uid); // Firebase uses 'uid' not 'userId'
     } else {
       setUserProfile(null);
     }
-  }, [isAuthenticated, user?.userId]);
+  }, [isAuthenticated, user?.uid]);
 
   const value = {
     userProfile,

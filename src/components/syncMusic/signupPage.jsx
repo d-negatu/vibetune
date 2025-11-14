@@ -8,12 +8,13 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 // import { Icon } from '@iconify/react';
-import { useAuth } from '../../contexts/AuthContext';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './signupPage.css';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -23,16 +24,10 @@ const SignupPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const { login, user, logout } = useAuth();
-  const { signUp: firebaseSignUp, user: firebaseUser, loading: firebaseLoading } = useFirebaseAuth();
+  const { signUp: firebaseSignUp, user: firebaseUser, loading: firebaseLoading, logout } = useFirebaseAuth();
 
-  // Check if user is already logged in
-  useEffect(() => {
-    if (user || firebaseUser) {
-      // User is already logged in, redirect to dashboard or vibe page
-      window.location.href = '/vibe';
-    }
-  }, [user, firebaseUser]);
+  // Note: Redirect logic is handled by PublicRoute in App.jsx
+  // No need for component-level redirect here
 
   // Initialize particles when component mounts
   useEffect(() => {
@@ -119,8 +114,13 @@ const SignupPage = () => {
     setLoading(true);
     
     try {
+      console.log('[SignupPage] Starting Firebase email signup', { email: formData.email });
+      if (typeof firebaseSignUp !== 'function') {
+        console.warn('[SignupPage] firebaseSignUp is not a function. Check FirebaseAuthContext wiring.');
+      }
       // Use Firebase Auth to create user
       const firebaseUser = await firebaseSignUp(formData.email, formData.password);
+      console.log('[SignupPage] Firebase signup success', { uid: firebaseUser?.uid, email: firebaseUser?.email });
       
       // Create user profile in Firestore
       const profileData = {
@@ -164,27 +164,18 @@ const SignupPage = () => {
       });
 
       if (!profileResponse.ok) {
-        console.warn('Failed to create user profile, but user was created successfully');
+        console.warn('[SignupPage] createUserProfile failed but Firebase user exists', { status: profileResponse.status });
+      } else {
+        console.log('[SignupPage] User profile created successfully');
       }
       
-      // Create user data for the auth context
-      const userData = {
-        uid: firebaseUser.uid,
-        userId: firebaseUser.uid, // Map uid to userId for compatibility
-        email: firebaseUser.email,
-        username: formData.username,
-        displayName: formData.username,
-        profileCompleted: false
-      };
-      
-      // Login the user using the existing auth context
-      login(userData);
-      
-      // Redirect to profile setup
-      window.location.href = '/profile-setup';
+      // FirebaseAuthContext will emit auth state; no separate app auth needed
+      // Redirect to profile setup - route guards will handle if profile already exists
+      console.log('[SignupPage] Signup successful, redirecting to /profile-setup');
+      navigate('/profile-setup');
       
     } catch (error) {
-      console.error('Signup error:', error);
+      console.error('[SignupPage] Signup error', { code: error?.code, message: error?.message });
       
       // Handle Firebase Auth specific error messages
       let errorMessage = 'Signup failed. Please try again.';
@@ -336,9 +327,9 @@ const SignupPage = () => {
         </div>
 
         {/* Debug: Logout button for testing */}
-        {(user || firebaseUser) && (
+        {firebaseUser && (
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <p>You are already logged in as: {user?.email || firebaseUser?.email}</p>
+            <p>You are already logged in as: {firebaseUser?.email}</p>
             <button 
               onClick={logout}
               style={{ 

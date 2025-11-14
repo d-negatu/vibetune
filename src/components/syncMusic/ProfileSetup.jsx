@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserProfile } from '../../contexts/UserProfileContext';
 import './ProfileSetup.css';
 
 const ProfileSetup = ({ onComplete }) => {
+  const navigate = useNavigate();
   const { updateUserProfile, userProfile } = useUserProfile();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -93,7 +95,8 @@ const ProfileSetup = ({ onComplete }) => {
       });
 
       if (success) {
-        onComplete();
+        if (onComplete) onComplete();
+        navigate('/'); // Navigate to home after profile setup
       } else {
         setError('Failed to save profile. Please try again.');
       }
