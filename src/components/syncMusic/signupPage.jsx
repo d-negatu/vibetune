@@ -201,7 +201,7 @@ const SignupPage = () => {
   const handleSpotifySignup = () => {
     // Redirect to Spotify OAuth for signup
     const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-    const redirectUri = "http://localhost:5173/callback";
+    const redirectUri = "http://127.0.0.1:5173/callback";
     const scopes = [
       "user-read-private",
       "user-read-email", 
@@ -211,7 +211,9 @@ const SignupPage = () => {
       "streaming",
     ].join("%20");
     
-    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&show_dialog=true`;
+    // URL-encode the redirect URI (required for query parameters)
+    const encodedRedirectUri = encodeURIComponent(redirectUri);
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${encodedRedirectUri}&show_dialog=true`;
     window.location.href = authUrl;
   };
 

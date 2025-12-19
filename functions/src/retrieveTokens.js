@@ -21,7 +21,7 @@ const { firestore } = require('firebase-admin');
 
 // Initialize the CORS middleware
 const corsHandler = cors({ 
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://yourdomain.com'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'https://yourdomain.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
@@ -43,7 +43,7 @@ const retrieveTokens = async (req, res) => {
 
                 const clientId = '0f1ee9de998e44a992767466ac7619db';  // Replace with your Spotify client ID
                 const clientSecret = '6cea239f00a244d9ab2160cc61bf5557';  // Replace with your Spotify client secret
-                const redirectUri = 'http://localhost:5173/callback';  // Must match the redirect URI you specified in Spotify Developer Dashboard
+                const redirectUri = 'http://127.0.0.1:5173/callback';  // Must match the redirect URI you specified in Spotify Developer Dashboard
 
                 // Exchange the authorization code for access and refresh tokens
                 const response = await fetch('https://accounts.spotify.com/api/token', {

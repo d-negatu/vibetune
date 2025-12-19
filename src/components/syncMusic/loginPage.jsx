@@ -22,16 +22,16 @@ import './loginPage.css'; // Import your CSS file for styling
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
 // Redirect URI to your application (must match what is configured in Spotify Dashboard)
-const redirectUri = "http://localhost:5173/callback"; 
+const redirectUri = "http://127.0.0.1:5173/callback"; 
 
 const scopes = [
-    "user-read-private",//permission to access user's private data (e.g., username)
-    "user-read-email", // permission to access user's email address
-    "user-read-playback-state", // permission to read the current playback state
-    "user-modify-playback-state", // Grants permission to control playback
-    "user-top-read",       
-    "streaming",// Grants permission to stream music
-].join("%20"); // Encode spaces as %20
+    "user-read-private",
+    "user-read-email",
+    "user-read-playback-state",
+    "user-modify-playback-state",
+    "user-top-read",
+    "streaming",
+  ].join(" ");
 
 
 
@@ -48,8 +48,18 @@ const scopes = [
  */
 
 const handleLogin = () => {
-    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}&show_dialog=true`;
-    console.log("Redirecting to:", authUrl);
+    // Debug: Log the redirect URI before encoding
+    console.log("Original redirect URI:", redirectUri);
+    console.log("Client ID:", clientId);
+    
+    // URL-encode the redirect URI (required for query parameters)
+    const encodedRedirectUri = encodeURIComponent(redirectUri);
+    console.log("Encoded redirect URI:", encodedRedirectUri);
+    
+    const authUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${encodedRedirectUri}&show_dialog=true`;
+    console.log("Full authorization URL:", authUrl);
+    console.log("URL length:", authUrl.length);
+    
     window.location.href = authUrl; // Redirect user to Spotify login page
 };
 
