@@ -1,34 +1,53 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { auth } from '../firebase.mjs';
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { app } from "../firebase.mjs";
 
-const FirebaseAuthContext = createContext();
+const FirebaseAuthContext = createContext(null);
 
-export const useFirebaseAuth = () => {
-  const context = useContext(FirebaseAuthContext);
-  if (!context) {
-    throw new Error('useFirebaseAuth must be used within a FirebaseAuthProvider');
-  }
-  return context;
-};
+export function FirebaseAuthProvider({ children }) {
+  const auth = useMemo(() => getAuth(app), []);
 
-export const FirebaseAuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [firebaseUser, setFirebaseUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
+    let unsub = () => {};
 
-    return unsubscribe;
-  }, []);
+    (async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+
+        unsub = onAuthStateChanged(
+          auth,
+          (u) => {
+            setFirebaseUser(u);
+            setAuthLoading(false);
+            setAuthError(null);
+          },
+          (err) => {
+            setAuthError(err);
+            setFirebaseUser(null);
+            setAuthLoading(false);
+          }
+        );
+      } catch (err) {
+        setAuthError(err);
+        setFirebaseUser(null);
+        setAuthLoading(false);
+      }
+    })();
+
+    return () => unsub();
+  }, [auth]);
 
   const signUp = async (email, password) => {
     try {
@@ -56,20 +75,32 @@ export const FirebaseAuthProvider = ({ children }) => {
     }
   };
 
-  const value = {
-    user,
-    loading,
-    signUp,
-    signIn,
-    logout
-  };
+  const value = useMemo(
+    () => ({ 
+      firebaseUser, 
+      user: firebaseUser, // Alias for backward compatibility
+      authLoading, 
+      loading: authLoading, // Alias for backward compatibility
+      authError,
+      signUp,
+      signIn,
+      logout
+    }),
+    [firebaseUser, authLoading, authError]
+  );
 
   return (
     <FirebaseAuthContext.Provider value={value}>
       {children}
     </FirebaseAuthContext.Provider>
   );
-};
+}
+
+export function useFirebaseAuth() {
+  const ctx = useContext(FirebaseAuthContext);
+  if (!ctx) throw new Error("useFirebaseAuth must be used within FirebaseAuthProvider");
+  return ctx;
+}
 
 
 

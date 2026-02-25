@@ -19,13 +19,8 @@ const fetch = require('node-fetch');
 const { firestore } = require('firebase-admin');
 
 
-// Initialize the CORS middleware
-const corsHandler = cors({ 
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'https://yourdomain.com'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
-});
+// Initialize the CORS middleware - allow any origin for dev/testing (restrict in production)
+const corsHandler = cors({ origin: true });
 
 // Define the retrieveTokens Cloud Function
 const retrieveTokens = async (req, res) => {

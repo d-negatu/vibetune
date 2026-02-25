@@ -12,13 +12,15 @@
 
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useSpotifyAuth } from "../../contexts/SpotifyAuthContext";
+import { useFirebaseAuth } from "../../contexts/FirebaseAuthContext";
 
 const retrieveUrl = 'https://us-central1-mapbot-9a988.cloudfunctions.net/retrieveTokens';
 
 const CallbackPage = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { refreshSpotifyAuth } = useSpotifyAuth();
+    const { firebaseUser, authLoading } = useFirebaseAuth();
 
     useEffect(() => {
         /**
@@ -27,57 +29,92 @@ const CallbackPage = () => {
          */
         const handleCallback = async () => {
             try {
+                console.log('[CallbackPage] Starting callback handling');
+                
+                // Wait for Firebase Auth to finish initializing (critical after page reload)
+                if (authLoading) {
+                    console.log('[CallbackPage] Waiting for Firebase Auth to initialize...');
+                    return; // Exit early, will retry when authLoading becomes false
+                }
+                
                 // Extract the authorization code from the URL
-                const code = new URLSearchParams(window.location.search).get('code');
-                const userId = "secondUserId";  // Replace with actual user ID logic
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const error = urlParams.get('error');
+                
+                // Check for OAuth errors first
+                if (error) {
+                    const errorDescription = urlParams.get('error_description') || error;
+                    console.error('[CallbackPage] Spotify OAuth error:', error, errorDescription);
+                    alert(`Spotify authentication error: ${errorDescription}`);
+                    navigate('/login');
+                    return;
+                }
 
-                if (code) {
-                    console.log('Authorization Code:', code);
+                if (!code) {
+                    console.error('[CallbackPage] Authorization code not found in URL');
+                    console.log('[CallbackPage] URL params:', Object.fromEntries(urlParams));
+                    navigate('/login');
+                    return;
+                }
 
-                    // Send the authorization code to the retrieveTokens cloud function
-                    const response = await fetch(retrieveUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ code, userId })
-                    });
+                console.log('[CallbackPage] Authorization code received:', code.substring(0, 20) + '...');
+                
+                // Must have Firebase user to proceed (now that auth has initialized)
+                if (!firebaseUser?.uid) {
+                    console.error('[CallbackPage] No Firebase user found. User must be logged in first.');
+                    alert('Please log in with Firebase first before connecting Spotify.');
+                    navigate('/login');
+                    return;
+                }
+                
+                const userId = firebaseUser.uid;
+                console.log('[CallbackPage] Using Firebase userId:', userId);
 
-                    const data = await response.json();
+                // Send the authorization code to the retrieveTokens cloud function
+                console.log('[CallbackPage] Calling retrieveTokens with:', { code: code.substring(0, 20) + '...', userId });
+                const response = await fetch(retrieveUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code, userId })
+                });
+
+                console.log('[CallbackPage] Response status:', response.status);
+                const data = await response.json();
+                console.log('[CallbackPage] Response data:', { ...data, access_token: data.access_token ? '***' : undefined });
+                
+                if (response.ok) {
+                    // Tokens are now stored in Firestore by the backend
+                    console.log('[CallbackPage] Tokens stored in Firestore successfully');
                     
-                    if (response.ok) {
-                        // Store user data and mark as authenticated
-                        const userData = {
-                            userId: userId,
-                            accessToken: data.access_token,
-                            refreshToken: data.refresh_token,
-                            expiresAt: Date.now() + (data.expires_in * 1000)
-                        };
-                        
-                        login(userData);
-                        
-                        // Check if user needs profile setup
-                        // For now, redirect to profile setup for all new users
-                        // In production, you'd check if profile exists and is completed
-                        navigate('/profile-setup');
-                    } else {
-                        console.error('Failed to retrieve tokens:', data);
-                        // Redirect to login page on error
-                        navigate('/login');
-                    }
+                    // Wait a moment for Firestore write to complete, then refresh connection status
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Trigger a refresh to update the context
+                    console.log('[CallbackPage] Refreshing Spotify connection status');
+                    refreshSpotifyAuth();
+                    
+                    // Wait a bit more for the check to complete, then navigate
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    navigate('/');
                 } else {
-                    console.error('Authorization code not found in URL');
+                    console.error('[CallbackPage] Failed to retrieve tokens:', data);
+                    alert(`Failed to connect Spotify: ${data.message || 'Unknown error'}`);
+                    // Redirect to login page on error
                     navigate('/login');
                 }
             } catch (error) {
-                console.error('Error retrieving tokens:', error);
+                console.error('[CallbackPage] Error retrieving tokens:', error);
+                alert(`Error connecting to Spotify: ${error.message}`);
                 navigate('/login');
             }
         };
 
         // Execute the callback handling function
         handleCallback();
-    }, [navigate, login]);
+    }, [navigate, refreshSpotifyAuth, firebaseUser, authLoading]); // Added authLoading to dependencies
 
     // Render loading state while processing
     return (

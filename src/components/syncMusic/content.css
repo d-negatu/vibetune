@@ -4,6 +4,17 @@
     color: white;
     overflow-y: auto;
   }
+
+  .content h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.75rem;
+  }
+
+  .content-subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin: 0 0 24px 0;
+  }
   
   .playlist-grid {
     display: grid;
@@ -22,5 +33,15 @@
   .playlist-card:hover {
     background-color: #1db954;
     color: white;
+  }
+
+  .playlist-card--placeholder {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .playlist-card--placeholder:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-color: #282828;
   }
   

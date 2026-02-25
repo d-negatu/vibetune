@@ -131,5 +131,5 @@ const refreshSpotifyToken = async (req, res) => {
   });
 };
 
-// Export the Cloud Functions
+// Export the Cloud Function
 module.exports = { refreshSpotifyToken };

@@ -58,6 +58,9 @@ const{updateLikes} = require("./src/updateLikes.js");
 //Import createUser function
 const{createUser} = require("./src/createUser.js");
 
+// Import onCreateUser (Auth trigger)
+const { onCreateUser } = require('./src/onCreateUser.js');
+
 // Import user profile functions
 const {
   getUserProfile,
@@ -68,7 +71,6 @@ const {
   getUserFollowers,
   getUserFollowing
 } = require('./src/userProfile.js');
-
 
 // Export the createSession function as an HTTP endpoint
 //a POST request to create a new session in Sync Bot .
@@ -116,3 +118,6 @@ exports.getUserFollowing = functions.https.onRequest(getUserFollowing);
 
 // Export createUser function as HTTP endpoint
 exports.createUser = functions.https.onRequest(createUser);
+
+// Export onCreateUser as Auth trigger (runs when a new Firebase user is created)
+exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);

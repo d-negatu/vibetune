@@ -15,7 +15,7 @@
 // These values are necessary for OAuth2 authentication flow.
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-// import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './loginPage.css'; // Import your CSS file for styling
 
@@ -197,22 +197,24 @@ const LoginPage = () => {
         <div className="login-page">
             <div id="particles-js"></div>
             <div className="login-container">
-                <div className="logo-icon">🎵</div>
+                <div className="logo-brand">
+                    <Icon icon="mdi:cosine-wave" className="logo-wave" />
+                </div>
                 <h1 className="brand-title">Sign in to Vibetune</h1>
                 
                 <div className="auth-options">
                     <button className="auth-button spotify" onClick={handleLogin}>
-                        <span className="auth-icon">🎵</span>
+                        <Icon icon="mdi:spotify" className="auth-icon auth-icon-brand" />
                         <span>Continue with Spotify</span>
                     </button>
                     
-                    <button className="auth-button google">
-                        <span className="auth-icon">🔍</span>
-                        <span>Continue with Google</span>
+                    <button className="auth-button youtube-music">
+                        <Icon icon="simple-icons:youtubemusic" className="auth-icon auth-icon-brand" />
+                        <span>Continue with YouTube Music</span>
                     </button>
                     
                     <button className="auth-button apple">
-                        <span className="auth-icon">🍎</span>
+                        <Icon icon="mdi:apple" className="auth-icon auth-icon-brand" />
                         <span>Continue with Apple</span>
                     </button>
                 </div>

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext'; // Still needed for other components
 import { UserProfileProvider, useUserProfile } from './contexts/UserProfileContext';
-import { FirebaseAuthProvider, useFirebaseAuth } from './contexts/FirebaseAuthContext';
+import { useFirebaseAuth } from './contexts/FirebaseAuthContext';
 import './App.css';
 
 // Import components
@@ -148,15 +147,11 @@ const AppRoutes = () => {
 // Main App Component
 function App() {
   return (
-    <FirebaseAuthProvider>
-      <AuthProvider>
-        <UserProfileProvider>
-          <div className="App">
-            <AppRoutes />
-          </div>
-        </UserProfileProvider>
-      </AuthProvider>
-    </FirebaseAuthProvider>
+    <UserProfileProvider>
+      <div className="App">
+        <AppRoutes />
+      </div>
+    </UserProfileProvider>
   );
 }
 

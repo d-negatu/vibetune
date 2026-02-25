@@ -13,6 +13,7 @@ import MusicPostForm from "./musicPostForm";
 import Dashboard from "./dashboard";
 import Content from "./content";
 import Sidebar from "./sideBar";
+import SearchPage from "./searchPage";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUserProfile } from "../../contexts/UserProfileContext";
 import UserProfile from "./userProfile";
@@ -440,6 +441,16 @@ const VibePage = () => {
                       <div className="spotify-item">
                         <Icon icon="simple-icons:spotify" className="spotify-icon" />
                         <span className="spotify-id">{post.id}</span>
+                        {post.id && post.type && (
+                          <a
+                            href={`https://open.spotify.com/${post.type}/${post.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="open-in-spotify"
+                          >
+                            Open in Spotify
+                          </a>
+                        )}
                       </div>
                       <p className="post-note">{post.note}</p>
                     </div>
@@ -470,10 +481,8 @@ const VibePage = () => {
         );
       case 'search':
         return (
-          <div className="page-content">
-            <h2>Search</h2>
-            <p>Search for music, artists, and playlists</p>
-            {/* Add search functionality here */}
+          <div className="feed-container feed-container--search">
+            <SearchPage />
           </div>
         );
       case 'library':
@@ -601,28 +610,40 @@ const VibePage = () => {
         )}
       </div>
 
-      {/* Navigation Bar - Fixed at bottom */}
+      {/* Navigation Bar - Fixed at bottom (icons + labels for web) */}
       <div className="nav-bar-bottom">
-        <Icon 
-          icon="material-symbols:home-rounded" 
-          className={`nav-icon ${currentPage === 'home' ? 'active' : ''}`}
+        <button
+          type="button"
+          className={`nav-item ${currentPage === 'home' ? 'active' : ''}`}
           onClick={() => handleNavigationClick('home')}
-        />
-        <Icon 
-          icon="material-symbols:search-rounded" 
-          className={`nav-icon ${currentPage === 'search' ? 'active' : ''}`}
+        >
+          <Icon icon="material-symbols:home-rounded" className="nav-item-icon" />
+          <span className="nav-item-label">Home</span>
+        </button>
+        <button
+          type="button"
+          className={`nav-item ${currentPage === 'search' ? 'active' : ''}`}
           onClick={() => handleNavigationClick('search')}
-        />
-        <Icon 
-          icon="foundation:social-treehouse" 
-          className={`nav-icon ${currentPage === 'dashboard' ? 'active' : ''}`}
+        >
+          <Icon icon="material-symbols:search-rounded" className="nav-item-icon" />
+          <span className="nav-item-label">Search</span>
+        </button>
+        <button
+          type="button"
+          className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}
           onClick={() => handleNavigationClick('dashboard')}
-        />
-        <Icon 
-          icon="fluent:library-20-filled" 
-          className={`nav-icon ${currentPage === 'library' ? 'active' : ''}`}
+        >
+          <Icon icon="foundation:social-treehouse" className="nav-item-icon" />
+          <span className="nav-item-label">Connect</span>
+        </button>
+        <button
+          type="button"
+          className={`nav-item ${currentPage === 'library' ? 'active' : ''}`}
           onClick={() => handleNavigationClick('library')}
-        />
+        >
+          <Icon icon="fluent:library-20-filled" className="nav-item-icon" />
+          <span className="nav-item-label">Library</span>
+        </button>
       </div>
 
       {/* Subtle Post Button - Instagram Style */}

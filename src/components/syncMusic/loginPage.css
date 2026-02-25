@@ -35,7 +35,7 @@ html, body {
   overflow-y: auto;
 }
 
-/* Particles Background */
+/* Particles Background - no pointer-events: none so canvas can receive clicks (add particles on click) */
 #particles-js {
   position: fixed;
   top: 0;
@@ -43,7 +43,6 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
 }
 
 /* Login Container */
@@ -73,6 +72,21 @@ html, body {
   margin-bottom: 20px;
   position: relative;
   z-index: 20;
+}
+
+/* Vibetune brand: just the V (wave) */
+.logo-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 20;
+}
+
+.logo-wave {
+  font-size: 3rem;
+  color: #F7F1F1;
 }
 
 .brand-title {
@@ -216,30 +230,27 @@ html, body {
   font-size: 1.2rem;
 }
 
-/* Divider */
-.divider {
-  position: relative;
-  text-align: center;
-  margin: 12px 0;
+.auth-icon-brand {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
 }
 
-.divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+.auth-button.youtube-music:hover {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: rgba(255, 0, 0, 0.3);
+}
+
+/* Divider */
+.divider {
+  text-align: center;
+  margin: 16px 0;
 }
 
 .divider span {
-  background: #1B1A1A;
-  padding: 0 16px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.9rem;
-  position: relative;
-  z-index: 1;
+  text-transform: lowercase;
 }
 
 /* Manual Login Section */

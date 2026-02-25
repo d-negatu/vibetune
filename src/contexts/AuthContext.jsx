@@ -1,63 +1,26 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+/**
+ * @deprecated This is a compatibility wrapper for SpotifyAuthContext.
+ * New code should use useSpotifyAuth from SpotifyAuthContext directly.
+ * This file is kept for backward compatibility with existing components.
+ */
+import { useSpotifyAuth } from './SpotifyAuthContext';
 
-const AuthContext = createContext();
-
+// Re-export for backward compatibility
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const spotifyAuth = useSpotifyAuth();
+  // Return in the old format for compatibility
+  return {
+    isAuthenticated: spotifyAuth.isAuthenticated,
+    user: spotifyAuth.user,
+    loading: spotifyAuth.loading,
+    login: spotifyAuth.login,
+    logout: spotifyAuth.logout,
+  };
 };
 
+// AuthProvider is no longer needed since SpotifyAuthProvider is in main.jsx
+// But we export a no-op component for compatibility
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if user is already authenticated (e.g., from localStorage or session)
-    const checkAuthStatus = () => {
-      const savedAuth = localStorage.getItem('spotify_auth');
-      if (savedAuth) {
-        try {
-          const authData = JSON.parse(savedAuth);
-          setIsAuthenticated(true);
-          setUser(authData.user);
-        } catch (error) {
-          console.error('Error parsing saved auth data:', error);
-          localStorage.removeItem('spotify_auth');
-        }
-      }
-      setLoading(false);
-    };
-
-    checkAuthStatus();
-  }, []);
-
-  const login = (userData) => {
-    setIsAuthenticated(true);
-    setUser(userData);
-    localStorage.setItem('spotify_auth', JSON.stringify({ user: userData }));
-  };
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    localStorage.removeItem('spotify_auth');
-  };
-
-  const value = {
-    isAuthenticated,
-    user,
-    loading,
-    login,
-    logout
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  // This is a no-op - the actual provider is in main.jsx
+  return <>{children}</>;
 };

@@ -4,13 +4,12 @@ import "./content.css";
 const Content = () => {
   return (
     <div className="content">
-      <h1>Your Playlists</h1>
+      <h1>Your Library</h1>
+      <p className="content-subtitle">Playlists and saved music from Spotify will appear here when connected.</p>
       <div className="playlist-grid">
-        {/* Dummy playlist cards */}
-        <div className="playlist-card">Playlist 1</div>
-        <div className="playlist-card">Playlist 2</div>
-        <div className="playlist-card">Playlist 3</div>
-        <div className="playlist-card">Playlist 4</div>
+        <div className="playlist-card playlist-card--placeholder">Your playlists</div>
+        <div className="playlist-card playlist-card--placeholder">Liked songs</div>
+        <div className="playlist-card playlist-card--placeholder">Create playlist</div>
       </div>
     </div>
   );
