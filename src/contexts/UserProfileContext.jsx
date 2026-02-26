@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase.mjs';
 import { useFirebaseAuth } from './FirebaseAuthContext';
 
 const UserProfileContext = createContext();
@@ -209,6 +211,34 @@ export const UserProfileProvider = ({ children }) => {
       setUserProfile(null);
     }
   }, [isAuthenticated, user?.uid]);
+
+  // Subscribe to users/{uid} for real-time profile updates (e.g. connectedServices.spotify)
+  useEffect(() => {
+    if (!user?.uid) return;
+
+    const usersRef = doc(db, 'users', user.uid);
+    const unsub = onSnapshot(
+      usersRef,
+      (snapshot) => {
+        if (!snapshot.exists()) return;
+        const data = snapshot.data();
+        const mapped = {
+          uid: data.uid,
+          displayName: data.displayName ?? '',
+          username: data.username ?? '',
+          avatarUrl: data.avatarUrl ?? '',
+          bio: data.bio ?? '',
+          isSpotifyConnected: data.connectedServices?.spotify?.isConnected ?? false,
+          spotifyConnected: data.connectedServices?.spotify?.isConnected ?? false,
+          followerCount: data.followerCount ?? 0,
+          followingCount: data.followingCount ?? 0,
+        };
+        setUserProfile((prev) => (prev ? { ...prev, ...mapped } : mapped));
+      },
+      (err) => console.error('[UserProfileContext] users doc listener error:', err)
+    );
+    return () => unsub();
+  }, [user?.uid]);
 
   const value = {
     userProfile,

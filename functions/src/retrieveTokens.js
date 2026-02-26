@@ -70,6 +70,16 @@ const retrieveTokens = async (req, res) => {
                         createdAt: firestore.FieldValue.serverTimestamp()
                     });
 
+                    // Update users/{userId} to mark Spotify as connected
+                    await db.collection('users').doc(userId).set({
+                        connectedServices: {
+                            spotify: {
+                                isConnected: true,
+                                lastUpdated: firestore.FieldValue.serverTimestamp()
+                            }
+                        }
+                    });
+
                     console.log("Tokens stored successfully for user:", userId);
                     res.status(200).json({ message: 'Tokens stored successfully' });
                 } else {
