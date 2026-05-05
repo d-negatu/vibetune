@@ -1,7 +1,6 @@
 /**
  * @deprecated This is a compatibility wrapper for SpotifyAuthContext.
- * New code should use useSpotifyAuth from SpotifyAuthContext directly.
- * This file is kept for backward compatibility with existing components.
+ * It's a small file in the codebasse tht re-exports the useSpotifyAuth context.
  */
 import { useSpotifyAuth } from './SpotifyAuthContext';
 

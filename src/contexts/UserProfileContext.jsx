@@ -1,3 +1,52 @@
+/*
+ * Provides tree-wide access to an authenticated user data such as 
+ * profile updates, follows, and unfollows. As an optimization, 
+ * profile stores values, retrieves and runs updates using React's internal
+ * context API that subscribes to the Provider.
+ *
+ * - createContext() creates a unique identity (not a store).
+ * - The Provider stores a `value` object on its React fiber node.
+ * - Components calling useUserProfile() read that value via useContext().
+ * - Any component using this hook subscribes to the Provider.
+ * - If the Provider's `value` changes (Object.is comparison),
+ *   all subscribed components re-render.
+ *
+ *
+ * DATA FLOW
+ * ---------
+ * 1. Authentication (via FirebaseAuthContext)
+ *    → when user.uid changes, fetchUserProfile(uid) runs.
+ *
+ * 2. Profile Fetch
+ *    → Loads from Cloud Function.
+ *    → Creates profile if missing.
+ *    → Stores result in local state (userProfile).
+ *
+ * 3. Real-time Updates
+ *    → Subscribes to Firestore users/{uid}.
+ *    → onSnapshot merges live updates into userProfile.
+ *
+ *
+ * CONTEXT VALUES
+ * -------------
+ * {
+ *   userProfile,
+ *   loading,
+ *   error,
+ *   fetchUserProfile,
+ *   updateUserProfile,
+ *   toggleFollow,
+ *   getUserById,
+ *   setError
+ * }
+ *
+ * NOTE
+ * ----
+ * The `value` object is recreated each render, so all consumers re-render
+ * when any state changes.
+ *
+ * 
+ */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase.mjs';
@@ -211,34 +260,6 @@ export const UserProfileProvider = ({ children }) => {
       setUserProfile(null);
     }
   }, [isAuthenticated, user?.uid]);
-
-  // Subscribe to users/{uid} for real-time profile updates (e.g. connectedServices.spotify)
-  useEffect(() => {
-    if (!user?.uid) return;
-
-    const usersRef = doc(db, 'users', user.uid);
-    const unsub = onSnapshot(
-      usersRef,
-      (snapshot) => {
-        if (!snapshot.exists()) return;
-        const data = snapshot.data();
-        const mapped = {
-          uid: data.uid,
-          displayName: data.displayName ?? '',
-          username: data.username ?? '',
-          avatarUrl: data.avatarUrl ?? '',
-          bio: data.bio ?? '',
-          isSpotifyConnected: data.connectedServices?.spotify?.isConnected ?? false,
-          spotifyConnected: data.connectedServices?.spotify?.isConnected ?? false,
-          followerCount: data.followerCount ?? 0,
-          followingCount: data.followingCount ?? 0,
-        };
-        setUserProfile((prev) => (prev ? { ...prev, ...mapped } : mapped));
-      },
-      (err) => console.error('[UserProfileContext] users doc listener error:', err)
-    );
-    return () => unsub();
-  }, [user?.uid]);
 
   const value = {
     userProfile,

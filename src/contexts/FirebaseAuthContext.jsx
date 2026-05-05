@@ -1,3 +1,8 @@
+/**
+ * Uses the firebase/auth library to manage Firebase sign-in/sign-out and
+ * exposes firebaseUser, loading, error, and auth methods.
+ */
+
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   getAuth,

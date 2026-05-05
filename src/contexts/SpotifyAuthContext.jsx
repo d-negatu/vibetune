@@ -1,3 +1,10 @@
+/**
+ * Calls a Cloud Function to check if the current Firebase user has
+ * a Spotify token, and exposes isSpotifyConnected and related helpers. 
+ * It does not handle the Spotify OAuth flow itself. 
+ * Look at callback page for more details on the Spotify OAuth flow.
+ */
+
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthContext";
 
