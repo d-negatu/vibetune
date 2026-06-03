@@ -43,6 +43,8 @@ const{fetchSpotifyData} = require("./src/fetchSpotifyData.js")
 
 //Import the getCurrentSpotifyToken function
 const{getCurrentSpotifyToken} = require("./src/getCurrentSpotifyToken.js")
+// Import the getYouTubeToken function
+const { getYouTubeToken } = require('./src/getYouTubeToken.js');
 
 
 //Import the musicPostHanlder function
@@ -97,6 +99,9 @@ exports.fetchSpotifyData = functions.https.onRequest(fetchSpotifyData);
 
 //Export the getCurrentSpotifyToken function as an HTTP endpoint
 exports.getCurrentSpotifyToken = functions.https.onRequest(getCurrentSpotifyToken);
+
+// Export the getYouTubeToken function as an HTTP endpoint
+exports.getYouTubeToken = functions.https.onRequest(getYouTubeToken);
 
 //Export the musicHandler function as an HTTP endpoint
 exports.musicPostHandler = functions.https.onRequest(musicPostHandler);
